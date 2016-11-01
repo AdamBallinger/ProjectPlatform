@@ -1,0 +1,47 @@
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
+
+namespace Assets.Scripts.General.UnityLayer
+{
+    public class WorldController : MonoBehaviour
+    {
+
+        public Sprite platformSprite;
+        public Sprite gridSprite;
+
+        public void Start()
+        {
+            World.Create();
+
+            // Setup the Unity Gameobjects for the Tiles.
+            for(var x = 0; x < World.Current.Width; x++)
+            {
+                for(var y = 0; y < World.Current.Height; y++)
+                {
+                    var tileGO = new GameObject();
+                    // Set each tile as a child to the WorldController object.
+                    tileGO.transform.SetParent(transform);
+                    tileGO.name = string.Format("Tile:   X: {0}    Y: {1}", x, y);
+
+                    var tileData = World.Current.GetTileAt(x, y);
+                    tileData.RegisterTileTypeChangeCallback(tile => { OnTileTypeChanged(tileGO, tile); });
+
+                    var tileSR = tileGO.AddComponent<SpriteRenderer>();
+
+                    // Only set air tiles to grid tile sprite if in the editor to aid seeing where tiles are.
+                    if(SceneManager.GetActiveScene().name == "level_editor")
+                    {
+                        tileSR.sprite = gridSprite;
+                    }
+
+                    tileGO.transform.position = new Vector2(tileData.X, tileData.Y);
+                }
+            }
+        }
+
+        public void OnTileTypeChanged(GameObject _tileGO, Tile _tileData)
+        {
+            // TODO: Change sprite (and possible tile properties) of tile to match new type
+        }
+    }
+}
