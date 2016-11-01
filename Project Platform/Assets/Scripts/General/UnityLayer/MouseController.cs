@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.General.UnityLayer.UI.LevelEditor;
+using UnityEngine;
 
 namespace Assets.Scripts.General.UnityLayer
 {
@@ -10,6 +11,7 @@ namespace Assets.Scripts.General.UnityLayer
 
     public class MouseController : MonoBehaviour
     {
+        public LevelEditorUIController editorUIController;
 
         public GameObject mouseSelectCursor;
 
@@ -130,6 +132,8 @@ namespace Assets.Scripts.General.UnityLayer
                         }
                     }
                 }
+
+                editorUIController.OnWorldModified();
             }
         }
 

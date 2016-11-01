@@ -22,7 +22,12 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public void Start()
         {
             totalTilesText.text = "Total Tiles: " + World.Current.GetTileCount();
-            platformsText.text = "Platforms: 0";
+            platformsText.text = "Platforms: " + World.Current.GetTileCountOfType(TileType.Platform);
+        }
+
+        public void OnWorldModified()
+        {
+            platformsText.text = "Platforms: " + World.Current.GetTileCountOfType(TileType.Platform);
         }
 
         public void OnSolidPlatformButtonPress()

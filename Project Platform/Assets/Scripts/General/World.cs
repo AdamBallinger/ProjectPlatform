@@ -56,6 +56,24 @@ namespace Assets.Scripts.General
             return GetTileAt(x, y);
         }
 
+        public int GetTileCountOfType(TileType _type)
+        {
+            var result = 0;
+
+            for (var x = 0; x < Current.Width; x++)
+            {
+                for (var y = 0; y < Current.Height; y++)
+                {
+                    if(Current.Tiles[x, y].Type == _type)
+                    {
+                        result++;
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public void Clear()
         {
             for (var x = 0; x < Current.Width; x++)
