@@ -2,10 +2,22 @@
 
 namespace Assets.Scripts.General.UnityLayer
 {
+    public enum SelectionMode
+    {
+        BuildMode,
+        ClearMode
+    }
+
     public class MouseController : MonoBehaviour
     {
 
         public GameObject mouseSelectCursor;
+
+        // The behaviour of the mouse when selecting/dragging tiles.
+        public SelectionMode SelectMode { get; set; }
+
+        // If build mode what type of tile should be built.
+        public TileType TileBuildType { get; set; }
 
         public float zoomSpeed = 1f;
         public float maxZoomOut = 2f;
@@ -17,6 +29,11 @@ namespace Assets.Scripts.General.UnityLayer
         private Vector2 mouseDragStartPosition;
 
         private bool mouseDragging = false;
+
+        public void Start()
+        {
+            SelectMode = SelectionMode.ClearMode;
+        }
 
         public void Update()
         {
@@ -109,7 +126,7 @@ namespace Assets.Scripts.General.UnityLayer
 
                         if(tile != null)
                         {
-                            // TODO: Here can change the tiles that were selected during drag.
+                            ProcessTileSelected(tile);
                         }
                     }
                 }
@@ -133,6 +150,23 @@ namespace Assets.Scripts.General.UnityLayer
 
             Camera.main.GetComponent<tk2dCamera>().CameraSettings.orthographicSize =
                 Mathf.Clamp(Camera.main.GetComponent<tk2dCamera>().CameraSettings.orthographicSize, maxZoomIn, maxZoomOut);
+        }
+
+        /// <summary>
+        /// When a tile is selected / dragged with the mouse handle what to do with it here.
+        /// </summary>
+        /// <param name="_tile"></param>
+        private void ProcessTileSelected(Tile _tile)
+        {
+            switch (SelectMode)
+            {
+                case SelectionMode.BuildMode:
+                    _tile.Type = TileBuildType;
+                    return;
+                case SelectionMode.ClearMode:
+                    _tile.Type = TileType.Empty;
+                    return;
+            }
         }
     }
 }

@@ -34,6 +34,11 @@ namespace Assets.Scripts.General
             }
         }
 
+        public int GetTileCount()
+        {
+            return Current.Width * Current.Height;
+        }
+
         public Tile GetTileAt(int _x, int _y)
         {
             if(_x < 0 || _x > Current.Width || _y < 0 || _y > Current.Height)
@@ -49,6 +54,17 @@ namespace Assets.Scripts.General
             var x = Mathf.FloorToInt(_coord.x + 0.5f);
             var y = Mathf.FloorToInt(_coord.y + 0.5f);
             return GetTileAt(x, y);
+        }
+
+        public void Clear()
+        {
+            for (var x = 0; x < Current.Width; x++)
+            {
+                for (var y = 0; y < Current.Height; y++)
+                {
+                    Current.Tiles[x, y].Type = TileType.Empty;
+                }
+            }
         }
     }
 }

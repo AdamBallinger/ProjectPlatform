@@ -9,9 +9,12 @@ namespace Assets.Scripts.General.UnityLayer
         public Sprite platformSprite;
         public Sprite gridSprite;
 
+        public int worldWidth = 128;
+        public int worldHeight = 128;
+
         public void Start()
         {
-            World.Create();
+            World.Create(worldWidth, worldHeight);
 
             // Setup the Unity Gameobjects for the Tiles.
             for(var x = 0; x < World.Current.Width; x++)
@@ -41,7 +44,23 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void OnTileTypeChanged(GameObject _tileGO, Tile _tileData)
         {
-            // TODO: Change sprite (and possible tile properties) of tile to match new type
+            switch(_tileData.Type)
+            {
+                case TileType.Empty:
+                    // Clear sprite if empty.
+                    _tileGO.GetComponent<SpriteRenderer>().sprite = null;
+
+                    // If in level editor then display a grid tile to aid in seeing individual tile locations.
+                    if(SceneManager.GetActiveScene().name == "level_editor")
+                    {
+                        _tileGO.GetComponent<SpriteRenderer>().sprite = gridSprite;
+                    }
+                    break;
+
+                case TileType.Platform:
+                    _tileGO.GetComponent<SpriteRenderer>().sprite = platformSprite;
+                    break;
+            }
         }
     }
 }
