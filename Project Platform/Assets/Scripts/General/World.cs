@@ -13,6 +13,8 @@ namespace Assets.Scripts.General
 
         private Tile[,] Tiles { get; set; }
 
+        public int PlatformCount { get; set; }
+
         public static void Create(int _width = 128, int _height = 128)
         {
             Current = new World();
@@ -32,6 +34,27 @@ namespace Assets.Scripts.General
                     Current.Tiles[x, y] = new Tile(x, y);
                 }
             }
+        }
+
+        /// <summary>
+        /// Save world to given save file.
+        /// </summary>
+        /// <param name="saveFile"></param>
+        /// <returns>Returns if the world was saved to file successfuly or not.</returns>
+        public bool Save(string saveFile)
+        {
+            // Save world width and height to file
+            // Save platform count
+            
+            for(int x = 0; x < Current.Width; x++)
+            {
+                for(int y = 0; y < Current.Height; y++)
+                {
+                    // Save tile x, y and type to file a long with any other properties unique to the tile.
+                }
+            }
+
+            return false;
         }
 
         public int GetTileCount()

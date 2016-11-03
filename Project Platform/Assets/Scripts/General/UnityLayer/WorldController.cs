@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using Assets.Scripts.General.UnityLayer.UI.LevelEditor;
 
 namespace Assets.Scripts.General.UnityLayer
 {
@@ -50,6 +51,11 @@ namespace Assets.Scripts.General.UnityLayer
                     // Clear sprite if empty.
                     _tileGO.GetComponent<SpriteRenderer>().sprite = null;
 
+                    if(_tileData.OldType == TileType.Platform)
+                    {
+                        World.Current.PlatformCount--;
+                    }
+
                     // If in level editor then display a grid tile to aid in seeing individual tile locations.
                     if(SceneManager.GetActiveScene().name == "level_editor")
                     {
@@ -59,8 +65,11 @@ namespace Assets.Scripts.General.UnityLayer
 
                 case TileType.Platform:
                     _tileGO.GetComponent<SpriteRenderer>().sprite = platformSprite;
+                    World.Current.PlatformCount++;
                     break;
             }
+
+            GameObject.FindObjectOfType<LevelEditorUIController>().OnWorldModified();
         }
     }
 }

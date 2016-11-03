@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Xml;
+using System.Xml.Serialization;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
@@ -27,7 +29,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         public void OnWorldModified()
         {
-            platformsText.text = "Platforms: " + World.Current.GetTileCountOfType(TileType.Platform);
+            platformsText.text = "Platforms: " + World.Current.PlatformCount;
         }
 
         public void OnSolidPlatformButtonPress()
@@ -43,7 +45,10 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         public void OnSaveButtonPress()
         {
-            // TODO: Save world state to file on disk
+            if(!World.Current.Save(""))
+            {
+                // TODO: Create error notification that save failed.
+            }
         }
 
         public void OnClearLevelButtonPress()

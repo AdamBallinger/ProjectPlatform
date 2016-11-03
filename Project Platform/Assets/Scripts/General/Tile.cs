@@ -28,11 +28,17 @@ namespace Assets.Scripts.General
             get { return type; }
             set
             {
-                previousType = type;
+                OldType = type;
                 type = value;
                 if (typeChangeCallback != null && previousType != type)
                     typeChangeCallback(this);
             }
+        }
+
+        public TileType OldType
+        {
+            get { return previousType; }
+            private set { previousType = value; }
         }
 
         public Tile(int _x, int _y)
