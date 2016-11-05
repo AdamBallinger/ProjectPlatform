@@ -1,6 +1,4 @@
-﻿using System.Xml;
-using System.Xml.Serialization;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
@@ -18,6 +16,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public Button clearToolButton;
 
         public Button saveLevelButton;
+        public Button loadLevelButton;
         public Button clearLevelButton;
         public Button exitEditorButton;
 
@@ -43,12 +42,17 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             mouseController.SelectMode = SelectionMode.ClearMode;
         }
 
-        public void OnSaveButtonPress()
+        public void OnSaveLevelButtonPress()
         {
             if(!World.Current.Save(""))
             {
                 // TODO: Create error notification that save failed.
             }
+        }
+
+        public void OnLoadLevelButtonPress()
+        {
+            // TODO: Load a world file from disk.
         }
 
         public void OnClearLevelButtonPress()
