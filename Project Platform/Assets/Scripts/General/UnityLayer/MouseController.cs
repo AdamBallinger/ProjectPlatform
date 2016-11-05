@@ -71,8 +71,11 @@ namespace Assets.Scripts.General.UnityLayer
 
         private void HandleMouseDrag()
         {
+            // Check if the mouse is currently hovering over a EventSystem game object (UI object), to prevent tiles being changed when clicking UI buttons etc.
+            var mouseOnUI = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+
             // If Left mouse button is down start mouse drag..
-            if(Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !mouseOnUI)
             {
                 mouseDragging = true;
                 mouseDragStartPosition = currentMousePosition;
@@ -101,7 +104,7 @@ namespace Assets.Scripts.General.UnityLayer
             }
 
             // If left mouse button is being held down display the drag area by resizing the select cursor over dragged area.
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) && !mouseOnUI)
             {
                 // Because the world/tile map start at 0,0 we need to add 1 to the drag dimensions so that the cursor is the correct size.
                 var dragWidth = endX - startX + 1f;
@@ -114,7 +117,7 @@ namespace Assets.Scripts.General.UnityLayer
             }
 
             // End mouse drag.
-            if(Input.GetMouseButtonUp(0))
+            if(Input.GetMouseButtonUp(0) && !mouseOnUI)
             {
                 mouseDragging = false;
                 // Reset size to 1 tile.
