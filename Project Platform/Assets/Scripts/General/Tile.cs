@@ -19,7 +19,6 @@ namespace Assets.Scripts.General
         public int Y { get; protected set; }
 
         private TileType type = TileType.Empty;
-        private TileType previousType;
 
         private Action<Tile> typeChangeCallback;
 
@@ -30,16 +29,12 @@ namespace Assets.Scripts.General
             {
                 OldType = type;
                 type = value;
-                if (typeChangeCallback != null && previousType != type)
+                if (typeChangeCallback != null && OldType != type)
                     typeChangeCallback(this);
             }
         }
 
-        public TileType OldType
-        {
-            get { return previousType; }
-            private set { previousType = value; }
-        }
+        public TileType OldType { get; private set; }
 
         public Tile(int _x, int _y)
         {
