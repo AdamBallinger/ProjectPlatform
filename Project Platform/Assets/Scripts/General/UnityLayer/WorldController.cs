@@ -69,7 +69,7 @@ namespace Assets.Scripts.General.UnityLayer
                     break;
             }
 
-            GameObject.FindObjectOfType<LevelEditorUIController>().OnWorldModified();
+            FindObjectOfType<LevelEditorUIController>().OnWorldModified();
         }
     }
 }

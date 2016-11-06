@@ -45,11 +45,31 @@ namespace Assets.Scripts.General
         {
             X = _x;
             Y = _y;
+
+            OldType = TileType.Empty;
         }
 
         public void RegisterTileTypeChangeCallback(Action<Tile> _callback)
         {
             typeChangeCallback += _callback;
+        }
+
+        public static TileType GetTypeFromString(string _type)
+        {
+            switch(_type)
+            {
+                case "Empty":
+                    return TileType.Empty;
+                case "Platform":
+                    return TileType.Platform;
+                case "PhysicsZone":
+                    return TileType.PhysicsZone;
+                case "Wall":
+                    return TileType.Wall;
+
+                default:
+                    return TileType.Empty;
+            }
         }
     }
 }

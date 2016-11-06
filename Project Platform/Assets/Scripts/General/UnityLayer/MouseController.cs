@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.General.UnityLayer.UI.LevelEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.General.UnityLayer
 {
@@ -72,7 +73,7 @@ namespace Assets.Scripts.General.UnityLayer
         private void HandleMouseDrag()
         {
             // Check if the mouse is currently hovering over a EventSystem game object (UI object), to prevent tiles being changed when clicking UI buttons etc.
-            var mouseOnUI = UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+            var mouseOnUI = EventSystem.current.IsPointerOverGameObject();
 
             // If Left mouse button is down start mouse drag..
             if (Input.GetMouseButtonDown(0) && !mouseOnUI)
@@ -81,63 +82,66 @@ namespace Assets.Scripts.General.UnityLayer
                 mouseDragStartPosition = currentMousePosition;
             }
 
-            // Add 0.5f to compensate for Unity gameobjects pivot points being the center of the object.
-            var startX = Mathf.FloorToInt(mouseDragStartPosition.x + 0.5f);
-            var endX = Mathf.FloorToInt(currentMousePosition.x + 0.5f);
-            var startY = Mathf.FloorToInt(mouseDragStartPosition.y + 0.5f);
-            var endY = Mathf.FloorToInt(currentMousePosition.y + 0.5f);
-
-            // Flip if dragging mouse left because endX would be less than startX and the for loop wouldnt loop
-            if (endX < startX)
+            if(mouseDragging)
             {
-                var tmp = endX;
-                endX = startX;
-                startX = tmp;
-            }
+                // Add 0.5f to compensate for Unity gameobjects pivot points being the center of the object.
+                var startX = Mathf.FloorToInt(mouseDragStartPosition.x + 0.5f);
+                var endX = Mathf.FloorToInt(currentMousePosition.x + 0.5f);
+                var startY = Mathf.FloorToInt(mouseDragStartPosition.y + 0.5f);
+                var endY = Mathf.FloorToInt(currentMousePosition.y + 0.5f);
 
-            // Same for Y if the mouse is dragged down.
-            if (endY < startY)
-            {
-                var tmp = endY;
-                endY = startY;
-                startY = tmp;
-            }
-
-            // If left mouse button is being held down display the drag area by resizing the select cursor over dragged area.
-            if (Input.GetMouseButton(0) && !mouseOnUI)
-            {
-                // Because the world/tile map start at 0,0 we need to add 1 to the drag dimensions so that the cursor is the correct size.
-                var dragWidth = endX - startX + 1f;
-                var dragHeight = endY - startY + 1f;
-
-                mouseSelectCursor.transform.localScale = new Vector2(dragWidth, dragHeight);
-
-                var newCursorPosition = new Vector2(startX + dragWidth / 2 - 0.5f, startY + dragHeight / 2 - 0.5f);
-                mouseSelectCursor.transform.position = newCursorPosition;
-            }
-
-            // End mouse drag.
-            if(Input.GetMouseButtonUp(0) && !mouseOnUI)
-            {
-                mouseDragging = false;
-                // Reset size to 1 tile.
-                mouseSelectCursor.transform.localScale = Vector2.one;
-
-                for(var x = startX; x <= endX; x++)
+                // Flip if dragging mouse left because endX would be less than startX and the for loop wouldnt loop
+                if (endX < startX)
                 {
-                    for(var y = startY; y <= endY; y++)
-                    {
-                        var tile = World.Current.GetTileAt(x, y);
-
-                        if(tile != null)
-                        {
-                            ProcessTileSelected(tile);
-                        }
-                    }
+                    var tmp = endX;
+                    endX = startX;
+                    startX = tmp;
                 }
 
-                editorUIController.OnWorldModified();
-            }
+                // Same for Y if the mouse is dragged down.
+                if (endY < startY)
+                {
+                    var tmp = endY;
+                    endY = startY;
+                    startY = tmp;
+                }
+
+                // If left mouse button is being held down display the drag area by resizing the select cursor over dragged area.
+                if (Input.GetMouseButton(0) && !mouseOnUI)
+                {
+                    // Because the world/tile map start at 0,0 we need to add 1 to the drag dimensions so that the cursor is the correct size.
+                    var dragWidth = endX - startX + 1f;
+                    var dragHeight = endY - startY + 1f;
+
+                    mouseSelectCursor.transform.localScale = new Vector2(dragWidth, dragHeight);
+
+                    var newCursorPosition = new Vector2(startX + dragWidth / 2 - 0.5f, startY + dragHeight / 2 - 0.5f);
+                    mouseSelectCursor.transform.position = newCursorPosition;
+                }
+
+                // End mouse drag.
+                if (Input.GetMouseButtonUp(0) && !mouseOnUI)
+                {
+                    mouseDragging = false;
+                    // Reset size to 1 tile.
+                    mouseSelectCursor.transform.localScale = Vector2.one;
+
+                    for (var x = startX; x <= endX; x++)
+                    {
+                        for (var y = startY; y <= endY; y++)
+                        {
+                            var tile = World.Current.GetTileAt(x, y);
+
+                            if (tile != null)
+                            {
+                                ProcessTileSelected(tile);
+                            }
+                        }
+                    }
+
+                    editorUIController.OnWorldModified();
+                }
+            }      
         }
 
         private void HandleCameraMovement()

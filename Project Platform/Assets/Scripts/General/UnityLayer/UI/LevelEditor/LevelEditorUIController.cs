@@ -9,6 +9,10 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         // Reference to mouse controller for handling building/clearing tiles.
         public MouseController mouseController;
 
+        public GameObject fileUI;
+
+        public InputField levelName;
+
         public Text totalTilesText;
         public Text platformsText;
 
@@ -44,15 +48,12 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         public void OnSaveLevelButtonPress()
         {
-            if(!World.Current.Save(""))
-            {
-                // TODO: Create error notification that save failed.
-            }
+            World.Current.Save(levelName.text);
         }
 
         public void OnLoadLevelButtonPress()
         {
-            // TODO: Load a world file from disk.
+            fileUI.SetActive(true);
         }
 
         public void OnClearLevelButtonPress()

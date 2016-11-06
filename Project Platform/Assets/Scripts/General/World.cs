@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.IO;
+using System.Xml;
 using UnityEngine;
 
 namespace Assets.Scripts.General
@@ -34,27 +35,6 @@ namespace Assets.Scripts.General
                     Current.Tiles[x, y] = new Tile(x, y);
                 }
             }
-        }
-
-        /// <summary>
-        /// Save world to given save file.
-        /// </summary>
-        /// <param name="saveFile"></param>
-        /// <returns>Returns if the world was saved to file successfuly or not.</returns>
-        public bool Save(string saveFile)
-        {
-            // Save world width and height to file
-            // Save platform count
-            
-            for(int x = 0; x < Current.Width; x++)
-            {
-                for(int y = 0; y < Current.Height; y++)
-                {
-                    // Save tile x, y and type to file a long with any other properties unique to the tile.
-                }
-            }
-
-            return false;
         }
 
         public int GetTileCount()
@@ -106,6 +86,115 @@ namespace Assets.Scripts.General
                     Current.Tiles[x, y].Type = TileType.Empty;
                 }
             }
+        }
+
+        /// <summary>
+        /// Save world to given save file name.
+        /// </summary>
+        /// <param name="_saveFile">File name only. E.g. Level1</param>
+        /// <returns>Returns if the world was saved to file successfuly or not.</returns>
+        public void Save(string _saveFile)
+        {
+            var settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.IndentChars = "    ";
+            settings.NewLineOnAttributes = false;
+
+            var saveFileLocation = Path.Combine(Application.persistentDataPath, "Save_Levels");
+
+            if (!Directory.Exists(saveFileLocation))
+            {
+                Directory.CreateDirectory(saveFileLocation);
+            }
+
+            saveFileLocation = Path.Combine(saveFileLocation, _saveFile + ".xml");
+
+            Debug.Log("Saving level to: " + saveFileLocation);
+
+            using (var xmlWriter = XmlWriter.Create(saveFileLocation, settings))
+            {
+                xmlWriter.WriteStartDocument();
+                xmlWriter.WriteStartElement("LevelSaveFile");
+
+                xmlWriter.WriteStartElement("LevelData");
+                xmlWriter.WriteElementString("LevelName", _saveFile);
+                xmlWriter.WriteElementString("LevelWidth", Current.Width.ToString());
+                xmlWriter.WriteElementString("LevelHeight", Current.Height.ToString());
+                xmlWriter.WriteElementString("LevelPlatformCount", PlatformCount.ToString());
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteStartElement("LevelTileData");
+                for (var x = 0; x < Current.Width; x++)
+                {
+                    for (var y = 0; y < Current.Height; y++)
+                    {
+                        var tile = Current.Tiles[x, y];
+                        // Save tile x, y and type to file a long with any other properties unique to the tile.
+                        xmlWriter.WriteStartElement("Tile");
+                        xmlWriter.WriteAttributeString("TileX", tile.X.ToString());
+                        xmlWriter.WriteAttributeString("TileY", tile.Y.ToString());
+                        xmlWriter.WriteAttributeString("TileType", tile.Type.ToString());
+                        xmlWriter.WriteEndElement();
+                    }
+                }
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteEndElement();
+                xmlWriter.WriteEndDocument();
+            }
+
+            Debug.Log("Finished saving.");
+        }
+
+        /// <summary>
+        /// Loads a level from file and initializes the world from its data then returns the level name.
+        /// </summary>
+        /// <param name="_loadFile">Full file path to level xml save file.</param>
+        public string Load(string _loadFile)
+        {
+            Debug.Log("Loading level from file: " + _loadFile);
+            var levelName = "unknown";
+            using (var xmlReader = XmlReader.Create(_loadFile))
+            {
+                while (xmlReader.Read())
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        switch (xmlReader.Name)
+                        {
+                            case "LevelName":
+                                xmlReader.Read();
+                                levelName = xmlReader.Value;
+                                break;
+
+                            case "LevelWidth":
+                                xmlReader.Read();
+                                Current.Width = int.Parse(xmlReader.Value);
+                                break;
+
+                            case "LevelHeight":
+                                xmlReader.Read();
+                                Current.Height = int.Parse(xmlReader.Value);
+                                break;
+
+                            case "LevelPlatformCount":
+                                xmlReader.Read();
+                                Current.PlatformCount = int.Parse(xmlReader.Value);
+                                break;
+
+                            case "Tile":
+                                var x = int.Parse(xmlReader["TileX"]);
+                                var y = int.Parse(xmlReader["TileY"]);
+                                var type = Tile.GetTypeFromString(xmlReader["TileType"]);
+                                Current.Tiles[x, y].Type = type;
+                                break;
+                        }
+                    }
+                }
+            }
+
+            Debug.Log("Finished loading level: " + levelName);
+            return levelName;
         }
     }
 }
