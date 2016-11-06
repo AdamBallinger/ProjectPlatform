@@ -68,6 +68,7 @@
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\FileButtonController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\LevelEditorUIController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\LoadLevelUIController.cs" />
+    <Compile Include="Assets\Scripts\General\UnityLayer\UI\Menu\MainMenuUIController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\WorldController.cs" />
     <Compile Include="Assets\Scripts\General\World.cs" />
     <Compile Include="Assets\Scripts\Physics\ABBoxCollider.cs" />

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
@@ -56,7 +57,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         public void OnExitButtonPress()
         {
-            Application.Quit();
+            SceneManager.LoadScene("_menu");
         }
     }
 }
