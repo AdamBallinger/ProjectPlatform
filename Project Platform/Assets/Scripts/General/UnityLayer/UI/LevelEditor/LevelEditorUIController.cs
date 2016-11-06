@@ -16,14 +16,6 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public Text totalTilesText;
         public Text platformsText;
 
-        public Button solidPlatformButton;
-        public Button clearToolButton;
-
-        public Button saveLevelButton;
-        public Button loadLevelButton;
-        public Button clearLevelButton;
-        public Button exitEditorButton;
-
         public void Start()
         {
             totalTilesText.text = "Total Tiles: " + World.Current.GetTileCount();
