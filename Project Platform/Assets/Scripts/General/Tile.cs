@@ -44,11 +44,20 @@ namespace Assets.Scripts.General
             OldType = TileType.Empty;
         }
 
+        /// <summary>
+        /// Register a callback function to call when the type for this tile has changed.
+        /// </summary>
+        /// <param name="_callback"></param>
         public void RegisterTileTypeChangeCallback(Action<Tile> _callback)
         {
             typeChangeCallback += _callback;
         }
 
+        /// <summary>
+        /// Returns a tile type enum from a given string.
+        /// </summary>
+        /// <param name="_type"></param>
+        /// <returns></returns>
         public static TileType GetTypeFromString(string _type)
         {
             switch(_type)

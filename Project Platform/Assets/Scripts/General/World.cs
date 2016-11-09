@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Xml;
+using Assets.Scripts.Physics;
 using UnityEngine;
 
 namespace Assets.Scripts.General
@@ -9,6 +10,8 @@ namespace Assets.Scripts.General
 
         public static World Current { get; private set; }
 
+        public PhysicsWorld PhysicsWorld { get; private set; }
+
         public int Width { get; private set; }
         public int Height { get; private set; }
 
@@ -16,6 +19,11 @@ namespace Assets.Scripts.General
 
         public int PlatformCount { get; set; }
 
+        /// <summary>
+        /// Creates a new world instance.
+        /// </summary>
+        /// <param name="_width"></param>
+        /// <param name="_height"></param>
         public static void Create(int _width = 128, int _height = 128)
         {
             Current = new World();
@@ -26,6 +34,9 @@ namespace Assets.Scripts.General
             Current.InitWorld();
         }
 
+        /// <summary>
+        /// Initialises world with empty tiles.
+        /// </summary>
         private void InitWorld()
         {
             for(var x = 0; x < Current.Width; x++)
@@ -37,14 +48,34 @@ namespace Assets.Scripts.General
             }
         }
 
+        /// <summary>
+        /// Initialises the physics world with given gravity vector.
+        /// </summary>
+        /// <param name="_gravity"></param>
+        public void InitPhysicsWorld(Vector2 _gravity)
+        {
+            Current.PhysicsWorld = new PhysicsWorld();
+            Current.PhysicsWorld.Initialize(_gravity);
+        }
+
+        /// <summary>
+        /// Gets the number of tiles in the world.
+        /// </summary>
+        /// <returns></returns>
         public int GetTileCount()
         {
             return Current.Width * Current.Height;
         }
 
+        /// <summary>
+        /// Returns the tile at the given X and Y grid coordinates.
+        /// </summary>
+        /// <param name="_x"></param>
+        /// <param name="_y"></param>
+        /// <returns></returns>
         public Tile GetTileAt(int _x, int _y)
         {
-            if(_x < 0 || _x > Current.Width || _y < 0 || _y > Current.Height)
+            if(_x < 0 || _x >= Current.Width || _y < 0 || _y >= Current.Height)
             {
                 return null;
             }
@@ -52,6 +83,11 @@ namespace Assets.Scripts.General
             return Tiles[_x, _y];
         }
 
+        /// <summary>
+        /// Gets the tile at a given world coordinate.
+        /// </summary>
+        /// <param name="_coord"></param>
+        /// <returns></returns>
         public Tile GetTileAtWorldCoord(Vector2 _coord)
         {
             var x = Mathf.FloorToInt(_coord.x + 0.5f);
@@ -59,6 +95,11 @@ namespace Assets.Scripts.General
             return GetTileAt(x, y);
         }
 
+        /// <summary>
+        /// Returns the amount of tiles matching the given type.
+        /// </summary>
+        /// <param name="_type"></param>
+        /// <returns></returns>
         public int GetTileCountOfType(TileType _type)
         {
             var result = 0;
@@ -77,6 +118,9 @@ namespace Assets.Scripts.General
             return result;
         }
 
+        /// <summary>
+        /// Clears the current world and resets the world to empty tiles.
+        /// </summary>
         public void Clear()
         {
             for (var x = 0; x < Current.Width; x++)
@@ -129,6 +173,12 @@ namespace Assets.Scripts.General
                     for (var y = 0; y < Current.Height; y++)
                     {
                         var tile = Current.Tiles[x, y];
+
+                        if (tile.Type == TileType.Empty)
+                        {
+                            continue;
+                        }
+
                         // Save tile x, y and type to file a long with any other properties unique to the tile.
                         xmlWriter.WriteStartElement("Tile");
                         xmlWriter.WriteAttributeString("TileX", tile.X.ToString());
@@ -154,6 +204,8 @@ namespace Assets.Scripts.General
         {
             Debug.Log("Loading level from file: " + _loadFile);
             var levelName = "unknown";
+            Current.Clear();
+
             using (var xmlReader = XmlReader.Create(_loadFile))
             {
                 while (xmlReader.Read())

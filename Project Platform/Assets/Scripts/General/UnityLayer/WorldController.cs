@@ -13,9 +13,12 @@ namespace Assets.Scripts.General.UnityLayer
         public int worldWidth = 128;
         public int worldHeight = 128;
 
+        public Vector2 worldGravity = new Vector2(0f, 9.807f);
+
         public void Start()
         {
             World.Create(worldWidth, worldHeight);
+            World.Current.InitPhysicsWorld(worldGravity);
 
             // Setup the Unity Gameobjects for the Tiles.
             for(var x = 0; x < World.Current.Width; x++)
@@ -70,6 +73,17 @@ namespace Assets.Scripts.General.UnityLayer
             }
 
             FindObjectOfType<LevelEditorUIController>().OnWorldModified();
+        }
+
+        /// <summary>
+        /// Use Unity fixed update for stepping physics world. By default Unity calls FixedUpdate 50 times per second.
+        /// </summary>
+        public void FixedUpdate()
+        {
+            if(World.Current != null && World.Current.PhysicsWorld != null)
+            {
+                World.Current.PhysicsWorld.Step();
+            }
         }
     }
 }
