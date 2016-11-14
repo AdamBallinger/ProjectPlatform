@@ -1,4 +1,5 @@
 ﻿using System;
+using Assets.Scripts.General;
 using Assets.Scripts.Physics.Shapes;
 using UnityEngine;
 
@@ -36,14 +37,14 @@ namespace Assets.Scripts.Physics
         public float Mass
         {
             get { return mass; }
-            private set
+            set
             {
                 mass = value;
                 InvMass = mass == 0.0f ? 0.0f : 1.0f / mass;
             }
         }
 
-        public float InvMass { get; set; }
+        public float InvMass { get; private set; }
 
         public GameObject GameObject { get; private set; }
 
@@ -53,11 +54,13 @@ namespace Assets.Scripts.Physics
             set { GameObject.transform.position = value; }
         }
 
-        public Vector2 LinearVelocity { get; private set; }
+        public Vector2 LinearVelocity { get; set; }
 
-        public Vector2 Force { get; private set; }
+        public Vector2 Force { get; set; }
 
-        public float AngularVelocity { get; private set; }
+        public float AngularVelocity { get; set; }
+
+        public float Torque { get; set; }
 
         private float inertia;
 
@@ -90,11 +93,26 @@ namespace Assets.Scripts.Physics
             Force = Vector2.zero;
             IgnoreGravity = false;
             Sleeping = false;
+
+            World.Current.PhysicsWorld.AddRigidBody(this);
         }
 
+        /// <summary>
+        /// Add a force to the rigid body.
+        /// </summary>
+        /// <param name="_force"></param>
         public void AddForce(Vector2 _force)
         {
             Force += _force;
+        }
+
+        /// <summary>
+        /// Adds an immediate force to the rigid body.
+        /// </summary>
+        /// <param name="_impulse"></param>
+        public void AddImpulse(Vector2 _impulse)
+        {
+            LinearVelocity += InvMass * _impulse;
         }
 
         /// <summary>

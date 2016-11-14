@@ -13,7 +13,7 @@ namespace Assets.Scripts.General.UnityLayer
         public int worldWidth = 128;
         public int worldHeight = 128;
 
-        public Vector2 worldGravity = new Vector2(0f, 9.807f);
+        public Vector2 worldGravity = new Vector2(0f, -9.807f);
 
         public void Start()
         {
@@ -54,7 +54,14 @@ namespace Assets.Scripts.General.UnityLayer
                     // Clear sprite if empty.
                     _tileGO.GetComponent<SpriteRenderer>().sprite = null;
 
-                    if(_tileData.OldType == TileType.Platform)
+                    // Remove rigidbody and collider from world.
+                    if(_tileGO.GetComponent<RigidBodyComponent>() != null)
+                    {
+                        Destroy(_tileGO.GetComponent<RigidBodyComponent>());
+                        Destroy(_tileGO.GetComponent<BoxColliderComponent>());
+                    }
+
+                    if (_tileData.OldType == TileType.Platform)
                     {
                         World.Current.PlatformCount--;
                     }
@@ -68,6 +75,23 @@ namespace Assets.Scripts.General.UnityLayer
 
                 case TileType.Platform:
                     _tileGO.GetComponent<SpriteRenderer>().sprite = platformSprite;
+
+                    // Give platforms a box collider and rigidbody.
+                    if(_tileGO.GetComponent<RigidBodyComponent>() == null)
+                    {
+                        _tileGO.AddComponent<RigidBodyComponent>();
+                    }
+
+                    var rb = _tileGO.GetComponent<RigidBodyComponent>();
+                    rb.SetMass(0.0f);
+                    rb.SetIgnoreGravity(true);
+
+                    if(_tileGO.GetComponent<BoxColliderComponent>() == null)
+                    {
+                        // Adds box collider to the tile with a default size of 1,1
+                        _tileGO.AddComponent<BoxColliderComponent>();
+                    }
+
                     World.Current.PlatformCount++;
                     break;
             }
@@ -76,7 +100,7 @@ namespace Assets.Scripts.General.UnityLayer
         }
 
         /// <summary>
-        /// Use Unity fixed update for stepping physics world. By default Unity calls FixedUpdate 50 times per second.
+        /// Use Unity fixed update for stepping physics world. By default Unity calls FixedUpdate 50 times per second (Time.fixedDeltaTime)
         /// </summary>
         public void FixedUpdate()
         {

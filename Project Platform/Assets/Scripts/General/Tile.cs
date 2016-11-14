@@ -1,5 +1,7 @@
 ﻿
 using System;
+using Assets.Scripts.Physics.Colliders;
+using UnityEngine;
 
 namespace Assets.Scripts.General
 {

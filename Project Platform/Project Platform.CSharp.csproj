@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\General\Tile.cs" />
+    <Compile Include="Assets\Scripts\General\UnityLayer\BoxColliderComponent.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\MouseController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\RigidBodyComponent.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\FileButtonController.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Assets\Scripts\Physics\ABRigidBody.cs" />
     <Compile Include="Assets\Scripts\Physics\Colliders\ABBoxCollider.cs" />
     <Compile Include="Assets\Scripts\Physics\Colliders\ABCollider.cs" />
+    <Compile Include="Assets\Scripts\Physics\Colliders\CollisionInfoPair.cs" />
     <Compile Include="Assets\Scripts\Physics\PhysicsWorld.cs" />
     <Compile Include="Assets\Scripts\Physics\Shapes\Shape.cs" />
     <Compile Include="Assets\TK2DROOT\tk2d\Code\Camera\tk2dCamera.cs" />

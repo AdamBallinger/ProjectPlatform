@@ -1,4 +1,7 @@
 ﻿
+using Assets.Scripts.General;
+using UnityEngine;
+
 namespace Assets.Scripts.Physics.Colliders
 {
     public abstract class ABCollider
@@ -9,6 +12,7 @@ namespace Assets.Scripts.Physics.Colliders
         protected ABCollider(ABRigidBody _body)
         {
             RigidBody = _body;
+            World.Current.PhysicsWorld.AddCollider(this);
         }
 
     }
