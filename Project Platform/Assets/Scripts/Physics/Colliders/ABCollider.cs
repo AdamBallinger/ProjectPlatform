@@ -9,6 +9,14 @@ namespace Assets.Scripts.Physics.Colliders
 
         public ABRigidBody RigidBody { get; protected set; }
 
+        /// <summary>
+        /// Return position of the collider in world coordinates.
+        /// </summary>
+        public Vector2 Position
+        {
+            get { return RigidBody.GameObject.transform.position; }
+        }
+
         protected ABCollider(ABRigidBody _body)
         {
             RigidBody = _body;

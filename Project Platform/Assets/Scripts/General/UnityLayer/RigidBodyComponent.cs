@@ -19,7 +19,6 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void Start()
         {
-            Debug.Log("LOL");
             Init(new ABRigidBody(gameObject));
         }
 
@@ -28,6 +27,7 @@ namespace Assets.Scripts.General.UnityLayer
             RigidBody = _rigidBody;
             RigidBody.Mass = mass;
             RigidBody.IgnoreGravity = ignoreGravity;
+            //RigidBody.AddImpulse(Vector2.right * 4f);
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 
 using Assets.Scripts.General.UnityLayer;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 namespace Assets.Scripts.Physics.Colliders
 {
@@ -50,30 +51,36 @@ namespace Assets.Scripts.Physics.Colliders
                 return;
             }
 
-            // Apply impulse resolution
             var relativeVelocity = ColliderB.RigidBody.LinearVelocity - ColliderA.RigidBody.LinearVelocity;
+            var velocityAlongNormal = Vector2.Dot(relativeVelocity, Normal);
 
-            var velAlongNormal = Vector2.Dot(relativeVelocity, Normal);
-
-            if (velAlongNormal > 0)
+            if (velocityAlongNormal > 0)
+            {
+                // The 2 bodies are already seperating.
                 return;
+            }
 
-            var e = 0.2f;
-            var j = -(1.0f + e) * velAlongNormal;
-            j /= ColliderA.RigidBody.InvMass + ColliderB.RigidBody.InvMass;
+            var e = 0f; // Restitution  0.0f - Inelastic  1.0f - full elastic
+            var massSum = ColliderA.RigidBody.InvMass + ColliderB.RigidBody.InvMass;
+            var j = -(1.0f + e) * velocityAlongNormal; // Impulse magnitude
+            j /= massSum;
 
             var impulse = j * Normal;
-            ColliderA.RigidBody.AddImpulse(-impulse);
-            ColliderB.RigidBody.AddImpulse(impulse);
+
+            ColliderA.RigidBody.LinearVelocity -= ColliderA.RigidBody.InvMass * impulse;
+            ColliderB.RigidBody.LinearVelocity += ColliderB.RigidBody.InvMass * impulse;
+
+            // TODO: Friction impulse
+
         }
 
         public void CorrectPosition()
         {
-            var slop = 0.05f; // Penetration allowance
-            var percent = 0.2f; // Penetration percentage to correct
-            var correctionVector = (Penetration - slop / (ColliderA.RigidBody.InvMass + ColliderB.RigidBody.InvMass)) * percent * Normal;
-            ColliderA.RigidBody.AddImpulse(correctionVector);
-            ColliderB.RigidBody.AddImpulse(-correctionVector);
+            var slop = 0.0001f; // Penetration allowance
+            var percent = 1f; // Penetration percentage to correct
+            var correctionVector = (Mathf.Max(Penetration - slop, 0.0f) / (ColliderA.RigidBody.InvMass + ColliderB.RigidBody.InvMass)) * Normal * percent;
+            ColliderA.RigidBody.Position -= correctionVector * ColliderA.RigidBody.InvMass;
+            ColliderB.RigidBody.Position += correctionVector * ColliderB.RigidBody.InvMass;
         }
 
         private void CorrectInfiniteMass()
@@ -84,33 +91,39 @@ namespace Assets.Scripts.Physics.Colliders
 
         private void AABB_AABB(ABBoxCollider _aabb1, ABBoxCollider _aabb2)
         {
-            if(_aabb1.Min.x < _aabb2.Max.x &&
-                _aabb1.Max.x > _aabb2.Min.x &&
-                _aabb1.Min.y < _aabb2.Min.y + _aabb2.Size.y &&
-                _aabb1.Min.y + _aabb1.Size.y > _aabb2.Min.y)
+            _aabb1.ComputeAABB();
+            _aabb2.ComputeAABB();
+
+            if( _aabb1.Min.y > _aabb2.Max.y &&
+                _aabb1.Max.y < _aabb2.Min.y &&
+                _aabb1.Min.x < _aabb2.Max.x &&
+                _aabb1.Max.x > _aabb2.Min.x)
             {
                 // Collision occured between colliders.
                 ContactDetected = true;
 
-                // Distance between the 2 colliders.
-                var dist = _aabb1.RigidBody.GameObject.transform.position - _aabb2.RigidBody.GameObject.transform.position;
+                // Direction between the 2 colliders.
+                var direction = _aabb1.RigidBody.GameObject.transform.position - _aabb2.RigidBody.GameObject.transform.position;
 
-                // Find penetration distances for each axis.
-                var xPenetration = (_aabb1.Max.x - _aabb1.Min.x) / 2 + (_aabb2.Max.x - _aabb2.Min.x) / 2 - Mathf.Abs(dist.x);
-                var yPenetration = (_aabb1.Max.y - _aabb1.Min.y) / 2 + (_aabb2.Max.y - _aabb2.Min.y) / 2 - Mathf.Abs(dist.y);
+                var xPenetration = _aabb1.Size.x / 2 + _aabb2.Size.x / 2 - Mathf.Abs(direction.x);
 
-                // If the X axis penetrates less than the Y axis, then the normal is either (-1,0)(left) or (1,0)(right) face of the AABB.
-                if (xPenetration < yPenetration)
+                if(xPenetration > 0)
                 {
-                    // Check which face collided with on x axis based on dist x.
-                    Normal = dist.x < 0 ? Vector2.left : Vector2.right;
-                    Penetration = xPenetration;
-                }
-                else
-                {
-                    // Check which face collided with on y axis based on dist y.
-                    Normal = dist.y < 0 ? Vector2.up : Vector2.down;
-                    Penetration = yPenetration;
+                    var yPenetration = _aabb1.Size.y / 2 + _aabb2.Size.y / 2 - Mathf.Abs(direction.y);
+
+                    if(yPenetration > 0)
+                    {
+                        if(xPenetration < yPenetration)
+                        {
+                            Normal = direction.x < 0 ? Vector2.right : Vector2.left;
+                            Penetration = xPenetration;
+                        }
+                        else
+                        {
+                            Normal = direction.y < 0 ? Vector2.up : Vector2.down;
+                            Penetration = yPenetration;
+                        }
+                    }
                 }
             }         
         }

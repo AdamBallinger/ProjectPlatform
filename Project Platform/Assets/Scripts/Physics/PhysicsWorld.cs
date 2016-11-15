@@ -41,6 +41,10 @@ namespace Assets.Scripts.Physics
             Gravity = _gravity;
         }
 
+        /// <summary>
+        /// Adds a rigidbody to the world if it doesn't already exist.
+        /// </summary>
+        /// <param name="_body"></param>
         public void AddRigidBody(ABRigidBody _body)
         {
             if(RigidBodies.Contains(_body))
@@ -52,6 +56,10 @@ namespace Assets.Scripts.Physics
             RigidBodies.Add(_body);
         }
 
+        /// <summary>
+        /// Adds a collider to the world if it doesn't already exist.
+        /// </summary>
+        /// <param name="_collider"></param>
         public void AddCollider(ABCollider _collider)
         {
             if(Colliders.Contains(_collider))
@@ -63,6 +71,10 @@ namespace Assets.Scripts.Physics
             Colliders.Add(_collider);
         }
 
+        /// <summary>
+        /// Removes a rigidbody from the world if it exists.
+        /// </summary>
+        /// <param name="_body"></param>
         public void RemoveBody(ABRigidBody _body)
         {
             if(RigidBodies.Contains(_body))
@@ -74,6 +86,10 @@ namespace Assets.Scripts.Physics
             Debug.LogWarning("Attempted to remove a body from world that didn't exist.");
         }
 
+        /// <summary>
+        /// Removes a collider from the world if it exists.
+        /// </summary>
+        /// <param name="_collider"></param>
         public void RemoveCollider(ABCollider _collider)
         {
             if(Colliders.Contains(_collider))
@@ -85,8 +101,12 @@ namespace Assets.Scripts.Physics
             Debug.LogWarning("Attempted to remove a collider from the world that didn't exist.");
         }
 
+        /// <summary>
+        /// Performs the physics step for the world.
+        /// </summary>
         public void Step()
         {
+            // Apply forces to each rigid body in the world.
             foreach (var body in RigidBodies)
             {
                 // Ignore infinite mass bodies, sleeping bodies and static bodies.
@@ -108,18 +128,21 @@ namespace Assets.Scripts.Physics
                 //body.AngularVelocity = angular_acceleration / Time.fixedDeltaTime;
 
                 body.Position += body.LinearVelocity * Time.fixedDeltaTime;
+
+                // Clear forces
+                body.Force = Vector2.zero;
+                body.Torque = 0f;
             }
 
             // Generate collision pairs
             GeneratePairs();
 
+            // Resolve any collisions.
             foreach(var contact in Contacts)
             {
-                // Solve collisions by n iterations (Impulse collision)
-                for(var i = 0; i < 1; i++)
-                {
+                // Resolve collisions (Impulse method)
+                for(var i = 0; i < 5; i++)
                     contact.ApplyImpulse();
-                }
             }
 
             // Perform position correction.
@@ -127,15 +150,9 @@ namespace Assets.Scripts.Physics
             {
                 contact.CorrectPosition();
             }
-
-            foreach(var body in RigidBodies)
-            {
-                // Clear forces
-                body.Force = Vector2.zero;
-                body.Torque = 0f;
-            }
         }
 
+        // Broadphase
         private void GeneratePairs()
         {
             // Clear previous contacts and collision pairs.
