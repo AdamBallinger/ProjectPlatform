@@ -23,13 +23,15 @@ namespace Assets.Scripts.General.UnityLayer
         public void Create(Vector2 _size)
         {
             ClearCollider();
+            Debug.Log("Creating collider instance.");
             Collider = new ABBoxCollider(GetComponent<RigidBodyComponent>().RigidBody);
             Collider.Size = _size;
         }
         
         // When unity destroys this object, make sure if the game isnt being closed, then the collider is removed from the physics world
-        public void Destroy()
+        public void OnDestroy()
         {
+            Debug.Log("Bye");
             ClearCollider();
         }
         

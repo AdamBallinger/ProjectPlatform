@@ -53,6 +53,7 @@ namespace Assets.Scripts.Physics
                 return;
             }
 
+            Debug.Log("Added Body: " + _body.GameObject.name);
             RigidBodies.Add(_body);
         }
 
@@ -68,6 +69,7 @@ namespace Assets.Scripts.Physics
                 return;
             }
 
+            Debug.Log("Added collider: " + _collider.RigidBody.GameObject.name);
             Colliders.Add(_collider);
         }
 
@@ -141,14 +143,20 @@ namespace Assets.Scripts.Physics
             foreach(var contact in Contacts)
             {
                 // Resolve collisions (Impulse method)
-                for(var i = 0; i < 5; i++)
+                for (var i = 0; i < 5; i++)
+                {
                     contact.ApplyImpulse();
+                }
+                contact.CorrectPosition();
             }
 
             // Perform position correction.
             foreach (var contact in Contacts)
             {
-                contact.CorrectPosition();
+                for (var i = 0; i < 1; i++)
+                {
+                   // contact.CorrectPosition();
+                }
             }
         }
 

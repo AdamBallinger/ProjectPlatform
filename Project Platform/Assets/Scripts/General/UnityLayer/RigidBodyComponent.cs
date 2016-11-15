@@ -11,6 +11,8 @@ namespace Assets.Scripts.General.UnityLayer
 
         public ABRigidBody RigidBody { get; private set; }
 
+        public bool inspectorCreated = false;
+
         [SerializeField]
         private float mass = 1.0f;
 
@@ -19,21 +21,25 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void Start()
         {
-            Init(new ABRigidBody(gameObject));
+            if(inspectorCreated)
+            {
+                Init();
+                RigidBody.AddImpulse(Vector2.right * 4f);
+            }
         }
 
-        public void Init(ABRigidBody _rigidBody)
+        public void Init()
         {
-            RigidBody = _rigidBody;
+            ClearBody();
+            RigidBody = new ABRigidBody(gameObject);
             RigidBody.Mass = mass;
             RigidBody.IgnoreGravity = ignoreGravity;
-            //RigidBody.AddImpulse(Vector2.right * 4f);
         }
 
         /// <summary>
         /// When unity destroys an object, make sure its cleared from the world.
         /// </summary>
-        public void Destroy()
+        public void OnDestroy()
         {
             ClearBody();
         }

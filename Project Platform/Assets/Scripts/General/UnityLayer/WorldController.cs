@@ -79,7 +79,9 @@ namespace Assets.Scripts.General.UnityLayer
                     // Give platforms a box collider and rigidbody.
                     if(_tileGO.GetComponent<RigidBodyComponent>() == null)
                     {
-                        _tileGO.AddComponent<RigidBodyComponent>();
+                        var rbc = _tileGO.AddComponent<RigidBodyComponent>();
+                        rbc.Init();
+                        rbc.RigidBody.Mass = 0.0f;
                     }
 
                     var rb = _tileGO.GetComponent<RigidBodyComponent>();
@@ -89,7 +91,8 @@ namespace Assets.Scripts.General.UnityLayer
                     if(_tileGO.GetComponent<BoxColliderComponent>() == null)
                     {
                         // Adds box collider to the tile with a default size of 1,1
-                        _tileGO.AddComponent<BoxColliderComponent>();
+                        var coll = _tileGO.AddComponent<BoxColliderComponent>();
+                        coll.Create(Vector2.one);
                     }
 
                     World.Current.PlatformCount++;

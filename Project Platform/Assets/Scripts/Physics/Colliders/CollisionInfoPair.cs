@@ -60,7 +60,7 @@ namespace Assets.Scripts.Physics.Colliders
                 return;
             }
 
-            var e = 0f; // Restitution  0.0f - Inelastic  1.0f - full elastic
+            var e = 0.8f; // Restitution  0.0f - Inelastic  1.0f - full elastic
             var massSum = ColliderA.RigidBody.InvMass + ColliderB.RigidBody.InvMass;
             var j = -(1.0f + e) * velocityAlongNormal; // Impulse magnitude
             j /= massSum;
@@ -76,8 +76,8 @@ namespace Assets.Scripts.Physics.Colliders
 
         public void CorrectPosition()
         {
-            var slop = 0.0001f; // Penetration allowance
-            var percent = 1f; // Penetration percentage to correct
+            var slop = 0.00001f; // Penetration allowance
+            var percent = 0.8f; // Penetration percentage to correct
             var correctionVector = (Mathf.Max(Penetration - slop, 0.0f) / (ColliderA.RigidBody.InvMass + ColliderB.RigidBody.InvMass)) * Normal * percent;
             ColliderA.RigidBody.Position -= correctionVector * ColliderA.RigidBody.InvMass;
             ColliderB.RigidBody.Position += correctionVector * ColliderB.RigidBody.InvMass;
