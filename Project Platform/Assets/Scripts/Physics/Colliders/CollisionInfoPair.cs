@@ -1,8 +1,4 @@
-﻿
-
-using Assets.Scripts.General.UnityLayer;
-using UnityEngine;
-using UnityEngine.SocialPlatforms;
+﻿using UnityEngine;
 
 namespace Assets.Scripts.Physics.Colliders
 {
@@ -24,6 +20,14 @@ namespace Assets.Scripts.Physics.Colliders
         /// </summary>
         public float Penetration { get; private set; }
 
+        /// <summary>
+        /// Returns the sum of bother colliders inverse mass.
+        /// </summary>
+        public float InvMassSum
+        {
+            get { return ColliderA.RigidBody.InvMass + ColliderB.RigidBody.InvMass; }
+        }
+
 
         public CollisionInfoPair(ABCollider _a, ABCollider _b)
         {
@@ -34,18 +38,39 @@ namespace Assets.Scripts.Physics.Colliders
             Penetration = 0.0f;
         }
 
+        /// <summary>
+        /// Solve the contact info for this given collision pair.
+        /// </summary>
         public void Solve()
         {
-            if(ColliderA.GetType() == typeof(ABBoxCollider) && ColliderB.GetType() == typeof(ABBoxCollider))
+            var typeA = ColliderA.GetType();
+            var typeB = ColliderB.GetType();
+
+            if(typeA == typeof(ABBoxCollider) && typeB == typeof(ABBoxCollider))
             {
                 AABB_AABB((ABBoxCollider)ColliderA, (ABBoxCollider)ColliderB);
             }
+            else if(typeA == typeof(ABCircleCollider) && typeB == typeof(ABCircleCollider))
+            {
+                Circle_Circle((ABCircleCollider)ColliderA, (ABCircleCollider)ColliderB);
+            }
+            else if(typeA == typeof(ABCircleCollider) && typeB == typeof(ABBoxCollider))
+            {
+                Circle_AABB((ABCircleCollider)ColliderA, (ABBoxCollider)ColliderB);
+            }
+            else if(typeA == typeof(ABBoxCollider) && typeB == typeof(ABCircleCollider))
+            {
+                AABB_Circle((ABBoxCollider)ColliderA, (ABCircleCollider)ColliderB);
+            }
         }
 
+        /// <summary>
+        /// Apply the collision impulse to seperate two colliding bodies.
+        /// </summary>
         public void ApplyImpulse()
         {
             // If both bodies have infinite mass (0) then just clear their velocity and break out.
-            if(ColliderA.RigidBody.Mass + ColliderB.RigidBody.Mass <= 0.0f)
+            if(InvMassSum == 0.0f)
             {
                 CorrectInfiniteMass();
                 return;
@@ -60,35 +85,59 @@ namespace Assets.Scripts.Physics.Colliders
                 return;
             }
 
-            var e = 0.8f; // Restitution  0.0f - Inelastic  1.0f - full elastic
-            var massSum = ColliderA.RigidBody.InvMass + ColliderB.RigidBody.InvMass;
+            var e = 0.0f; // Restitution  0.0f - Inelastic  1.0f - full elastic TODO: Implement physics material fetch
             var j = -(1.0f + e) * velocityAlongNormal; // Impulse magnitude
-            j /= massSum;
+            j /= InvMassSum;
 
             var impulse = j * Normal;
 
-            ColliderA.RigidBody.LinearVelocity -= ColliderA.RigidBody.InvMass * impulse;
-            ColliderB.RigidBody.LinearVelocity += ColliderB.RigidBody.InvMass * impulse;
+            ColliderA.RigidBody.AddImpulse(-impulse);
+            ColliderB.RigidBody.AddImpulse(impulse);
 
-            // TODO: Friction impulse
+            //// Apply friction impulse TODO: Improve this
+            //relativeVelocity = ColliderB.RigidBody.LinearVelocity - ColliderA.RigidBody.LinearVelocity;
+            //var tangent = relativeVelocity - Vector2.Dot(relativeVelocity, Normal) * Normal;
+            //tangent.Normalize();
 
+            //var jt = -Vector2.Dot(relativeVelocity, tangent);
+            //jt /= InvMassSum;
+
+            //var frictionImpulse = jt * tangent * 0.1f;
+
+            //ColliderA.RigidBody.AddImpulse(-frictionImpulse);
+            //ColliderB.RigidBody.AddImpulse(frictionImpulse);
         }
 
+        /// <summary>
+        /// Correct body position to prevent bodies from sinking into eachother due to gravity.
+        /// </summary>
         public void CorrectPosition()
         {
-            var slop = 0.00001f; // Penetration allowance
-            var percent = 0.8f; // Penetration percentage to correct
-            var correctionVector = (Mathf.Max(Penetration - slop, 0.0f) / (ColliderA.RigidBody.InvMass + ColliderB.RigidBody.InvMass)) * Normal * percent;
+            if (InvMassSum == 0.0f)
+                return;
+
+            var pentrationAllowance = 0.001f;
+            var penetrationCorrection = 0.4f; // % correction
+
+            var correctionVector = Mathf.Max(Penetration - pentrationAllowance, 0.0f) / InvMassSum * Normal * penetrationCorrection;
             ColliderA.RigidBody.Position -= correctionVector * ColliderA.RigidBody.InvMass;
             ColliderB.RigidBody.Position += correctionVector * ColliderB.RigidBody.InvMass;
         }
 
+        /// <summary>
+        /// Ensure any infinite mass bodies remain at 0 velocity.
+        /// </summary>
         private void CorrectInfiniteMass()
         {
             ColliderA.RigidBody.LinearVelocity = Vector2.zero;
             ColliderB.RigidBody.LinearVelocity = Vector2.zero;
         }
 
+        /// <summary>
+        /// Check and create collison info for two given AABB colliders.
+        /// </summary>
+        /// <param name="_aabb1"></param>
+        /// <param name="_aabb2"></param>
         private void AABB_AABB(ABBoxCollider _aabb1, ABBoxCollider _aabb2)
         {
             _aabb1.ComputeAABB();
@@ -101,31 +150,83 @@ namespace Assets.Scripts.Physics.Colliders
             {
                 // Collision occured between colliders.
                 ContactDetected = true;
+                ColliderA.RigidBody.IsColliding = true;
+                ColliderB.RigidBody.IsColliding = true;
 
-                // Direction between the 2 colliders.
-                var direction = _aabb1.RigidBody.GameObject.transform.position - _aabb2.RigidBody.GameObject.transform.position;
+                // Difference between the 2 colliders.
+                var difference = _aabb1.Position - _aabb2.Position;
 
-                var xPenetration = _aabb1.Size.x / 2 + _aabb2.Size.x / 2 - Mathf.Abs(direction.x);
+                var xPenetration = _aabb1.Size.x / 2 + _aabb2.Size.x / 2 - Mathf.Abs(difference.x);
 
                 if(xPenetration > 0)
                 {
-                    var yPenetration = _aabb1.Size.y / 2 + _aabb2.Size.y / 2 - Mathf.Abs(direction.y);
+                    var yPenetration = _aabb1.Size.y / 2 + _aabb2.Size.y / 2 - Mathf.Abs(difference.y);
 
                     if(yPenetration > 0)
                     {
                         if(xPenetration < yPenetration)
                         {
-                            Normal = direction.x < 0 ? Vector2.right : Vector2.left;
+                            Normal = difference.x < 0 ? Vector2.right : Vector2.left;
                             Penetration = xPenetration;
                         }
                         else
                         {
-                            Normal = direction.y < 0 ? Vector2.up : Vector2.down;
+                            Normal = difference.y < 0 ? Vector2.up : Vector2.down;
                             Penetration = yPenetration;
                         }
                     }
                 }
+            }
+            else
+            {
+                ColliderA.RigidBody.IsColliding = false;
+                ColliderB.RigidBody.IsColliding = false;
             }         
+        }
+
+        /// <summary>
+        /// Check and create collision info for two given circle colliders.
+        /// </summary>
+        /// <param name="_circle1"></param>
+        /// <param name="_circle2"></param>
+        private void Circle_Circle(ABCircleCollider _circle1, ABCircleCollider _circle2)
+        {
+            var normal = _circle1.Position - _circle2.Position;
+            var distSq = normal.sqrMagnitude;
+            var radius = _circle1.Radius + _circle2.Radius;
+
+            if(distSq >= radius * radius)
+            {
+                // No contact between 2 circles.
+                return;
+            }
+
+            ContactDetected = true;
+
+            var dist = Vector2.Distance(_circle1.Position, _circle2.Position);
+
+            Penetration = radius - distSq;
+            Normal = -normal.normalized;
+        }
+
+        /// <summary>
+        /// Check and create collision info between an AABB and circle collider.
+        /// </summary>
+        /// <param name="_aabb"></param>
+        /// <param name="_circle"></param>
+        private void AABB_Circle(ABBoxCollider _aabb, ABCircleCollider _circle)
+        {
+            
+        }
+
+        /// <summary>
+        /// Check and create collision info between a circle and AABB collider.
+        /// </summary>
+        /// <param name="_circle"></param>
+        /// <param name="_aabb"></param>
+        private void Circle_AABB(ABCircleCollider _circle, ABBoxCollider _aabb)
+        {
+            AABB_Circle(_aabb, _circle);
         }
     }
 }

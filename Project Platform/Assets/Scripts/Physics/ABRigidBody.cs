@@ -1,6 +1,5 @@
 ﻿using System;
 using Assets.Scripts.General;
-using Assets.Scripts.Physics.Shapes;
 using UnityEngine;
 
 namespace Assets.Scripts.Physics
@@ -17,23 +16,22 @@ namespace Assets.Scripts.Physics
         LOCK_POSITION = LOCK_POSITION_X | LOCK_POSITION_Y   // 00000011
     }
 
-    public enum RigidBodyType
-    {
-        STATIC,
-        DYNAMIC,
-        KINEMATIC
-    }
-
     [Serializable]
     public class ABRigidBody
     {
 
         public Constraints Constraints { get; private set; }
 
-        public RigidBodyType BodyType { get; private set; }
+        /// <summary>
+        /// Physics material contains the physical properties of this rigidbody (Restitution and friction etc.)
+        /// </summary>
+        public PhysicsMaterial Material { get; set; }
 
         private float mass = 1.0f;
 
+        /// <summary>
+        /// Rigidbody mass.
+        /// </summary>
         public float Mass
         {
             get { return mass; }
@@ -44,10 +42,19 @@ namespace Assets.Scripts.Physics
             }
         }
 
+        /// <summary>
+        /// Rigidbody inverse mass.
+        /// </summary>
         public float InvMass { get; private set; }
 
+        /// <summary>
+        /// Unity GameObject reference for this Rigidbody.
+        /// </summary>
         public GameObject GameObject { get; private set; }
 
+        /// <summary>
+        /// World position / center of this rigid body.
+        /// </summary>
         public Vector2 Position
         {
             get { return GameObject.transform.position; }
@@ -78,17 +85,17 @@ namespace Assets.Scripts.Physics
 
         public bool IgnoreGravity { get; set; }
 
-        public Shape Shape { get; private set; }
-
         public bool Sleeping { get; set; }
+
+        public bool IsColliding { get; set; }
+
 
         public ABRigidBody(GameObject _gameObject)
         {
             GameObject = _gameObject;
             Constraints = Constraints.NONE;
-            BodyType = RigidBodyType.DYNAMIC;
-            Mass = 1.0f;
-            Inertia = 0.0f;
+            Mass = 100.0f;
+            Inertia = 10.0f;
             LinearVelocity = Vector2.zero;
             Force = Vector2.zero;
             IgnoreGravity = false;
@@ -104,6 +111,7 @@ namespace Assets.Scripts.Physics
         public void AddForce(Vector2 _force)
         {
             Force += _force;
+            Sleeping = false;
         }
 
         /// <summary>
@@ -113,6 +121,7 @@ namespace Assets.Scripts.Physics
         public void AddImpulse(Vector2 _impulse)
         {
             LinearVelocity += InvMass * _impulse;
+            Sleeping = false;
         }
 
         /// <summary>

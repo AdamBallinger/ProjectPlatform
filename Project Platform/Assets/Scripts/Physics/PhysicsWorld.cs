@@ -53,7 +53,6 @@ namespace Assets.Scripts.Physics
                 return;
             }
 
-            Debug.Log("Added Body: " + _body.GameObject.name);
             RigidBodies.Add(_body);
         }
 
@@ -69,7 +68,6 @@ namespace Assets.Scripts.Physics
                 return;
             }
 
-            Debug.Log("Added collider: " + _collider.RigidBody.GameObject.name);
             Colliders.Add(_collider);
         }
 
@@ -111,8 +109,8 @@ namespace Assets.Scripts.Physics
             // Apply forces to each rigid body in the world.
             foreach (var body in RigidBodies)
             {
-                // Ignore infinite mass bodies, sleeping bodies and static bodies.
-                if(body.InvMass == 0.0f || body.Sleeping || body.BodyType == RigidBodyType.STATIC) continue;
+                // Ignore infinite mass bodies and sleeping bodies.
+                if(body.InvMass == 0.0f || body.Sleeping) continue;
                 
                 var acceleration = body.Force * body.InvMass;
 
@@ -140,23 +138,16 @@ namespace Assets.Scripts.Physics
             GeneratePairs();
 
             // Resolve any collisions.
-            foreach(var contact in Contacts)
+            foreach (var contact in Contacts)
             {
-                // Resolve collisions (Impulse method)
-                for (var i = 0; i < 5; i++)
-                {
-                    contact.ApplyImpulse();
-                }
-                contact.CorrectPosition();
+                // Resolve collisions
+                contact.ApplyImpulse();
             }
 
             // Perform position correction.
             foreach (var contact in Contacts)
             {
-                for (var i = 0; i < 1; i++)
-                {
-                   // contact.CorrectPosition();
-                }
+               contact.CorrectPosition();
             }
         }
 
@@ -174,6 +165,8 @@ namespace Assets.Scripts.Physics
                     var collider2 = Colliders[j];
                     // Prevent collider self check.
                     if (collider2 == collider1) continue;
+
+                    if (collider1.RigidBody.InvMass == 0f && collider2.RigidBody.InvMass == 0f) continue;
 
                     // Check collisions between each collider.
                     var colliderPair = new CollisionInfoPair(collider1, collider2);

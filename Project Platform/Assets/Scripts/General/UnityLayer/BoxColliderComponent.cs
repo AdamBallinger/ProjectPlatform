@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.General.UnityLayer
 {
+    [RequireComponent(typeof(RigidBodyComponent))]
     public class BoxColliderComponent : MonoBehaviour
     {
 
@@ -22,8 +23,9 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void Create(Vector2 _size)
         {
-            ClearCollider();
-            Debug.Log("Creating collider instance.");
+            if(Collider != null)
+                ClearCollider();
+
             Collider = new ABBoxCollider(GetComponent<RigidBodyComponent>().RigidBody);
             Collider.Size = _size;
         }
@@ -31,7 +33,6 @@ namespace Assets.Scripts.General.UnityLayer
         // When unity destroys this object, make sure if the game isnt being closed, then the collider is removed from the physics world
         public void OnDestroy()
         {
-            Debug.Log("Bye");
             ClearCollider();
         }
         
@@ -48,9 +49,10 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void OnDrawGizmos()
         {
-            if (!inspectorCreated) return;
-            Gizmos.color = Color.green;
+            if (!inspectorCreated)
+                return;
 
+            Gizmos.color = Color.green;
             Gizmos.DrawWireCube(gameObject.transform.position, Size);
         }
     }

@@ -6,6 +6,7 @@ namespace Assets.Scripts.General.UnityLayer
     /// <summary>
     /// Rigid body component to allow custom rigid body class to interact with Unity component system.
     /// </summary>
+    [DisallowMultipleComponent]
     public class RigidBodyComponent : MonoBehaviour
     {
 
@@ -14,7 +15,7 @@ namespace Assets.Scripts.General.UnityLayer
         public bool inspectorCreated = false;
 
         [SerializeField]
-        private float mass = 1.0f;
+        private float mass = 100.0f;
 
         [SerializeField]
         private bool ignoreGravity;
@@ -24,13 +25,15 @@ namespace Assets.Scripts.General.UnityLayer
             if(inspectorCreated)
             {
                 Init();
-                RigidBody.AddImpulse(Vector2.right * 4f);
+                //RigidBody.AddImpulse(Vector2.right * 4f * RigidBody.Mass);
             }
         }
 
         public void Init()
         {
-            ClearBody();
+            if(RigidBody != null)
+                ClearBody();
+
             RigidBody = new ABRigidBody(gameObject);
             RigidBody.Mass = mass;
             RigidBody.IgnoreGravity = ignoreGravity;

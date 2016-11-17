@@ -57,8 +57,8 @@ namespace Assets.Scripts.General.UnityLayer
                     // Remove rigidbody and collider from world.
                     if(_tileGO.GetComponent<RigidBodyComponent>() != null)
                     {
-                        Destroy(_tileGO.GetComponent<RigidBodyComponent>());
                         Destroy(_tileGO.GetComponent<BoxColliderComponent>());
+                        Destroy(_tileGO.GetComponent<RigidBodyComponent>());
                     }
 
                     if (_tileData.OldType == TileType.Platform)
@@ -79,14 +79,13 @@ namespace Assets.Scripts.General.UnityLayer
                     // Give platforms a box collider and rigidbody.
                     if(_tileGO.GetComponent<RigidBodyComponent>() == null)
                     {
-                        var rbc = _tileGO.AddComponent<RigidBodyComponent>();
-                        rbc.Init();
-                        rbc.RigidBody.Mass = 0.0f;
+                        _tileGO.AddComponent<RigidBodyComponent>();
                     }
 
                     var rb = _tileGO.GetComponent<RigidBodyComponent>();
                     rb.SetMass(0.0f);
                     rb.SetIgnoreGravity(true);
+                    rb.Init();
 
                     if(_tileGO.GetComponent<BoxColliderComponent>() == null)
                     {
