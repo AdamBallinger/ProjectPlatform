@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Xml;
+using Assets.Scripts.AI.AStar;
 using Assets.Scripts.Physics;
 using UnityEngine;
 
@@ -39,13 +40,15 @@ namespace Assets.Scripts.General
         /// </summary>
         private void InitWorld()
         {
-            for(var x = 0; x < Current.Width; x++)
+            for (var x = 0; x < Current.Width; x++)
             {
                 for(var y = 0; y < Current.Height; y++)
                 {
                     Current.Tiles[x, y] = new Tile(x, y);
                 }
             }
+
+            //Pathfinder.BuildNodeGraph(Current.Width, Current.Height);
         }
 
         /// <summary>

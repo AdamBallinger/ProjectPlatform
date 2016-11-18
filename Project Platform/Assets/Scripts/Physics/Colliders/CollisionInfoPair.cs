@@ -202,9 +202,6 @@ namespace Assets.Scripts.Physics.Colliders
             }
 
             ContactDetected = true;
-
-            var dist = Vector2.Distance(_circle1.Position, _circle2.Position);
-
             Penetration = radius - distSq;
             Normal = -normal.normalized;
         }
@@ -216,7 +213,23 @@ namespace Assets.Scripts.Physics.Colliders
         /// <param name="_circle"></param>
         private void AABB_Circle(ABBoxCollider _aabb, ABCircleCollider _circle)
         {
-            
+            //TODO: Fix all. Only works for top face against AABB.
+            _aabb.ComputeAABB();
+
+            var xNear = Mathf.Max(_aabb.Min.x, Mathf.Min(_circle.Position.x, _aabb.Max.x));
+            var yNear = Mathf.Max(_aabb.Min.y, Mathf.Min(_circle.Position.y, _aabb.Max.y));
+
+            var closesPointToRect = new Vector2(xNear, yNear);
+
+            var normal = _circle.Position - closesPointToRect;
+
+            if(normal.sqrMagnitude < _circle.Radius * _circle.Radius)
+            {
+                // Collision between the circle and aabb.
+                ContactDetected = true;
+                Penetration = _circle.Radius - normal.sqrMagnitude;
+                Normal = normal.normalized;
+            }
         }
 
         /// <summary>
@@ -227,6 +240,9 @@ namespace Assets.Scripts.Physics.Colliders
         private void Circle_AABB(ABCircleCollider _circle, ABBoxCollider _aabb)
         {
             AABB_Circle(_aabb, _circle);
+
+            // because pair order gets flipped here, the normal also needs to be flipped.
+            Normal = -Normal;
         }
     }
 }

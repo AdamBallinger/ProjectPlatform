@@ -20,7 +20,7 @@ namespace Assets.Scripts.Physics.Colliders
         }
 
         /// <summary>
-        /// Computes the AABB.
+        /// Computes the AABB min and max bounds.
         /// </summary>
         public void ComputeAABB()
         {

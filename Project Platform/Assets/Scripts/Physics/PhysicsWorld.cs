@@ -123,7 +123,7 @@ namespace Assets.Scripts.Physics
                     body.LinearVelocity += (Gravity + acceleration) * Time.fixedDeltaTime;
                 }
 
-                //var angular_acceleration = body.Torque == 0.0f ? 0.0f : body.Torque / body.Mass;
+                //var angular_acceleration = body.Torque == 0.0f ? 0.0f : body.Torque / body.Inertia;
 
                 //body.AngularVelocity = angular_acceleration / Time.fixedDeltaTime;
 
@@ -134,21 +134,21 @@ namespace Assets.Scripts.Physics
                 body.Torque = 0f;
             }
 
-            // Generate collision pairs
+            //// Generate collision pairs
             GeneratePairs();
 
-            // Resolve any collisions.
-            foreach (var contact in Contacts)
-            {
-                // Resolve collisions
-                contact.ApplyImpulse();
-            }
+            //// Resolve any collisions.
+            //foreach (var contact in Contacts)
+            //{
+            //    // Resolve collisions
+            //    contact.ApplyImpulse();
+            //}
 
-            // Perform position correction.
-            foreach (var contact in Contacts)
-            {
-               contact.CorrectPosition();
-            }
+            //// Perform position correction.
+            //foreach (var contact in Contacts)
+            //{
+            //    contact.CorrectPosition();
+            //}
         }
 
         // Broadphase
@@ -159,21 +159,19 @@ namespace Assets.Scripts.Physics
 
             for(var i = 0; i < Colliders.Count; ++i)
             {
-                var collider1 = Colliders[i];
                 for(var j = i + 1; j < Colliders.Count; ++j)
                 {
-                    var collider2 = Colliders[j];
                     // Prevent collider self check.
-                    if (collider2 == collider1) continue;
+                    if (Colliders[i] == Colliders[j]) continue;
 
-                    if (collider1.RigidBody.InvMass == 0f && collider2.RigidBody.InvMass == 0f) continue;
+                    if (Colliders[i].RigidBody.InvMass == 0.0f && Colliders[j].RigidBody.InvMass == 0.0f) continue;
 
                     // Check collisions between each collider.
-                    var colliderPair = new CollisionInfoPair(collider1, collider2);
-                   
+                    var colliderPair = new CollisionInfoPair(Colliders[i], Colliders[j]);
+
                     colliderPair.Solve();
 
-                    if(colliderPair.ContactDetected)
+                    if (colliderPair.ContactDetected)
                     {
                         Contacts.Add(colliderPair);
                     }
