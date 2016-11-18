@@ -138,6 +138,8 @@ namespace Assets.Scripts.General
                     Current.Tiles[x, y].Type = TileType.Empty;
                 }
             }
+
+            PlatformCount = 0;
         }
 
         /// <summary>
@@ -176,10 +178,6 @@ namespace Assets.Scripts.General
                 xmlWriter.WriteAttributeString("X", PlayerSpawnPosition.x.ToString());
                 xmlWriter.WriteAttributeString("Y", PlayerSpawnPosition.y.ToString());
                 xmlWriter.WriteEndElement();
-
-                xmlWriter.WriteElementString("LevelWidth", Current.Width.ToString());
-                xmlWriter.WriteElementString("LevelHeight", Current.Height.ToString());
-                xmlWriter.WriteElementString("LevelPlatformCount", PlatformCount.ToString());
 
                 xmlWriter.WriteEndElement();
 
@@ -242,21 +240,6 @@ namespace Assets.Scripts.General
                                 GameObject.FindGameObjectWithTag("PlayerSpawn").transform.position = new Vector2(px, py);
                                 break;
 
-                            case "LevelWidth":
-                                xmlReader.Read();
-                                Current.Width = int.Parse(xmlReader.Value);
-                                break;
-
-                            case "LevelHeight":
-                                xmlReader.Read();
-                                Current.Height = int.Parse(xmlReader.Value);
-                                break;
-
-                            case "LevelPlatformCount":
-                                xmlReader.Read();
-                                Current.PlatformCount = int.Parse(xmlReader.Value);
-                                break;
-
                             case "Tile":
                                 var x = int.Parse(xmlReader["TileX"]);
                                 var y = int.Parse(xmlReader["TileY"]);
@@ -268,6 +251,7 @@ namespace Assets.Scripts.General
                 }
             }
 
+            PlatformCount = GetTileCountOfType(TileType.Platform);
             Debug.Log("Finished loading level: " + levelName);
             return levelName;
         }

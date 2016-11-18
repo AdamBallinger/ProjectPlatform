@@ -54,14 +54,14 @@ namespace Assets.Scripts.General.UnityLayer
 
         private void HandleCursor()
         {
-            if(mouseDragging)
+            if (mouseDragging)
             {
                 // Don't handle position cursor if the mouse is dragging because of different behaviour.
                 return;
             }
 
             var tileHovered = World.Current.GetTileAtWorldCoord(currentMousePosition);
-            if(tileHovered != null)
+            if (tileHovered != null)
             {
                 mouseSelectCursor.SetActive(true);
                 mouseSelectCursor.transform.position = new Vector2(tileHovered.X, tileHovered.Y);
@@ -82,15 +82,23 @@ namespace Assets.Scripts.General.UnityLayer
             {
                 mouseDragging = true;
                 mouseDragStartPosition = currentMousePosition;
+
             }
 
-            if(mouseDragging)
+            if (mouseDragging)
             {
                 // Add 0.5f to compensate for Unity gameobjects pivot points being the center of the object.
                 var startX = Mathf.FloorToInt(mouseDragStartPosition.x + 0.5f);
                 var endX = Mathf.FloorToInt(currentMousePosition.x + 0.5f);
                 var startY = Mathf.FloorToInt(mouseDragStartPosition.y + 0.5f);
                 var endY = Mathf.FloorToInt(currentMousePosition.y + 0.5f);
+
+                // If the mode is to change player spawn, then position the spawn at the start of the mouse drag (if dragged) and braek out the loop.
+                if (SelectMode == SelectionMode.PlayerSpawnSet)
+                {
+                    // endY for the y position in unity is oposite
+                    playerSpawnObject.transform.position = new Vector2(startX, startY);
+                }
 
                 // Flip if dragging mouse left because endX would be less than startX and the for loop wouldnt loop
                 if (endX < startX)
@@ -128,20 +136,13 @@ namespace Assets.Scripts.General.UnityLayer
                     // Reset size to 1 tile.
                     mouseSelectCursor.transform.localScale = Vector2.one;
 
+
                     for (var x = startX; x <= endX; x++)
                     {
                         for (var y = startY; y <= endY; y++)
                         {
                             var tile = World.Current.GetTileAt(x, y);
 
-                            // If the mode is to change player spawn, then position the spawn at the start of the mouse drag (if dragged) and braek out the loop.
-                            if(SelectMode == SelectionMode.PlayerSpawnSet)
-                            {
-                                // endY for the y position in unity is oposite
-                                playerSpawnObject.transform.position = new Vector2(startX, endY);
-                                x = endX;
-                                break;
-                            }
 
                             if (tile != null)
                             {
@@ -150,15 +151,15 @@ namespace Assets.Scripts.General.UnityLayer
                         }
                     }
 
-                    editorUIController.OnWorldModified();
+                    GameObject.FindGameObjectWithTag("WorldController").GetComponent<WorldController>().OnWorldChangeFinish();
                 }
-            }      
+            }
         }
 
         private void HandleCameraMovement()
         {
             // If the middle or right mouse buttons are being held down the move camera with the mouse.
-            if(Input.GetMouseButton(1) || Input.GetMouseButton(2))
+            if (Input.GetMouseButton(1) || Input.GetMouseButton(2))
             {
                 var difference = lastMousePosition - currentMousePosition;
                 Camera.main.transform.Translate(difference);

@@ -24,11 +24,6 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             platformsText.text = "Platforms: " + World.Current.GetTileCountOfType(TileType.Platform);
         }
 
-        public void OnWorldModified()
-        {
-            platformsText.text = "Platforms: " + World.Current.PlatformCount;
-        }
-
         public void OnSolidPlatformButtonPress()
         {
             mouseController.SelectMode = SelectionMode.BuildMode;
@@ -71,6 +66,12 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public void OnExitButtonPress()
         {
             SceneManager.LoadScene("_menu");
+        }
+
+        public void Update()
+        {
+            // Keep platform count updated.
+            platformsText.text = "Platforms: " + World.Current.PlatformCount;
         }
 
         public void OnDrawGizmos()
