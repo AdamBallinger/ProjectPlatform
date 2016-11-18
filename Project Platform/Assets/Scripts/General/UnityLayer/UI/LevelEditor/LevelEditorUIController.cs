@@ -40,6 +40,11 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             mouseController.SelectMode = SelectionMode.ClearMode;
         }
 
+        public void OnSetPlayerSpawnButtonPress()
+        {
+            mouseController.SelectMode = SelectionMode.PlayerSpawnSet;
+        }
+
         public void OnAStarBuildButtonPress()
         {
             Pathfinder.BuildNodeGraph(World.Current.Width, World.Current.Height);

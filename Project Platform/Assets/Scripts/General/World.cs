@@ -20,6 +20,11 @@ namespace Assets.Scripts.General
 
         public int PlatformCount { get; set; }
 
+        public Vector2 PlayerSpawnPosition
+        {
+            get { return GameObject.FindGameObjectWithTag("PlayerSpawn").transform.position; }
+        }
+
         /// <summary>
         /// Creates a new world instance.
         /// </summary>
@@ -161,13 +166,21 @@ namespace Assets.Scripts.General
             using (var xmlWriter = XmlWriter.Create(saveFileLocation, settings))
             {
                 xmlWriter.WriteStartDocument();
+
                 xmlWriter.WriteStartElement("LevelSaveFile");
 
                 xmlWriter.WriteStartElement("LevelData");
                 xmlWriter.WriteElementString("LevelName", _saveFile);
+
+                xmlWriter.WriteStartElement("LevelPlayerSpawn");
+                xmlWriter.WriteAttributeString("X", PlayerSpawnPosition.x.ToString());
+                xmlWriter.WriteAttributeString("Y", PlayerSpawnPosition.y.ToString());
+                xmlWriter.WriteEndElement();
+
                 xmlWriter.WriteElementString("LevelWidth", Current.Width.ToString());
                 xmlWriter.WriteElementString("LevelHeight", Current.Height.ToString());
                 xmlWriter.WriteElementString("LevelPlatformCount", PlatformCount.ToString());
+
                 xmlWriter.WriteEndElement();
 
                 xmlWriter.WriteStartElement("LevelTileData");
@@ -177,6 +190,7 @@ namespace Assets.Scripts.General
                     {
                         var tile = Current.Tiles[x, y];
 
+                        // Don't waste time writing empty tiles to the file.
                         if (tile.Type == TileType.Empty)
                         {
                             continue;
@@ -220,6 +234,12 @@ namespace Assets.Scripts.General
                             case "LevelName":
                                 xmlReader.Read();
                                 levelName = xmlReader.Value;
+                                break;
+
+                            case "LevelPlayerSpawn":
+                                var px = int.Parse(xmlReader["X"]);
+                                var py = int.Parse(xmlReader["Y"]);
+                                GameObject.FindGameObjectWithTag("PlayerSpawn").transform.position = new Vector2(px, py);
                                 break;
 
                             case "LevelWidth":

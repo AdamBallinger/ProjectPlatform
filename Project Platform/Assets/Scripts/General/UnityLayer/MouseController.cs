@@ -7,7 +7,8 @@ namespace Assets.Scripts.General.UnityLayer
     public enum SelectionMode
     {
         BuildMode,
-        ClearMode
+        ClearMode,
+        PlayerSpawnSet
     }
 
     public class MouseController : MonoBehaviour
@@ -15,6 +16,7 @@ namespace Assets.Scripts.General.UnityLayer
         public LevelEditorUIController editorUIController;
 
         public GameObject mouseSelectCursor;
+        public GameObject playerSpawnObject;
 
         // The behaviour of the mouse when selecting/dragging tiles.
         public SelectionMode SelectMode { get; set; }
@@ -132,6 +134,15 @@ namespace Assets.Scripts.General.UnityLayer
                         {
                             var tile = World.Current.GetTileAt(x, y);
 
+                            // If the mode is to change player spawn, then position the spawn at the start of the mouse drag (if dragged) and braek out the loop.
+                            if(SelectMode == SelectionMode.PlayerSpawnSet)
+                            {
+                                // endY for the y position in unity is oposite
+                                playerSpawnObject.transform.position = new Vector2(startX, endY);
+                                x = endX;
+                                break;
+                            }
+
                             if (tile != null)
                             {
                                 ProcessTileSelected(tile);
@@ -173,10 +184,10 @@ namespace Assets.Scripts.General.UnityLayer
             {
                 case SelectionMode.BuildMode:
                     _tile.Type = TileBuildType;
-                    return;
+                    break;
                 case SelectionMode.ClearMode:
                     _tile.Type = TileType.Empty;
-                    return;
+                    break;
             }
         }
     }
