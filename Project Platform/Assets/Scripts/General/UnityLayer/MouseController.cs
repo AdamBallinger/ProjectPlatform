@@ -156,7 +156,7 @@ namespace Assets.Scripts.General.UnityLayer
                         }
                     }
 
-                    GameObject.FindGameObjectWithTag("WorldController").GetComponent<WorldController>().OnWorldChangeFinish();
+                    World.Current.OnWorldModifyFinishCallback();
                 }
             }
         }

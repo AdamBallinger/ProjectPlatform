@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Xml;
 using Assets.Scripts.AI.AStar;
 using Assets.Scripts.Physics;
@@ -24,6 +25,8 @@ namespace Assets.Scripts.General
         {
             get { return GameObject.FindGameObjectWithTag("PlayerSpawn").transform.position; }
         }
+
+        public Action OnWorldModifyFinishCallback;
 
         /// <summary>
         /// Creates a new world instance.
@@ -64,6 +67,35 @@ namespace Assets.Scripts.General
         {
             Current.PhysicsWorld = new PhysicsWorld();
             Current.PhysicsWorld.Initialize(_gravity);
+        }
+
+        /// <summary>
+        /// Register a callback function to be called when the world has finished being modified.
+        /// </summary>
+        /// <param name="_callback"></param>
+        public void RegisterWorldModifyFinishCallback(Action _callback)
+        {
+            OnWorldModifyFinishCallback += _callback;
+        }
+
+        /// <summary>
+        /// Sets all outer edge tiles of the world to platforms.
+        /// </summary>
+        public void SetBorderAsPlatform()
+        {
+            for(var x = 0; x < Current.Width; x++)
+            {
+                for(var y = 0; y < Current.Height; y++)
+                {
+                    if(x == 0 || y == 0 || x == Current.Width - 1 || y == Current.Height - 1)
+                    {
+                        Tiles[x, y].Type = TileType.Platform;
+                    }
+                }
+            }
+
+            if(Current.OnWorldModifyFinishCallback != null)
+                Current.OnWorldModifyFinishCallback();
         }
 
         /// <summary>
@@ -140,6 +172,8 @@ namespace Assets.Scripts.General
             }
 
             PlatformCount = 0;
+
+            SetBorderAsPlatform();
         }
 
         /// <summary>
@@ -252,6 +286,7 @@ namespace Assets.Scripts.General
             }
 
             PlatformCount = GetTileCountOfType(TileType.Platform);
+            OnWorldModifyFinishCallback();
             Debug.Log("Finished loading level: " + levelName);
             return levelName;
         }

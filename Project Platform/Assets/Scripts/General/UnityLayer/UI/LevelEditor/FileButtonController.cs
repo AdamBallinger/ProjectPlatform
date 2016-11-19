@@ -11,7 +11,6 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public void OnClick()
         {
             FindObjectOfType<LevelEditorUIController>().levelName.text = World.Current.Load(LoadFile);
-            GameObject.FindGameObjectWithTag("WorldController").GetComponent<WorldController>().OnWorldChangeFinish();
             FindObjectOfType<LoadLevelUIController>().gameObject.SetActive(false);          
         }
 

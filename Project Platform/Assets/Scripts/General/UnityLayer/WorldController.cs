@@ -26,6 +26,7 @@ namespace Assets.Scripts.General.UnityLayer
             Time.fixedDeltaTime = timeStep;
             World.Create(worldWidth, worldHeight);
             World.Current.InitPhysicsWorld(worldGravity);
+            World.Current.RegisterWorldModifyFinishCallback(OnWorldChangeFinish);
 
             tileGameObjects = new GameObject[worldWidth, worldHeight];
 
@@ -54,6 +55,8 @@ namespace Assets.Scripts.General.UnityLayer
                     tileGameObjects[x, y] = tileGO;
                 }
             }
+
+            World.Current.SetBorderAsPlatform();
         }
 
         /// <summary>
@@ -115,7 +118,7 @@ namespace Assets.Scripts.General.UnityLayer
         }
 
         /// <summary>
-        /// Event called when all changes to a world are finished. (E.g. a selected area of tiles cleared/built are finished)
+        /// Callback function called when all changes to a world are finished. (E.g. a selected area of tiles cleared/built are finished)
         /// </summary>
         public void OnWorldChangeFinish()
         {
