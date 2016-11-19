@@ -16,10 +16,17 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         private List<string> fileDirectories = new List<string>();
 
-        public void Awake()
+        private List<GameObject> fileEntryObjects = new List<GameObject>();
+
+        public void OnEnable()
         {
             fileDirectories.Clear();
             AddLevelFilesToWindow();
+        }
+
+        public void OnDisable()
+        {
+            ClearEntryObjects();
         }
 
         private void AddLevelFilesToWindow()
@@ -27,18 +34,30 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             var saveFolder = Path.Combine(Application.persistentDataPath, "Save_Levels");
             fileDirectories.AddRange(Directory.GetFiles(saveFolder));
 
-            for(var i = 0; i < fileDirectories.Count; i++)
+            foreach (var file in fileDirectories)
             {
                 var fileEntry = Instantiate(fileEntryPrefab);
+                fileEntryObjects.Add(fileEntry);
                 fileEntry.transform.SetParent(fileListObject.transform, false);
-                fileEntry.GetComponentInChildren<Text>().text = Path.GetFileName(fileDirectories[i]);
-                fileEntry.GetComponent<FileButtonController>().LoadFile = fileDirectories[i];
+                fileEntry.GetComponentInChildren<Text>().text = Path.GetFileName(file);
+                fileEntry.GetComponent<FileButtonController>().LoadFile = file;
             }
         }
 
         public void OnCancelButtonPress()
         {
            gameObject.SetActive(false); 
+        }
+
+        /// <summary>
+        /// Destroy all file entry gameobjects that were instantiated.
+        /// </summary>
+        private void ClearEntryObjects()
+        {
+            for(var i = fileEntryObjects.Count - 1; i >= 0; i--)
+            {
+                Destroy(fileEntryObjects[i]);
+            }
         }
     }
 }

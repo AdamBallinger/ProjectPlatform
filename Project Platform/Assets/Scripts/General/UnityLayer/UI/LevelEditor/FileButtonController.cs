@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System.IO;
+using UnityEngine;
 
 namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 {
@@ -11,7 +11,14 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public void OnClick()
         {
             FindObjectOfType<LevelEditorUIController>().levelName.text = World.Current.Load(LoadFile);
+            GameObject.FindGameObjectWithTag("WorldController").GetComponent<WorldController>().OnWorldChangeFinish();
             FindObjectOfType<LoadLevelUIController>().gameObject.SetActive(false);          
+        }
+
+        public void OnDeleteClick()
+        {
+            File.Delete(LoadFile);
+            Destroy(gameObject);
         }
 
     }

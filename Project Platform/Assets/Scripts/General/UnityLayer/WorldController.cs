@@ -131,8 +131,6 @@ namespace Assets.Scripts.General.UnityLayer
                         continue;
                     }
 
-                    
-
                     var tileLeft = World.Current.GetTileAt(x - 1, y);
                     var tileRight = World.Current.GetTileAt(x + 1, y);
                     var tileUp = World.Current.GetTileAt(x, y + 1);

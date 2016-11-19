@@ -61,6 +61,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             if(Pathfinder.Current != null)
                 Pathfinder.Current.Clear();
             platformsText.text = "Platforms: 0";
+            levelName.text = string.Empty;
         }
 
         public void OnExitButtonPress()
@@ -79,6 +80,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             if (Pathfinder.Current == null)
                 return;
 
+            // Draw blue squares at the position of each node in the pathfinding graph.
             Gizmos.color = Color.blue;
             for (var x = 0; x < World.Current.Width; x++)
             {
