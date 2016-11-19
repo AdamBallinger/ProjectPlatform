@@ -26,6 +26,8 @@ namespace Assets.Scripts.General
             get { return GameObject.FindGameObjectWithTag("PlayerSpawn").transform.position; }
         }
 
+        public float MaxBodyVelocity { get; set; }
+
         public Action OnWorldModifyFinishCallback;
 
         /// <summary>

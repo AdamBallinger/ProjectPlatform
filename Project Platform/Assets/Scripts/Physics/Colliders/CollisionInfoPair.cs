@@ -46,19 +46,19 @@ namespace Assets.Scripts.Physics.Colliders
             var typeA = ColliderA.GetType();
             var typeB = ColliderB.GetType();
 
-            if(typeA == typeof(ABBoxCollider) && typeB == typeof(ABBoxCollider))
+            if (typeA == typeof(ABBoxCollider) && typeB == typeof(ABBoxCollider))
             {
                 AABB_AABB((ABBoxCollider)ColliderA, (ABBoxCollider)ColliderB);
             }
-            else if(typeA == typeof(ABCircleCollider) && typeB == typeof(ABCircleCollider))
+            else if (typeA == typeof(ABCircleCollider) && typeB == typeof(ABCircleCollider))
             {
                 Circle_Circle((ABCircleCollider)ColliderA, (ABCircleCollider)ColliderB);
             }
-            else if(typeA == typeof(ABCircleCollider) && typeB == typeof(ABBoxCollider))
+            else if (typeA == typeof(ABCircleCollider) && typeB == typeof(ABBoxCollider))
             {
                 Circle_AABB((ABCircleCollider)ColliderA, (ABBoxCollider)ColliderB);
             }
-            else if(typeA == typeof(ABBoxCollider) && typeB == typeof(ABCircleCollider))
+            else if (typeA == typeof(ABBoxCollider) && typeB == typeof(ABCircleCollider))
             {
                 AABB_Circle((ABBoxCollider)ColliderA, (ABCircleCollider)ColliderB);
             }
@@ -70,7 +70,7 @@ namespace Assets.Scripts.Physics.Colliders
         public void ApplyImpulse()
         {
             // If both bodies have infinite mass (0) then just clear their velocity and break out.
-            if(InvMassSum == 0.0f)
+            if (InvMassSum == 0.0f)
             {
                 CorrectInfiniteMass();
                 return;
@@ -85,7 +85,8 @@ namespace Assets.Scripts.Physics.Colliders
                 return;
             }
 
-            var e = 0.0f; // Restitution  0.0f - Inelastic  1.0f - full elastic TODO: Implement physics material fetch
+            // Restitution  0.0f - Inelastic  1.0f - full elastic
+            var e = 1.0f * ColliderA.RigidBody.Material.Restitution + ColliderB.RigidBody.Material.Restitution;
             var j = -(1.0f + e) * velocityAlongNormal; // Impulse magnitude
             j /= InvMassSum;
 
@@ -94,7 +95,7 @@ namespace Assets.Scripts.Physics.Colliders
             ColliderA.RigidBody.AddImpulse(-impulse);
             ColliderB.RigidBody.AddImpulse(impulse);
 
-            //// Apply friction impulse TODO: Improve this
+            //// Apply friction impulse TODO: Fix this
             //relativeVelocity = ColliderB.RigidBody.LinearVelocity - ColliderA.RigidBody.LinearVelocity;
             //var tangent = relativeVelocity - Vector2.Dot(relativeVelocity, Normal) * Normal;
             //tangent.Normalize();
@@ -117,7 +118,7 @@ namespace Assets.Scripts.Physics.Colliders
                 return;
 
             var pentrationAllowance = 0.001f;
-            var penetrationCorrection = 0.4f; // % correction
+            var penetrationCorrection = 0.8f; // % correction
 
             var correctionVector = Mathf.Max(Penetration - pentrationAllowance, 0.0f) / InvMassSum * Normal * penetrationCorrection;
             ColliderA.RigidBody.Position -= correctionVector * ColliderA.RigidBody.InvMass;
@@ -143,7 +144,7 @@ namespace Assets.Scripts.Physics.Colliders
             _aabb1.ComputeAABB();
             _aabb2.ComputeAABB();
 
-            if( _aabb1.Min.y > _aabb2.Max.y &&
+            if (_aabb1.Min.y > _aabb2.Max.y &&
                 _aabb1.Max.y < _aabb2.Min.y &&
                 _aabb1.Min.x < _aabb2.Max.x &&
                 _aabb1.Max.x > _aabb2.Min.x)
@@ -158,13 +159,13 @@ namespace Assets.Scripts.Physics.Colliders
 
                 var xPenetration = _aabb1.Size.x / 2 + _aabb2.Size.x / 2 - Mathf.Abs(difference.x);
 
-                if(xPenetration > 0)
+                if (xPenetration > 0)
                 {
                     var yPenetration = _aabb1.Size.y / 2 + _aabb2.Size.y / 2 - Mathf.Abs(difference.y);
 
-                    if(yPenetration > 0)
+                    if (yPenetration > 0)
                     {
-                        if(xPenetration < yPenetration)
+                        if (xPenetration < yPenetration)
                         {
                             Normal = difference.x < 0 ? Vector2.right : Vector2.left;
                             Penetration = xPenetration;
@@ -181,7 +182,7 @@ namespace Assets.Scripts.Physics.Colliders
             {
                 ColliderA.RigidBody.IsColliding = false;
                 ColliderB.RigidBody.IsColliding = false;
-            }         
+            }
         }
 
         /// <summary>
@@ -195,7 +196,7 @@ namespace Assets.Scripts.Physics.Colliders
             var distSq = normal.sqrMagnitude;
             var radius = _circle1.Radius + _circle2.Radius;
 
-            if(distSq >= radius * radius)
+            if (distSq >= radius * radius)
             {
                 // No contact between 2 circles.
                 return;
@@ -223,7 +224,7 @@ namespace Assets.Scripts.Physics.Colliders
 
             var normal = _circle.Position - closesPointToRect;
 
-            if(normal.sqrMagnitude < _circle.Radius * _circle.Radius)
+            if (normal.sqrMagnitude < _circle.Radius * _circle.Radius)
             {
                 // Collision between the circle and aabb.
                 ContactDetected = true;

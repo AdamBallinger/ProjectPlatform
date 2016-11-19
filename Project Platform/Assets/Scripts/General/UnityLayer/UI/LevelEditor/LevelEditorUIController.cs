@@ -58,9 +58,11 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public void OnClearLevelButtonPress()
         {
             World.Current.Clear();
+            World.Current.SetBorderAsPlatform();
+
             if(Pathfinder.Current != null)
                 Pathfinder.Current.Clear();
-            platformsText.text = "Platforms: 0";
+
             levelName.text = string.Empty;
         }
 

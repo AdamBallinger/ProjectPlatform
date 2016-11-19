@@ -94,6 +94,7 @@ namespace Assets.Scripts.Physics
         {
             GameObject = _gameObject;
             Constraints = Constraints.NONE;
+            Material = new PhysicsMaterial();
             Mass = 100.0f;
             Inertia = 10.0f;
             LinearVelocity = Vector2.zero;

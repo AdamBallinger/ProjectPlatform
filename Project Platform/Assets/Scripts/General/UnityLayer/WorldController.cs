@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.AI.AStar;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.General.UnityLayer
@@ -17,6 +18,9 @@ namespace Assets.Scripts.General.UnityLayer
         public Vector2 worldGravity = new Vector2(0f, -9.807f);
         public float timeStep = 0.02f;
 
+        // Max velocity a body can have on X and Y axis.
+        public float maxBodyVelocity = 100.0f;
+
         // Store private array of tile gameobjects so the unity gameobject for each tile can be modified if needed.
         private GameObject[,] tileGameObjects;
 
@@ -27,6 +31,7 @@ namespace Assets.Scripts.General.UnityLayer
             World.Create(worldWidth, worldHeight);
             World.Current.InitPhysicsWorld(worldGravity);
             World.Current.RegisterWorldModifyFinishCallback(OnWorldChangeFinish);
+            World.Current.MaxBodyVelocity = maxBodyVelocity;
 
             tileGameObjects = new GameObject[worldWidth, worldHeight];
 
@@ -169,6 +174,15 @@ namespace Assets.Scripts.General.UnityLayer
             if(World.Current != null && World.Current.PhysicsWorld != null)
             {
                 World.Current.PhysicsWorld.Step();
+            }
+        }
+
+        public void OnDestroy()
+        {
+            // Clear any nodes generated.
+            if(Pathfinder.Current != null)
+            {
+                Pathfinder.Current.Clear();
             }
         }
 

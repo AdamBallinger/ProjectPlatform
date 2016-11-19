@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
+using Assets.Scripts.General;
 using Assets.Scripts.General.UnityLayer;
 using Assets.Scripts.Physics.Colliders;
 using UnityEngine;
@@ -127,6 +128,18 @@ namespace Assets.Scripts.Physics
 
                 //body.AngularVelocity = angular_acceleration / Time.fixedDeltaTime;
 
+                if (body.LinearVelocity.x > World.Current.MaxBodyVelocity)
+                    body.LinearVelocity = new Vector2(World.Current.MaxBodyVelocity, body.LinearVelocity.y);
+
+                if (body.LinearVelocity.x < -World.Current.MaxBodyVelocity)
+                    body.LinearVelocity = new Vector2(-World.Current.MaxBodyVelocity, body.LinearVelocity.y);
+
+                if (body.LinearVelocity.y > World.Current.MaxBodyVelocity)
+                    body.LinearVelocity = new Vector2(body.LinearVelocity.x, World.Current.MaxBodyVelocity);
+
+                if (body.LinearVelocity.y < -World.Current.MaxBodyVelocity)
+                    body.LinearVelocity = new Vector2(body.LinearVelocity.x, -World.Current.MaxBodyVelocity);
+
                 body.Position += body.LinearVelocity * Time.fixedDeltaTime;
 
                 // Clear forces
@@ -137,18 +150,18 @@ namespace Assets.Scripts.Physics
             //// Generate collision pairs
             GeneratePairs();
 
-            //// Resolve any collisions.
-            //foreach (var contact in Contacts)
-            //{
-            //    // Resolve collisions
-            //    contact.ApplyImpulse();
-            //}
+            // Resolve any collisions.
+            foreach (var contact in Contacts)
+            {
+                // Resolve collisions
+                contact.ApplyImpulse();
+            }
 
-            //// Perform position correction.
-            //foreach (var contact in Contacts)
-            //{
-            //    contact.CorrectPosition();
-            //}
+            // Perform position correction.
+            foreach (var contact in Contacts)
+            {
+                contact.CorrectPosition();
+            }
         }
 
         // Broadphase
