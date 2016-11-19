@@ -41,6 +41,10 @@ namespace Assets.Scripts.General
 
         public int Y { get; protected set; }
 
+        /// <summary>
+        /// If a flag for a set direction is set,
+        /// then the tile in that direction is empty.
+        /// </summary>
         public AdjacentFlag Adjacent { get; set; }
 
         private TileType type = TileType.Empty;
@@ -110,6 +114,30 @@ namespace Assets.Scripts.General
         public bool HasAdjacentFlags(AdjacentFlag _flag)
         {
             return (Adjacent & _flag) == _flag;
+        }
+
+        /// <summary>
+        /// Add a given flag to the tiles adjacent flags.
+        /// </summary>
+        /// <param name="_flag"></param>
+        private void AddAdjacentFlag(AdjacentFlag _flag)
+        {
+            Adjacent &= ~AdjacentFlag.None;
+            Adjacent |= _flag;
+        }
+
+        /// <summary>
+        /// Checks if a given tile in the given direction flag is empty,
+        /// and adds the direction flag to the adjacency flag if it is.
+        /// </summary>
+        /// <param name="_tile"></param>
+        /// <param name="_direction"></param>
+        public void CheckAdjacent(Tile _tile, AdjacentFlag _direction)
+        {
+            if(_tile == null || _tile.Type == TileType.Empty)
+            {
+                AddAdjacentFlag(_direction);
+            }
         }
     }
 }

@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\General\UnityLayer\BoxColliderComponent.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\CircleColliderComponent.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\MouseController.cs" />
+    <Compile Include="Assets\Scripts\General\UnityLayer\PhysicsMaterialComponent.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\PlayerController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\RigidBodyComponent.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\FileButtonController.cs" />

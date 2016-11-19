@@ -179,31 +179,10 @@ namespace Assets.Scripts.General.UnityLayer
             _tile.Adjacent = AdjacentFlag.None;
 
             // Compute the adjacent flags.
-            // Check if the tile is null so tiles on the edge of the world get the correct adjacent flags set.
-            if (_tileRight == null || _tileRight.Type == TileType.Empty)
-            {
-                _tile.Adjacent &= ~AdjacentFlag.None;
-                _tile.Adjacent |= AdjacentFlag.Right;
-            }
-
-            if(_tileLeft == null || _tileLeft.Type == TileType.Empty)
-            {
-                _tile.Adjacent &= ~AdjacentFlag.None;
-                _tile.Adjacent |= AdjacentFlag.Left;
-            }
-
-            if(_tileUp == null || _tileUp.Type == TileType.Empty)
-            {
-                _tile.Adjacent &= ~AdjacentFlag.None;
-                _tile.Adjacent |= AdjacentFlag.Up;
-            }
-
-            if(_tileDown == null || _tileDown.Type == TileType.Empty)
-            {
-                _tile.Adjacent &= ~AdjacentFlag.None;
-                _tile.Adjacent |= AdjacentFlag.Down;
-            }
-
+            _tile.CheckAdjacent(_tileLeft, AdjacentFlag.Left);
+            _tile.CheckAdjacent(_tileRight, AdjacentFlag.Right);
+            _tile.CheckAdjacent(_tileUp, AdjacentFlag.Up);
+            _tile.CheckAdjacent(_tileDown, AdjacentFlag.Down);
 
             var spriteIndex = 0;
 
