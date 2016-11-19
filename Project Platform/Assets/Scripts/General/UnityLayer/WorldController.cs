@@ -141,15 +141,15 @@ namespace Assets.Scripts.General.UnityLayer
                     if (tileUp != null && tileUp.Type != TileType.Platform) continue;
                     if (tileDown != null && tileDown.Type != TileType.Platform) continue;
 
-                    //Tile is surrounded by platforms so remove its rigid body and collider components.
-                    Destroy(tileGameObjects[x, y].GetComponent<BoxColliderComponent>());
+                    //Tile is surrounded by platforms so remove its rigid body and collider components to save performance.
+                    Destroy(tileGameObjects[x, y].GetComponent<BoxColliderComponent>()); // Collider component first as it required the rigidbody component.
                     Destroy(tileGameObjects[x, y].GetComponent<RigidBodyComponent>());
                 }
             }
         }
 
         /// <summary>
-        /// Use Unity fixed update for stepping physics world. By default Unity calls FixedUpdate 50 times per second (Time.fixedDeltaTime)
+        /// Use Unity fixed update for stepping physics world. Timestep is determined by Time.fixedDeltaTime. (0.02 by default)
         /// </summary>
         public void FixedUpdate()
         {

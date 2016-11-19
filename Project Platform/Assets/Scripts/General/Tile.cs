@@ -1,7 +1,4 @@
-﻿
-using System;
-using Assets.Scripts.Physics.Colliders;
-using UnityEngine;
+﻿using System;
 
 namespace Assets.Scripts.General
 {
