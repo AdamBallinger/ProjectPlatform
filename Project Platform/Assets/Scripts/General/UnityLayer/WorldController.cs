@@ -7,23 +7,7 @@ namespace Assets.Scripts.General.UnityLayer
     {
 
         // Store difference types of sprites based on platforms surrounding.
-        public Sprite platformSingle;
-        public Sprite platformCenter;
-        public Sprite platformTopLeft;
-        public Sprite platformTop;
-        public Sprite platformTopRight;
-        public Sprite platformRight;
-        public Sprite platformBottomRight;
-        public Sprite platformBottom;
-        public Sprite platformBottomLeft;
-        public Sprite platformLeft;
-
-        public Sprite platformTopLeftBottom;
-        public Sprite platformTopRightBottom;
-        public Sprite platformLeftTopRight;
-        public Sprite platformTopBottom;
-        public Sprite platformLeftRight;
-        public Sprite platformLeftBottomRight;
+        public Sprite[] platformSprites;
 
         public Sprite gridSprite;
 
@@ -102,7 +86,7 @@ namespace Assets.Scripts.General.UnityLayer
                     break;
 
                 case TileType.Platform:
-                    _tileGO.GetComponent<SpriteRenderer>().sprite = platformSingle;
+                    _tileGO.GetComponent<SpriteRenderer>().sprite = platformSprites[0];
 
                     // Give platforms a box collider and rigidbody.
                     if(_tileGO.GetComponent<RigidBodyComponent>() == null)
@@ -197,144 +181,57 @@ namespace Assets.Scripts.General.UnityLayer
 
             _tile.Adjacent = AdjacentFlag.None;
 
-            // TODO: Read http://www.angryfishstudios.com/2011/04/adventures-in-bitmasking/ 
-            // because this current code is fucking awful and makes me feel bad.
-            // To Jamie: I know you will see this code at some point before I change so Im so so so so sorry you have to read the code below.
-            // prepare yourself for a journey you wish you never went on. Have fun!
-
             // Compute the adjacent flags.
-            if (_tileRight != null && _tileRight.Type == TileType.Empty)
+            // Check if the tile is null so tiles on the edge of the world get the correct adjacent flags set.
+            if (_tileRight == null || _tileRight.Type == TileType.Empty)
             {
                 _tile.Adjacent &= ~AdjacentFlag.None;
                 _tile.Adjacent |= AdjacentFlag.Right;
             }
 
-            if(_tileLeft != null && _tileLeft.Type == TileType.Empty)
+            if(_tileLeft == null || _tileLeft.Type == TileType.Empty)
             {
                 _tile.Adjacent &= ~AdjacentFlag.None;
                 _tile.Adjacent |= AdjacentFlag.Left;
             }
 
-            if(_tileUp != null && _tileUp.Type == TileType.Empty)
+            if(_tileUp == null || _tileUp.Type == TileType.Empty)
             {
                 _tile.Adjacent &= ~AdjacentFlag.None;
                 _tile.Adjacent |= AdjacentFlag.Up;
             }
 
-            if(_tileDown != null && _tileDown.Type == TileType.Empty)
+            if(_tileDown == null || _tileDown.Type == TileType.Empty)
             {
                 _tile.Adjacent &= ~AdjacentFlag.None;
                 _tile.Adjacent |= AdjacentFlag.Down;
             }
 
-            if (_tileRight == null)
+
+            var spriteIndex = 0;
+
+            // Bitmasking method as found here: http://www.angryfishstudios.com/2011/04/adventures-in-bitmasking/ 
+            if (!_tile.HasAdjacentFlags(AdjacentFlag.Left))
             {
-                _tile.Adjacent &= ~AdjacentFlag.None;
-                _tile.Adjacent |= AdjacentFlag.Right;
+                spriteIndex += 8;
             }
 
-            if(_tileLeft == null)
+            if(!_tile.HasAdjacentFlags(AdjacentFlag.Right))
             {
-                _tile.Adjacent &= ~AdjacentFlag.None;
-                _tile.Adjacent |= AdjacentFlag.Left;
+                spriteIndex += 2;
             }
 
-            if(_tileUp == null)
+            if(!_tile.HasAdjacentFlags(AdjacentFlag.Up))
             {
-                _tile.Adjacent &= ~AdjacentFlag.None;
-                _tile.Adjacent |= AdjacentFlag.Up;
+                spriteIndex += 1;
             }
 
-            if(_tileDown == null)
+            if(!_tile.HasAdjacentFlags(AdjacentFlag.Down))
             {
-                _tile.Adjacent &= ~AdjacentFlag.None;
-                _tile.Adjacent |= AdjacentFlag.Down;
+                spriteIndex += 4;
             }
 
-            // Set sprite based on the computed flags.
-            if (_tile.HasAdjacentFlags(AdjacentFlag.None))
-            {
-                spriteRenderer.sprite = platformCenter;
-                return;
-            }
-
-            if (_tile.HasAdjacentFlags(AdjacentFlag.All))
-            {
-                spriteRenderer.sprite = platformSingle;
-                return;
-            }
-
-            if(_tile.HasAdjacentFlags(AdjacentFlag.Up))
-            {
-                spriteRenderer.sprite = platformTop;
-            }
-
-            if(_tile.HasAdjacentFlags(AdjacentFlag.Down))
-            {
-                spriteRenderer.sprite = platformBottom;
-            }
-
-            if(_tile.HasAdjacentFlags(AdjacentFlag.Left))
-            {
-                spriteRenderer.sprite = platformLeft;
-            }
-
-            if(_tile.HasAdjacentFlags(AdjacentFlag.Right))
-            {
-                spriteRenderer.sprite = platformRight;
-            }
-
-            if(_tile.HasAdjacentFlags(AdjacentFlag.UpLeft))
-            {
-                spriteRenderer.sprite = platformTopLeft;
-            }
-
-            if(_tile.HasAdjacentFlags(AdjacentFlag.UpRight))
-            {
-                spriteRenderer.sprite = platformTopRight;
-            }
-
-            if(_tile.HasAdjacentFlags(AdjacentFlag.LeftRight))
-            {
-                spriteRenderer.sprite = platformLeftRight;
-            }
-
-            if(_tile.HasAdjacentFlags(AdjacentFlag.UpDown))
-            {
-                spriteRenderer.sprite = platformTopBottom;
-            }
-
-            if(_tile.HasAdjacentFlags(AdjacentFlag.DownLeft))
-            {
-                spriteRenderer.sprite = platformBottomLeft;
-            }
-
-            if(_tile.HasAdjacentFlags(AdjacentFlag.DownRight))
-            {
-                spriteRenderer.sprite = platformBottomRight;
-            }
-
-            if(_tile.HasAdjacentFlags(AdjacentFlag.DownLeftRight))
-            {
-                spriteRenderer.sprite = platformLeftBottomRight;
-            }
-
-            if(_tile.HasAdjacentFlags(AdjacentFlag.UpLeftDown))
-            {
-                spriteRenderer.sprite = platformTopLeftBottom;
-            }
-
-            if(_tile.HasAdjacentFlags(AdjacentFlag.UpRightDown))
-            {
-                spriteRenderer.sprite = platformTopRightBottom;
-            }
-
-            if(_tile.HasAdjacentFlags(AdjacentFlag.UpLeftRight))
-            {
-                spriteRenderer.sprite = platformLeftTopRight;
-            }
-
-            //Debug.Log("Tile: " + spriteRenderer.gameObject.name + " Flags: " +_tile.Adjacent);
+            spriteRenderer.sprite = platformSprites[spriteIndex];
         }
     }
 }
