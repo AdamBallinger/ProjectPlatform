@@ -72,13 +72,6 @@ namespace Assets.Scripts.General.UnityLayer
                     // Clear sprite if empty.
                     _tileGO.GetComponent<SpriteRenderer>().sprite = null;
 
-                    // Remove rigidbody and collider from world.
-                    if(_tileGO.GetComponent<RigidBodyComponent>() != null)
-                    {
-                        Destroy(_tileGO.GetComponent<BoxColliderComponent>());
-                        Destroy(_tileGO.GetComponent<RigidBodyComponent>());
-                    }
-
                     if (_tileData.OldType == TileType.Platform)
                     {
                         World.Current.PlatformCount--;
@@ -104,7 +97,6 @@ namespace Assets.Scripts.General.UnityLayer
         /// </summary>
         public void OnWorldChangeFinish()
         {
-            Debug.Log("World changed callback called");
             // Cull every body/collider that isn't connected to an empty tile on at least 1 of its faces to save performance.
             for (var x = 0; x < worldWidth; x++)
             {
@@ -113,7 +105,14 @@ namespace Assets.Scripts.General.UnityLayer
                     var tile = World.Current.GetTileAt(x, y);
 
                     // If the tile at current x and y is not a platform, then skip to the next tile.
-                    if(tile.Type != TileType.Platform) continue;
+                    if(tile.Type != TileType.Platform)
+                    {
+                        if(tile.Type == TileType.Empty)
+                        {
+                            RemoveTileCollider(tileGameObjects[x, y]);
+                        }
+                        continue;
+                    }
 
                     var tileLeft = World.Current.GetTileAt(x - 1, y);
                     var tileRight = World.Current.GetTileAt(x + 1, y);
@@ -136,8 +135,7 @@ namespace Assets.Scripts.General.UnityLayer
                     //if (tileDown != null && tileDown.Type != TileType.Platform) continue;
 
                     //Tile is surrounded by platforms so remove its rigid body and collider components to save performance.
-                    Destroy(tileGameObjects[x, y].GetComponent<BoxColliderComponent>()); // Collider component first as it required the rigidbody component.
-                    Destroy(tileGameObjects[x, y].GetComponent<RigidBodyComponent>());
+                    RemoveTileCollider(tileGameObjects[x, y]);
                 }
             }
         }
@@ -155,6 +153,12 @@ namespace Assets.Scripts.General.UnityLayer
                 var coll = _tileGO.AddComponent<BoxColliderComponent>();
                 coll.Create(Vector2.one);
             }
+        }
+
+        private void RemoveTileCollider(GameObject _tileGO)
+        {
+            DestroyImmediate(_tileGO.GetComponent<BoxColliderComponent>()); 
+            DestroyImmediate(_tileGO.GetComponent<RigidBodyComponent>());
         }
 
         /// <summary>
