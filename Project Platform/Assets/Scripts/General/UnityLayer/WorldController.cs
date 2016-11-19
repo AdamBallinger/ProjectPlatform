@@ -94,24 +94,6 @@ namespace Assets.Scripts.General.UnityLayer
                 case TileType.Platform:
                     _tileGO.GetComponent<SpriteRenderer>().sprite = platformSprites[0];
 
-                    // Give platforms a box collider and rigidbody.
-                    if(_tileGO.GetComponent<RigidBodyComponent>() == null)
-                    {
-                        _tileGO.AddComponent<RigidBodyComponent>();
-                    }
-
-                    var rb = _tileGO.GetComponent<RigidBodyComponent>();
-                    rb.SetMass(0.0f);
-                    rb.SetIgnoreGravity(true);
-                    rb.Init();
-
-                    if(_tileGO.GetComponent<BoxColliderComponent>() == null)
-                    {
-                        // Adds box collider to the tile with a default size of 1,1
-                        var coll = _tileGO.AddComponent<BoxColliderComponent>();
-                        coll.Create(Vector2.one);
-                    }
-
                     World.Current.PlatformCount++;
                     break;
             }
@@ -122,6 +104,7 @@ namespace Assets.Scripts.General.UnityLayer
         /// </summary>
         public void OnWorldChangeFinish()
         {
+            Debug.Log("World changed callback called");
             // Cull every body/collider that isn't connected to an empty tile on at least 1 of its faces to save performance.
             for (var x = 0; x < worldWidth; x++)
             {
@@ -140,15 +123,37 @@ namespace Assets.Scripts.General.UnityLayer
                     // Set sprite based on surrounding tile types.
                     SetTileSpriteFromAdjacent(tile, tileRight, tileLeft, tileUp, tileDown);
 
-                    if (tileLeft != null && tileLeft.Type != TileType.Platform) continue;
-                    if (tileRight != null && tileRight.Type != TileType.Platform) continue;
-                    if (tileUp != null && tileUp.Type != TileType.Platform) continue;
-                    if (tileDown != null && tileDown.Type != TileType.Platform) continue;
+                    if ((tileLeft != null && tileLeft.Type != TileType.Platform)
+                        || (tileRight != null && tileRight.Type != TileType.Platform)
+                        || (tileUp != null && tileUp.Type != TileType.Platform)
+                        || (tileDown != null && tileDown.Type != TileType.Platform))
+                    {
+                        AddTileCollider(tileGameObjects[x, y]);
+                        continue;
+                    }
+                    //if (tileRight != null && tileRight.Type != TileType.Platform) continue;
+                    //if (tileUp != null && tileUp.Type != TileType.Platform) continue;
+                    //if (tileDown != null && tileDown.Type != TileType.Platform) continue;
 
                     //Tile is surrounded by platforms so remove its rigid body and collider components to save performance.
                     Destroy(tileGameObjects[x, y].GetComponent<BoxColliderComponent>()); // Collider component first as it required the rigidbody component.
                     Destroy(tileGameObjects[x, y].GetComponent<RigidBodyComponent>());
                 }
+            }
+        }
+
+        private void AddTileCollider(GameObject _tileGO)
+        {
+            if(_tileGO.GetComponent<RigidBodyComponent>() == null)
+            {
+                var rbc = _tileGO.AddComponent<RigidBodyComponent>();
+                rbc.SetMass(0.0f);
+                rbc.SetIgnoreGravity(true);
+                rbc.Init();
+
+                // Adds box collider to the tile with a default size of 1,1
+                var coll = _tileGO.AddComponent<BoxColliderComponent>();
+                coll.Create(Vector2.one);
             }
         }
 
