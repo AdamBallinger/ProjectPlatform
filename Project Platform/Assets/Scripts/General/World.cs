@@ -75,7 +75,7 @@ namespace Assets.Scripts.General
         /// <param name="_callback"></param>
         public void RegisterWorldModifyFinishCallback(Action _callback)
         {
-            OnWorldModifyFinishCallback += _callback;
+            Current.OnWorldModifyFinishCallback += _callback;
         }
 
         /// <summary>
@@ -89,13 +89,12 @@ namespace Assets.Scripts.General
                 {
                     if(x == 0 || y == 0 || x == Current.Width - 1 || y == Current.Height - 1)
                     {
-                        Tiles[x, y].Type = TileType.Platform;
+                        Current.Tiles[x, y].Type = TileType.Platform;
                     }
                 }
             }
 
-            if(Current.OnWorldModifyFinishCallback != null)
-                Current.OnWorldModifyFinishCallback();
+            Current.OnWorldModifyFinishCallback();
         }
 
         /// <summary>
@@ -120,7 +119,7 @@ namespace Assets.Scripts.General
                 return null;
             }
 
-            return Tiles[_x, _y];
+            return Current.Tiles[_x, _y];
         }
 
         /// <summary>
@@ -171,9 +170,8 @@ namespace Assets.Scripts.General
                 }
             }
 
-            PlatformCount = 0;
-
-            SetBorderAsPlatform();
+            Current.OnWorldModifyFinishCallback();
+            Current.PlatformCount = 0;
         }
 
         /// <summary>
