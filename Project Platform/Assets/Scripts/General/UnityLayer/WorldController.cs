@@ -197,8 +197,13 @@ namespace Assets.Scripts.General.UnityLayer
 
             _tile.Adjacent = AdjacentFlag.None;
 
+            // TODO: Read http://www.angryfishstudios.com/2011/04/adventures-in-bitmasking/ 
+            // because this current code is fucking awful and makes me feel bad.
+            // To Jamie: I know you will see this code at some point before I change so Im so so so so sorry you have to read the code below.
+            // prepare yourself for a journey you wish you never went on. Have fun!
+
             // Compute the adjacent flags.
-            if(_tileRight != null && _tileRight.Type == TileType.Empty)
+            if (_tileRight != null && _tileRight.Type == TileType.Empty)
             {
                 _tile.Adjacent &= ~AdjacentFlag.None;
                 _tile.Adjacent |= AdjacentFlag.Right;
@@ -225,25 +230,25 @@ namespace Assets.Scripts.General.UnityLayer
             if (_tileRight == null)
             {
                 _tile.Adjacent &= ~AdjacentFlag.None;
-                _tile.Adjacent ^= AdjacentFlag.Right;
+                _tile.Adjacent |= AdjacentFlag.Right;
             }
 
             if(_tileLeft == null)
             {
                 _tile.Adjacent &= ~AdjacentFlag.None;
-                _tile.Adjacent ^= AdjacentFlag.Left;
+                _tile.Adjacent |= AdjacentFlag.Left;
             }
 
             if(_tileUp == null)
             {
                 _tile.Adjacent &= ~AdjacentFlag.None;
-                _tile.Adjacent ^= AdjacentFlag.Up;
+                _tile.Adjacent |= AdjacentFlag.Up;
             }
 
             if(_tileDown == null)
             {
                 _tile.Adjacent &= ~AdjacentFlag.None;
-                _tile.Adjacent ^= AdjacentFlag.Down;
+                _tile.Adjacent |= AdjacentFlag.Down;
             }
 
             // Set sprite based on the computed flags.
