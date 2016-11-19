@@ -96,7 +96,6 @@ namespace Assets.Scripts.General.UnityLayer
                 // If the mode is to change player spawn, then position the spawn at the start of the mouse drag (if dragged) and braek out the loop.
                 if (SelectMode == SelectionMode.PlayerSpawnSet)
                 {
-                    // endY for the y position in unity is oposite
                     if(startX >= 0 || startX < World.Current.Width || startY >= 0 || startY < World.Current.Height)
                     {
                         if(World.Current.GetTileAt(startX, startY) != null && World.Current.GetTileAt(startX, startY).Type != TileType.Platform)
