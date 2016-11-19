@@ -1,13 +1,30 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using Assets.Scripts.General.UnityLayer.UI.LevelEditor;
 
 namespace Assets.Scripts.General.UnityLayer
 {
     public class WorldController : MonoBehaviour
     {
 
-        public Sprite platformSprite;
+        // Store difference types of sprites based on platforms surrounding.
+        public Sprite platformSingle;
+        public Sprite platformCenter;
+        public Sprite platformTopLeft;
+        public Sprite platformTop;
+        public Sprite platformTopRight;
+        public Sprite platformRight;
+        public Sprite platformBottomRight;
+        public Sprite platformBottom;
+        public Sprite platformBottomLeft;
+        public Sprite platformLeft;
+
+        public Sprite platformTopLeftBottom;
+        public Sprite platformTopRightBottom;
+        public Sprite platformLeftTopRight;
+        public Sprite platformTopBottom;
+        public Sprite platformLeftRight;
+        public Sprite platformLeftBottomRight;
+
         public Sprite gridSprite;
 
         public int worldWidth = 128;
@@ -85,7 +102,7 @@ namespace Assets.Scripts.General.UnityLayer
                     break;
 
                 case TileType.Platform:
-                    _tileGO.GetComponent<SpriteRenderer>().sprite = platformSprite;
+                    _tileGO.GetComponent<SpriteRenderer>().sprite = platformSingle;
 
                     // Give platforms a box collider and rigidbody.
                     if(_tileGO.GetComponent<RigidBodyComponent>() == null)
@@ -125,9 +142,9 @@ namespace Assets.Scripts.General.UnityLayer
                     // If the tile at current x and y is not a platform, then skip to the next tile.
                     if(tile.Type != TileType.Platform)
                     {
-                        // skip next tile on the Y axis since we know that the next tile above is guaranteed to not be connected to a platform tile since the
-                        // current tile at the current x and y is not a tile itself.
-                        y++;
+                        //// skip next tile on the Y axis since we know that the next tile above is guaranteed to not be connected to a platform tile since the
+                        //// current tile at the current x and y is not a tile itself.
+                        //y++;
                         continue;
                     }
 
@@ -135,6 +152,9 @@ namespace Assets.Scripts.General.UnityLayer
                     var tileRight = World.Current.GetTileAt(x + 1, y);
                     var tileUp = World.Current.GetTileAt(x, y + 1);
                     var tileDown = World.Current.GetTileAt(x, y - 1);
+
+                    // Set sprite based on surrounding tile types.
+                    SetTileSpriteFromAdjacent(tile, tileRight, tileLeft, tileUp, tileDown);
 
                     if (tileLeft != null && tileLeft.Type != TileType.Platform) continue;
                     if (tileRight != null && tileRight.Type != TileType.Platform) continue;
@@ -157,6 +177,159 @@ namespace Assets.Scripts.General.UnityLayer
             {
                 World.Current.PhysicsWorld.Step();
             }
+        }
+
+        /// <summary>
+        /// Sets the sprite for given tile based on its surrounding tiles.
+        /// </summary>
+        /// <param name="_tile">The tile being set.</param>
+        /// <param name="_tileRight">The tile to the right.</param>
+        /// <param name="_tileLeft">The tile to the left.</param>
+        /// <param name="_tileUp">The tile above.</param>
+        /// <param name="_tileDown">The tile below.</param>
+        private void SetTileSpriteFromAdjacent(Tile _tile, Tile _tileRight, Tile _tileLeft, Tile _tileUp, Tile _tileDown)
+        {
+            var spriteRenderer = tileGameObjects[_tile.X, _tile.Y].GetComponent<SpriteRenderer>();
+
+            // If for some reason the sprire renderer is null then break out.
+            if (spriteRenderer == null)
+                return;
+
+            _tile.Adjacent = AdjacentFlag.None;
+
+            // Compute the adjacent flags.
+            if(_tileRight != null && _tileRight.Type == TileType.Empty)
+            {
+                _tile.Adjacent &= ~AdjacentFlag.None;
+                _tile.Adjacent |= AdjacentFlag.Right;
+            }
+
+            if(_tileLeft != null && _tileLeft.Type == TileType.Empty)
+            {
+                _tile.Adjacent &= ~AdjacentFlag.None;
+                _tile.Adjacent |= AdjacentFlag.Left;
+            }
+
+            if(_tileUp != null && _tileUp.Type == TileType.Empty)
+            {
+                _tile.Adjacent &= ~AdjacentFlag.None;
+                _tile.Adjacent |= AdjacentFlag.Up;
+            }
+
+            if(_tileDown != null && _tileDown.Type == TileType.Empty)
+            {
+                _tile.Adjacent &= ~AdjacentFlag.None;
+                _tile.Adjacent |= AdjacentFlag.Down;
+            }
+
+            if (_tileRight == null)
+            {
+                _tile.Adjacent &= ~AdjacentFlag.None;
+                _tile.Adjacent ^= AdjacentFlag.Right;
+            }
+
+            if(_tileLeft == null)
+            {
+                _tile.Adjacent &= ~AdjacentFlag.None;
+                _tile.Adjacent ^= AdjacentFlag.Left;
+            }
+
+            if(_tileUp == null)
+            {
+                _tile.Adjacent &= ~AdjacentFlag.None;
+                _tile.Adjacent ^= AdjacentFlag.Up;
+            }
+
+            if(_tileDown == null)
+            {
+                _tile.Adjacent &= ~AdjacentFlag.None;
+                _tile.Adjacent ^= AdjacentFlag.Down;
+            }
+
+            // Set sprite based on the computed flags.
+            if (_tile.HasAdjacentFlags(AdjacentFlag.None))
+            {
+                spriteRenderer.sprite = platformCenter;
+                return;
+            }
+
+            if (_tile.HasAdjacentFlags(AdjacentFlag.All))
+            {
+                spriteRenderer.sprite = platformSingle;
+                return;
+            }
+
+            if(_tile.HasAdjacentFlags(AdjacentFlag.Up))
+            {
+                spriteRenderer.sprite = platformTop;
+            }
+
+            if(_tile.HasAdjacentFlags(AdjacentFlag.Down))
+            {
+                spriteRenderer.sprite = platformBottom;
+            }
+
+            if(_tile.HasAdjacentFlags(AdjacentFlag.Left))
+            {
+                spriteRenderer.sprite = platformLeft;
+            }
+
+            if(_tile.HasAdjacentFlags(AdjacentFlag.Right))
+            {
+                spriteRenderer.sprite = platformRight;
+            }
+
+            if(_tile.HasAdjacentFlags(AdjacentFlag.UpLeft))
+            {
+                spriteRenderer.sprite = platformTopLeft;
+            }
+
+            if(_tile.HasAdjacentFlags(AdjacentFlag.UpRight))
+            {
+                spriteRenderer.sprite = platformTopRight;
+            }
+
+            if(_tile.HasAdjacentFlags(AdjacentFlag.LeftRight))
+            {
+                spriteRenderer.sprite = platformLeftRight;
+            }
+
+            if(_tile.HasAdjacentFlags(AdjacentFlag.UpDown))
+            {
+                spriteRenderer.sprite = platformTopBottom;
+            }
+
+            if(_tile.HasAdjacentFlags(AdjacentFlag.DownLeft))
+            {
+                spriteRenderer.sprite = platformBottomLeft;
+            }
+
+            if(_tile.HasAdjacentFlags(AdjacentFlag.DownRight))
+            {
+                spriteRenderer.sprite = platformBottomRight;
+            }
+
+            if(_tile.HasAdjacentFlags(AdjacentFlag.DownLeftRight))
+            {
+                spriteRenderer.sprite = platformLeftBottomRight;
+            }
+
+            if(_tile.HasAdjacentFlags(AdjacentFlag.UpLeftDown))
+            {
+                spriteRenderer.sprite = platformTopLeftBottom;
+            }
+
+            if(_tile.HasAdjacentFlags(AdjacentFlag.UpRightDown))
+            {
+                spriteRenderer.sprite = platformTopRightBottom;
+            }
+
+            if(_tile.HasAdjacentFlags(AdjacentFlag.UpLeftRight))
+            {
+                spriteRenderer.sprite = platformLeftTopRight;
+            }
+
+            //Debug.Log("Tile: " + spriteRenderer.gameObject.name + " Flags: " +_tile.Adjacent);
         }
     }
 }
