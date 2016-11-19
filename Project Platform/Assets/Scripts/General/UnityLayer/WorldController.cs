@@ -15,12 +15,15 @@ namespace Assets.Scripts.General.UnityLayer
         public int worldHeight = 128;
 
         public Vector2 worldGravity = new Vector2(0f, -9.807f);
+        public float timeStep = 0.02f;
 
         // Store private array of tile gameobjects so the unity gameobject for each tile can be modified if needed.
         private GameObject[,] tileGameObjects;
 
         public void Start()
         {
+            // Set the unity fixed update timestep. (Used to control the frequency of PhysicsWorld.Step).
+            Time.fixedDeltaTime = timeStep;
             World.Create(worldWidth, worldHeight);
             World.Current.InitPhysicsWorld(worldGravity);
 
