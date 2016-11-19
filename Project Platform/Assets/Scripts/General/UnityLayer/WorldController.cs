@@ -127,13 +127,7 @@ namespace Assets.Scripts.General.UnityLayer
                     var tile = World.Current.GetTileAt(x, y);
 
                     // If the tile at current x and y is not a platform, then skip to the next tile.
-                    if(tile.Type != TileType.Platform)
-                    {
-                        //// skip next tile on the Y axis since we know that the next tile above is guaranteed to not be connected to a platform tile since the
-                        //// current tile at the current x and y is not a tile itself.
-                        //y++;
-                        continue;
-                    }
+                    if(tile.Type != TileType.Platform) continue;
 
                     var tileLeft = World.Current.GetTileAt(x - 1, y);
                     var tileRight = World.Current.GetTileAt(x + 1, y);

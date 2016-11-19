@@ -97,7 +97,13 @@ namespace Assets.Scripts.General.UnityLayer
                 if (SelectMode == SelectionMode.PlayerSpawnSet)
                 {
                     // endY for the y position in unity is oposite
-                    playerSpawnObject.transform.position = new Vector2(startX, startY);
+                    if(startX >= 0 || startX < World.Current.Width || startY >= 0 || startY < World.Current.Height)
+                    {
+                        if(World.Current.GetTileAt(startX, startY) != null && World.Current.GetTileAt(startX, startY).Type != TileType.Platform)
+                        {
+                            playerSpawnObject.transform.position = new Vector2(startX, startY);
+                        }
+                    }
                 }
 
                 // Flip if dragging mouse left because endX would be less than startX and the for loop wouldnt loop
