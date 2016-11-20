@@ -1,4 +1,4 @@
-﻿namespace Assets.Scripts.AI.AStar
+﻿namespace Assets.Scripts.AI.Pathfinding
 {
     public class JumpTrajectory
     {

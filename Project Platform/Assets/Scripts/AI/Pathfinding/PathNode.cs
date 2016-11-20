@@ -1,7 +1,6 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Assets.Scripts.AI.AStar
+namespace Assets.Scripts.AI.Pathfinding
 {
 
     public enum PathNodeType

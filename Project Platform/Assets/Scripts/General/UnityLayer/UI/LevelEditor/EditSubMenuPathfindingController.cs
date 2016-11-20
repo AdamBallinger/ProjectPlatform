@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using Assets.Scripts.AI.AStar;
+using Assets.Scripts.AI.Pathfinding;
 using UnityEngine;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;

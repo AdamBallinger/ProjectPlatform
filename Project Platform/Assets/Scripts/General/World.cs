@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
-using Assets.Scripts.AI.AStar;
+using Assets.Scripts.AI.Pathfinding;
 using Assets.Scripts.Physics;
 using UnityEngine;
 

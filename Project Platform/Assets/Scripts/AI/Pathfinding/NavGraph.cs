@@ -1,6 +1,6 @@
 ﻿using Assets.Scripts.General;
 
-namespace Assets.Scripts.AI.AStar
+namespace Assets.Scripts.AI.Pathfinding
 {
     public class NavGraph
     {
