@@ -132,9 +132,21 @@ namespace Assets.Scripts.General
         /// <returns></returns>
         public Tile GetTileAtWorldCoord(Vector2 _coord)
         {
-            var x = Mathf.FloorToInt(_coord.x + 0.5f);
-            var y = Mathf.FloorToInt(_coord.y + 0.5f);
-            return GetTileAt(x, y);
+            var coord = WorldPointToGridPoint(_coord);
+            return GetTileAt((int)coord.x, (int)coord.y);
+        }
+
+        /// <summary>
+        /// Converts a given world coordinate (unity) to a coordinate in the tile grid.
+        /// </summary>
+        /// <param name="_world"></param>
+        /// <returns></returns>
+        public Vector2 WorldPointToGridPoint(Vector2 _world)
+        {
+            // Add 0.5f offset to account for object pivot points in the center.
+            var x = Mathf.FloorToInt(_world.x + 0.5f);
+            var y = Mathf.FloorToInt(_world.y + 0.5f);
+            return new Vector2(x, y);
         }
 
         /// <summary>
