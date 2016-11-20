@@ -15,6 +15,9 @@ namespace Assets.Scripts.General.UnityLayer
         [SerializeField]
         private bool inspectorCreated = false;
 
+        [SerializeField]
+        private bool isTrigger = false;
+
         public void Start()
         {
             if(inspectorCreated)
@@ -39,6 +42,7 @@ namespace Assets.Scripts.General.UnityLayer
 
             Collider = new ABCircleCollider(GetComponent<RigidBodyComponent>().RigidBody);
             Collider.Radius = _radius;
+            Collider.IsTrigger = isTrigger;
         }
 
         private void ClearCollider()

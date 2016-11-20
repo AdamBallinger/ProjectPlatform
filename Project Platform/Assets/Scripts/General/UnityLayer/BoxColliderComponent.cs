@@ -15,6 +15,9 @@ namespace Assets.Scripts.General.UnityLayer
         [SerializeField]
         private bool inspectorCreated = false;
 
+        [SerializeField]
+        private bool isTrigger = false;
+
         public void Start()
         {
             if(inspectorCreated)
@@ -28,6 +31,7 @@ namespace Assets.Scripts.General.UnityLayer
 
             Collider = new ABBoxCollider(GetComponent<RigidBodyComponent>().RigidBody);
             Collider.Size = _size;
+            Collider.IsTrigger = isTrigger;
         }
         
         // When unity destroys this object, make sure if the game isnt being closed, then the collider is removed from the physics world
