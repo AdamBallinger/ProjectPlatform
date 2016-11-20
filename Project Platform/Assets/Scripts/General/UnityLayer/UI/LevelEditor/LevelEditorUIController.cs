@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.AI.AStar;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,6 +13,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public MouseController mouseController;
 
         public GameObject fileUI;
+        public GameObject pathfindingSubMenu;
 
         public InputField levelName;
 
@@ -22,6 +24,8 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         {
             totalTilesText.text = "Total Tiles: " + World.Current.GetTileCount();
             platformsText.text = "Platforms: " + World.Current.GetTileCountOfType(TileType.Platform);
+            World.Current.Load(Path.Combine(Application.persistentDataPath, "Save_Levels") + "\\AI Test Level.xml");
+            OnPathfindingButtonPress();
         }
 
         public void OnSolidPlatformButtonPress()
@@ -40,9 +44,9 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             mouseController.SelectMode = SelectionMode.PlayerSpawnSet;
         }
 
-        public void OnAStarBuildButtonPress()
+        public void OnPathfindingButtonPress()
         {
-            Pathfinder.BuildNodeGraph(World.Current.Width, World.Current.Height);
+            pathfindingSubMenu.SetActive(!pathfindingSubMenu.activeSelf);
         }
 
         public void OnSaveLevelButtonPress()
@@ -60,9 +64,6 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             World.Current.Clear();
             World.Current.SetBorderAsPlatform();
 
-            if(Pathfinder.Current != null)
-                Pathfinder.Current.Clear();
-
             levelName.text = string.Empty;
         }
 
@@ -75,23 +76,6 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         {
             // Keep platform count updated.
             platformsText.text = "Platforms: " + World.Current.PlatformCount;
-        }
-
-        public void OnDrawGizmos()
-        {
-            if (Pathfinder.Current == null)
-                return;
-
-            // Draw blue squares at the position of each node in the pathfinding graph.
-            Gizmos.color = Color.blue;
-            for (var x = 0; x < World.Current.Width; x++)
-            {
-                for (var y = 0; y < World.Current.Height; y++)
-                {
-                    if (Pathfinder.Current.NodeGraph[x, y] != null)
-                        Gizmos.DrawCube(new Vector2(x, y), Vector2.one * 0.25f);
-                }
-            }
         }
     }
 }
