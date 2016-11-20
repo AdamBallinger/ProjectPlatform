@@ -41,6 +41,7 @@ namespace Assets.Scripts.AI.Pathfinding
 
         public void AddLink(NodeLink _link)
         {
+            _link.SetParentNode(this);
             NodeLinks.Add(_link);
         }
     }
