@@ -218,7 +218,7 @@ namespace Assets.Scripts.AI.Pathfinding
             {
                 for (var x = 0; x < Width; x++)
                 {
-                    // TODO: Implement a fast method of creating jump links between nodes. Take into consideration AI max jump height, speed etc.
+                    // TODO: Implement a method of creating jump links between nodes. Take into consideration AI max jump height, speed etc.
                 }
             }
         }

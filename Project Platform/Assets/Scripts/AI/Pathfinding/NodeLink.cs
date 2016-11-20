@@ -12,6 +12,8 @@ namespace Assets.Scripts.AI.Pathfinding
     public class NodeLink
     {
 
+        public PathNode ParentNode { get; private set; }
+
         public PathNode DestinationNode { get; private set; }
 
         public NodeLinkType LinkType { get; private set; }
@@ -23,6 +25,11 @@ namespace Assets.Scripts.AI.Pathfinding
         {
             DestinationNode = _destination;
             LinkType = _type;
+        }
+
+        public void SetParentNode(PathNode _parent)
+        {
+            ParentNode = _parent;
         }
     }
 }

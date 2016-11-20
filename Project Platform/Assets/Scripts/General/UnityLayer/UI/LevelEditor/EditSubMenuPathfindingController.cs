@@ -68,7 +68,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
                             Gizmos.color = Color.yellow;
                         }
 
-                        Gizmos.DrawSphere(new Vector2(x, y - 0.5f), 0.25f);
+                        Gizmos.DrawCube(new Vector2(x, y - 0.5f), Vector2.one * 0.4f);
                     }
                 }
             }
