@@ -19,6 +19,8 @@ namespace Assets.Scripts.General
 
         private Tile[,] Tiles { get; set; }
 
+        public NavGraph NavGraph { get; set; }
+
         public int PlatformCount { get; set; }
 
         public Vector2 PlayerSpawnPosition
@@ -41,6 +43,7 @@ namespace Assets.Scripts.General
             Current.Width = _width;
             Current.Height = _height;
             Current.Tiles = new Tile[Current.Width, Current.Height];
+            Current.NavGraph = new NavGraph(Current.Width, Current.Height);
 
             Current.InitWorld();
         }
@@ -57,8 +60,6 @@ namespace Assets.Scripts.General
                     Current.Tiles[x, y] = new Tile(x, y);
                 }
             }
-
-            //Pathfinder.BuildNodeGraph(Current.Width, Current.Height);
         }
 
         /// <summary>
@@ -171,6 +172,8 @@ namespace Assets.Scripts.General
                     Current.Tiles[x, y].Type = TileType.Empty;
                 }
             }
+
+            NavGraph.Clear();
 
             Current.OnWorldModifyFinishCallback();
             Current.PlatformCount = 0;

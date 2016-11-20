@@ -180,10 +180,7 @@ namespace Assets.Scripts.General.UnityLayer
         public void OnDestroy()
         {
             // Clear any nodes generated.
-            if(Pathfinder.Current != null)
-            {
-                Pathfinder.Current.Clear();
-            }
+            World.Current.NavGraph.Clear();
         }
 
         /// <summary>

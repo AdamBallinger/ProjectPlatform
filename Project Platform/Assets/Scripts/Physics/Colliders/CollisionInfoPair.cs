@@ -203,7 +203,7 @@ namespace Assets.Scripts.Physics.Colliders
             }
 
             ContactDetected = true;
-            Penetration = radius - distSq;
+            Penetration = radius * radius - distSq;
             Normal = -normal.normalized;
         }
 
