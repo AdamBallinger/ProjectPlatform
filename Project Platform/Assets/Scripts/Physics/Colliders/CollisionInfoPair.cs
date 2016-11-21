@@ -98,21 +98,12 @@ namespace Assets.Scripts.Physics.Colliders
 
             var impulse = j * Normal;
 
+            // Apply collision impulse
             ColliderA.RigidBody.AddImpulse(-impulse);
             ColliderB.RigidBody.AddImpulse(impulse);
 
-            //// Apply friction impulse TODO: Fix this
-            //relativeVelocity = ColliderB.RigidBody.LinearVelocity - ColliderA.RigidBody.LinearVelocity;
-            //var tangent = relativeVelocity - Vector2.Dot(relativeVelocity, Normal) * Normal;
-            //tangent.Normalize();
+            // Calculate and apply friction impulse. (Coulomb's Law)
 
-            //var jt = -Vector2.Dot(relativeVelocity, tangent);
-            //jt /= InvMassSum;
-
-            //var frictionImpulse = jt * tangent * 0.1f;
-
-            //ColliderA.RigidBody.AddImpulse(-frictionImpulse);
-            //ColliderB.RigidBody.AddImpulse(frictionImpulse);
         }
 
         /// <summary>
