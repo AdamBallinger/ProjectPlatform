@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Assets.Scripts.AI.Pathfinding
 {
@@ -43,6 +44,16 @@ namespace Assets.Scripts.AI.Pathfinding
         {
             _link.SetParentNode(this);
             NodeLinks.Add(_link);
+        }
+
+        /// <summary>
+        /// Returns whether or not the node contains at least 1 of the given link type.
+        /// </summary>
+        /// <param name="_type"></param>
+        /// <returns></returns>
+        public bool HasLinkOfType(NodeLinkType _type)
+        {
+            return NodeLinks.Any(link => link.LinkType == _type);
         }
     }
 }
