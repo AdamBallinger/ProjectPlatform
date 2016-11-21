@@ -61,12 +61,24 @@ namespace Assets.Scripts.Physics
             set { GameObject.transform.position = value; }
         }
 
+        /// <summary>
+        /// Current velocity for the rigidbody.
+        /// </summary>
         public Vector2 LinearVelocity { get; set; }
 
+        /// <summary>
+        /// Current body force
+        /// </summary>
         public Vector2 Force { get; set; }
 
+        /// <summary>
+        /// Current angular velocity for the body.
+        /// </summary>
         public float AngularVelocity { get; set; }
 
+        /// <summary>
+        /// Current body torque.
+        /// </summary>
         public float Torque { get; set; }
 
         private float inertia;
@@ -83,10 +95,17 @@ namespace Assets.Scripts.Physics
 
         public float InvInertia { get; private set; }
 
+        /// <summary>
+        /// Should this body ignore effects of gravity.
+        /// </summary>
         public bool IgnoreGravity { get; set; }
 
+        /// <summary>
+        /// If the body is sleeping, it receives no physics updates until it is woken up.
+        /// </summary>
         public bool Sleeping { get; set; }
 
+        //TODO: Move to a collision listening system.
         public bool IsColliding { get; set; }
 
 
