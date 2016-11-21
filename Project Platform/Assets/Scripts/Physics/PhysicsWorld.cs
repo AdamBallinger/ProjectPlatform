@@ -147,21 +147,32 @@ namespace Assets.Scripts.Physics
                 body.Torque = 0f;
             }
 
-            //// Generate collision pairs
+            // Generate collision pairs
             GeneratePairs();
 
-            // Resolve any collisions.
-            foreach (var contact in Contacts)
+            // Iterative solve
+            for (var i = 0; i < 4; i++)
             {
-                // Resolve collisions
-                contact.ApplyImpulse();
+                foreach(var contact in Contacts)
+                {
+                    contact.Solve();
+                    contact.ApplyImpulse();
+                    contact.CorrectPosition();
+                }
             }
 
-            // Perform position correction.
-            foreach (var contact in Contacts)
-            {
-                contact.CorrectPosition();
-            }
+            //// Resolve any collisions.
+            //foreach (var contact in Contacts)
+            //{
+            //    // Resolve collisions
+            //    contact.ApplyImpulse();
+            //}
+
+            //// Perform position correction.
+            //foreach (var contact in Contacts)
+            //{
+            //    contact.CorrectPosition();
+            //}
         }
 
         // Broadphase
