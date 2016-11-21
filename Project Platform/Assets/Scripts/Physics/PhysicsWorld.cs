@@ -132,20 +132,10 @@ namespace Assets.Scripts.Physics
                 }
 
                 //var angular_acceleration = body.Torque == 0.0f ? 0.0f : body.Torque / body.Inertia;
-
                 //body.AngularVelocity = angular_acceleration / Time.fixedDeltaTime;
 
-                if (body.LinearVelocity.x > World.Current.MaxBodyVelocity)
-                    body.LinearVelocity = new Vector2(World.Current.MaxBodyVelocity, body.LinearVelocity.y);
-
-                if (body.LinearVelocity.x < -World.Current.MaxBodyVelocity)
-                    body.LinearVelocity = new Vector2(-World.Current.MaxBodyVelocity, body.LinearVelocity.y);
-
-                if (body.LinearVelocity.y > World.Current.MaxBodyVelocity)
-                    body.LinearVelocity = new Vector2(body.LinearVelocity.x, World.Current.MaxBodyVelocity);
-
-                if (body.LinearVelocity.y < -World.Current.MaxBodyVelocity)
-                    body.LinearVelocity = new Vector2(body.LinearVelocity.x, -World.Current.MaxBodyVelocity);
+                // Clamp body velocity to the maximum allowed amount
+                body.LinearVelocity = Vector2.ClampMagnitude(body.LinearVelocity, World.Current.MaxBodyVelocity);
 
                 body.Position += body.LinearVelocity * Time.fixedDeltaTime;
 
