@@ -24,8 +24,8 @@ namespace Assets.Scripts.Physics.Colliders
         /// </summary>
         public void ComputeAABB()
         {
-            Min = new Vector2(RigidBody.Position.x - Size.x / 2, RigidBody.Position.y + Size.y / 2);
-            Max = new Vector2(RigidBody.Position.x + Size.x / 2, RigidBody.Position.y - Size.y / 2);
+            Min = new Vector2(Position.x - Size.x / 2, Position.y + Size.y / 2);
+            Max = new Vector2(Position.x + Size.x / 2, Position.y - Size.y / 2);
         }
     }
 }

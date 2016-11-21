@@ -76,6 +76,12 @@ namespace Assets.Scripts.Physics.Colliders
                 return;
             }
 
+            // Dont resolve a trigger collision.
+            if(ColliderA.IsTrigger || ColliderB.IsTrigger)
+            {
+                return;
+            }
+
             var relativeVelocity = ColliderB.RigidBody.LinearVelocity - ColliderA.RigidBody.LinearVelocity;
             var velocityAlongNormal = Vector2.Dot(relativeVelocity, Normal);
 
@@ -115,7 +121,14 @@ namespace Assets.Scripts.Physics.Colliders
         public void CorrectPosition()
         {
             if (InvMassSum == 0.0f)
+            {
                 return;
+            }
+
+            if(ColliderA.IsTrigger || ColliderB.IsTrigger)
+            {
+                return;
+            }
 
             var pentrationAllowance = 0.001f;
             var penetrationCorrection = 0.8f; // % correction

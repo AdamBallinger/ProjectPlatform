@@ -13,6 +13,9 @@ namespace Assets.Scripts.General.UnityLayer
         private Vector2 Size = Vector2.one;
 
         [SerializeField]
+        private Vector2 offset = Vector2.zero;
+
+        [SerializeField]
         private bool inspectorCreated = false;
 
         [SerializeField]
@@ -30,6 +33,7 @@ namespace Assets.Scripts.General.UnityLayer
                 ClearCollider();
 
             Collider = new ABBoxCollider(GetComponent<RigidBodyComponent>().RigidBody);
+            Collider.Offset = offset;
             Collider.Size = _size;
             Collider.IsTrigger = isTrigger;
         }
@@ -57,7 +61,7 @@ namespace Assets.Scripts.General.UnityLayer
                 return;
 
             Gizmos.color = Color.green;
-            Gizmos.DrawWireCube(gameObject.transform.position, Size);
+            Gizmos.DrawWireCube(gameObject.transform.position + (Vector3)offset, Size);
         }
     }
 }
