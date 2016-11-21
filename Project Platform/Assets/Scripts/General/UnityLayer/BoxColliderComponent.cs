@@ -21,6 +21,9 @@ namespace Assets.Scripts.General.UnityLayer
         [SerializeField]
         private bool isTrigger = false;
 
+        [SerializeField]
+        private bool drawGizmo = true;
+
         public void Start()
         {
             if(inspectorCreated)
@@ -57,7 +60,7 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void OnDrawGizmos()
         {
-            if (!inspectorCreated)
+            if (!inspectorCreated || !drawGizmo)
                 return;
 
             Gizmos.color = Color.green;
