@@ -16,6 +16,12 @@ namespace Assets.Scripts.Physics
         public Vector2 Gravity { get; set; }
 
         /// <summary>
+        /// Number of iterations to solve collisions. Higher value nets better collision results at the cost of performance.
+        /// Any value over 10 is typically not needed.
+        /// </summary>
+        public int SolveIterations { get; set; }
+
+        /// <summary>
         /// A list of rigid bodies for the current physics world.
         /// </summary>
         private List<ABRigidBody> RigidBodies { get; set; }
@@ -36,6 +42,7 @@ namespace Assets.Scripts.Physics
         /// <param name="_gravity">Gravity value in meters per second.</param>
         public void Initialize(Vector2 _gravity)
         {
+            SolveIterations = 8;
             RigidBodies = new List<ABRigidBody>();
             Colliders = new List<ABCollider>();
             Contacts = new List<CollisionInfoPair>();
@@ -151,7 +158,7 @@ namespace Assets.Scripts.Physics
             GeneratePairs();
 
             // Iterative solve
-            for (var i = 0; i < 4; i++)
+            for (var i = 0; i < SolveIterations; i++)
             {
                 foreach(var contact in Contacts)
                 {
@@ -160,19 +167,6 @@ namespace Assets.Scripts.Physics
                     contact.CorrectPosition();
                 }
             }
-
-            //// Resolve any collisions.
-            //foreach (var contact in Contacts)
-            //{
-            //    // Resolve collisions
-            //    contact.ApplyImpulse();
-            //}
-
-            //// Perform position correction.
-            //foreach (var contact in Contacts)
-            //{
-            //    contact.CorrectPosition();
-            //}
         }
 
         // Broadphase
