@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Assets.Scripts.Physics.Colliders;
-using UnityEngine;
 
 namespace Assets.Scripts.Physics
 {
@@ -49,6 +48,10 @@ namespace Assets.Scripts.Physics
         /// <param name="_colliding"></param>
         public void Handle(ABCollider _colliding)
         {
+            // Don't allow colliders of the same object root to trigger each other.
+            if (Collider.RigidBody.GameObject.transform.root == _colliding.RigidBody.GameObject.transform.root)
+                return;
+
             if(_colliding.IsTrigger)
             {
                 HandleTrigger(_colliding);
@@ -87,6 +90,8 @@ namespace Assets.Scripts.Physics
                 {
                     OnCollision(_collider);
                 }
+
+                LastStepCollisions.Add(_collider);
             }
         }
 
@@ -96,8 +101,11 @@ namespace Assets.Scripts.Physics
         /// <param name="_collider"></param>
         public void HandleExit(ABCollider _collider)
         {
+            if (Collider.RigidBody.GameObject.transform.root == _collider.RigidBody.GameObject.transform.root)
+                return;
+
             // If the collider wasn't previously colliding with this listeners collider, then break out.
-            if(!LastStepCollisions.Contains(_collider))
+            if (!LastStepCollisions.Contains(_collider))
             {
                 return;
             }

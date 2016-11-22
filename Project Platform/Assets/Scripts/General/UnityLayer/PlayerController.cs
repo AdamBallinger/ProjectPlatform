@@ -20,6 +20,7 @@ namespace Assets.Scripts.General.UnityLayer
                 groundCheck.Collider.CollisionListener.RegisterTriggerEnterCallback(OnABTriggerEnter);
                 groundCheck.Collider.CollisionListener.RegisterTriggerStayCallback(OnABTriggerStay);
                 groundCheck.Collider.CollisionListener.RegisterTriggerLeaveCallback(OnABTriggerLeave);
+                groundCheck.Collider.CollisionListener.RegisterOnCollisionCallback(OnCollision);
             }
         }
 
@@ -54,6 +55,11 @@ namespace Assets.Scripts.General.UnityLayer
         public void OnABTriggerLeave(ABCollider _collider)
         {
             //Debug.Log(_collider.RigidBody.GameObject.name + " exited " + gameObject.name);
+        }
+
+        public void OnCollision(ABCollider _collider)
+        {
+            //Debug.Log(gameObject.name + " collided with: " + _collider.RigidBody.GameObject.name);
         }
     }
 }
