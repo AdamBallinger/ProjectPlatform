@@ -95,7 +95,7 @@ namespace Assets.Scripts.Physics.Colliders
             // Restitution  0.0f - Inelastic  1.0f - full elastic
             var e = 1.0f * ColliderA.RigidBody.Material.Restitution + ColliderB.RigidBody.Material.Restitution;
 
-            if(relativeVelocity.sqrMagnitude < (Time.fixedDeltaTime * World.Current.PhysicsWorld.Gravity).sqrMagnitude + float.Epsilon)
+            if(relativeVelocity.sqrMagnitude < (Time.fixedDeltaTime * World.Current.PhysicsWorld.Gravity).sqrMagnitude + Mathf.Epsilon)
             {
                 // resting collision if only gravity is effecting the bodies.
                 e = 0.0f;

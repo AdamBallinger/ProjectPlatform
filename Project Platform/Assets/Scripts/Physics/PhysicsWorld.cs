@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
-using Assets.Scripts.General;
-using Assets.Scripts.General.UnityLayer;
 using Assets.Scripts.Physics.Colliders;
 using UnityEngine;
 
@@ -160,9 +157,19 @@ namespace Assets.Scripts.Physics
             {
                 foreach(var contact in Contacts)
                 {
-                    contact.Solve();
                     contact.ApplyImpulse();
                     contact.CorrectPosition();
+                    contact.Solve();
+                }
+            }
+
+            // Delete objects that are under the world (but not directly under). An object is under the world if its y position is less than 0
+            for(var i = RigidBodies.Count - 1; i >= 0; i--)
+            {
+                var body = RigidBodies[i];
+                if(body.Position.y < -10.0f)
+                {
+                    Object.DestroyImmediate(body.GameObject);
                 }
             }
         }

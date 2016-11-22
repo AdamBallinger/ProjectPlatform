@@ -128,7 +128,6 @@ namespace Assets.Scripts.Physics
         public void AddForce(Vector2 _force)
         {
             Force += _force;
-            Sleeping = false;
         }
 
         /// <summary>
@@ -138,7 +137,6 @@ namespace Assets.Scripts.Physics
         public void AddImpulse(Vector2 _impulse)
         {
             LinearVelocity += InvMass * _impulse;
-            Sleeping = false;
         }
 
         /// <summary>
