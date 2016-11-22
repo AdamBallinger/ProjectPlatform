@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.General;
+using UnityEngine;
 
 namespace Assets.Scripts.Physics.Colliders
 {
@@ -93,6 +94,13 @@ namespace Assets.Scripts.Physics.Colliders
 
             // Restitution  0.0f - Inelastic  1.0f - full elastic
             var e = 1.0f * ColliderA.RigidBody.Material.Restitution + ColliderB.RigidBody.Material.Restitution;
+
+            if(relativeVelocity.sqrMagnitude < (Time.fixedDeltaTime * World.Current.PhysicsWorld.Gravity).sqrMagnitude + float.Epsilon)
+            {
+                // resting collision if only gravity is effecting the bodies.
+                e = 0.0f;
+            }
+
             var j = -(1.0f + e) * velocityAlongNormal; // Impulse magnitude
             j /= InvMassSum;
 
@@ -104,6 +112,31 @@ namespace Assets.Scripts.Physics.Colliders
 
             // Calculate and apply friction impulse. (Coulomb's Law)
 
+            // recalculate relative velocity
+            relativeVelocity = ColliderB.RigidBody.LinearVelocity - ColliderA.RigidBody.LinearVelocity;
+
+            var tangent = relativeVelocity - Vector2.Dot(relativeVelocity, Normal) * Normal;
+            tangent.Normalize();
+
+            var jt = -Vector2.Dot(relativeVelocity, tangent);
+            jt /= InvMassSum;
+
+            var staticFriction = Mathf.Sqrt(ColliderA.RigidBody.Material.StaticFriction * ColliderA.RigidBody.Material.StaticFriction);
+            var dynamicFriction = Mathf.Sqrt(ColliderA.RigidBody.Material.DynamicFriction * ColliderA.RigidBody.Material.DynamicFriction);
+
+            var tangentImpulse = Vector2.zero;
+
+            if(Mathf.Abs(jt) < j * staticFriction)
+            {
+                tangentImpulse = tangent * jt;
+            }
+            else
+            {
+                tangentImpulse = tangent * -j * dynamicFriction;
+            }
+
+            ColliderA.RigidBody.AddImpulse(-tangentImpulse);
+            ColliderB.RigidBody.AddImpulse(tangentImpulse);
         }
 
         /// <summary>
