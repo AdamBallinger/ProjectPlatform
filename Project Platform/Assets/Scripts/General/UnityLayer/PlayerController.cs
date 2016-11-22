@@ -43,17 +43,17 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void OnABTriggerEnter(ABCollider _collider)
         {
-            //Debug.Log(gameObject.name + " entered " + _collider.RigidBody.GameObject.name);
+            //Debug.Log(_collider.RigidBody.GameObject.name + " entered " + gameObject.name);
         }
 
         public void OnABTriggerStay(ABCollider _collider)
         {
-            //Debug.Log(gameObject.name + " stayed inside of " + _collider.RigidBody.GameObject.name);
+            //Debug.Log(_collider.RigidBody.GameObject.name + " stayed inside of " + gameObject.name);
         }
 
         public void OnABTriggerLeave(ABCollider _collider)
         {
-            //Debug.Log(gameObject.name + " exited " + _collider.RigidBody.GameObject.name);
+            //Debug.Log(_collider.RigidBody.GameObject.name + " exited " + gameObject.name);
         }
     }
 }
