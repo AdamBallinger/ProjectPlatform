@@ -1,4 +1,7 @@
-﻿using Assets.Scripts.General;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using Assets.Scripts.General;
+using UnityEngine;
 
 namespace Assets.Scripts.AI.Pathfinding
 {
@@ -218,7 +221,14 @@ namespace Assets.Scripts.AI.Pathfinding
             {
                 for (var x = 0; x < Width; x++)
                 {
-                    // TODO: Implement a method of creating jump links between nodes. Take into consideration AI max jump height, speed etc.
+                    var node = Nodes[x, y];
+
+                    // Only check trajectories for Edge / single and platform nodes with fall links.
+                    if(node.NodeType == PathNodeType.LeftEdge || node.NodeType == PathNodeType.RightEdge || node.NodeType == PathNodeType.Single
+                        || (node.NodeType == PathNodeType.Platform && node.HasLinkOfType(NodeLinkType.Fall)))
+                    {
+                        
+                    }
                 }
             }
         }

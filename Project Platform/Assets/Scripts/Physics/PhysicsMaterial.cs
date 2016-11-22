@@ -14,8 +14,8 @@ namespace Assets.Scripts.Physics
         public PhysicsMaterial()
         {
             Restitution = 0.0f;
-            StaticFriction = 0.35f;
-            DynamicFriction = 0.5f;
+            StaticFriction = 1.0f;
+            DynamicFriction = 0.8f;
         }
 
     }

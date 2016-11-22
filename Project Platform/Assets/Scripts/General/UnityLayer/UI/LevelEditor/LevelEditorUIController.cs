@@ -23,7 +23,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         {
             totalTilesText.text = "Total Tiles: " + World.Current.GetTileCount();
             platformsText.text = "Platforms: " + World.Current.GetTileCountOfType(TileType.Platform);
-            World.Current.Load(Path.Combine(Application.persistentDataPath, "Save_Levels") + "\\AI Test Level.xml");
+            levelName.text = World.Current.Load(Path.Combine(Application.persistentDataPath, "Save_Levels") + "\\AI Test Level 2.xml");
         }
 
         public void OnSolidPlatformButtonPress()

@@ -91,6 +91,8 @@ namespace Assets.Scripts.General.UnityLayer
                 case TileType.Platform:
                     _tileGO.GetComponent<SpriteRenderer>().sprite = platformSprites[0];
 
+                    //if(_tileGO.GetComponent<PhysicsMaterialComponent>())
+
                     World.Current.PlatformCount++;
                     break;
             }
@@ -134,9 +136,6 @@ namespace Assets.Scripts.General.UnityLayer
                         AddTileCollider(tileGameObjects[x, y]);
                         continue;
                     }
-                    //if (tileRight != null && tileRight.Type != TileType.Platform) continue;
-                    //if (tileUp != null && tileUp.Type != TileType.Platform) continue;
-                    //if (tileDown != null && tileDown.Type != TileType.Platform) continue;
 
                     //Tile is surrounded by platforms so remove its rigid body and collider components to save performance.
                     RemoveTileCollider(tileGameObjects[x, y]);
