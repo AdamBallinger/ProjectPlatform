@@ -28,8 +28,6 @@ namespace Assets.Scripts.General
             get { return GameObject.FindGameObjectWithTag("PlayerSpawn").transform.position; }
         }
 
-        public float MaxBodyVelocity { get; set; }
-
         public Action OnWorldModifyFinishCallback;
 
         /// <summary>
@@ -66,10 +64,12 @@ namespace Assets.Scripts.General
         /// Initialises the physics world with given gravity vector.
         /// </summary>
         /// <param name="_gravity"></param>
-        public void InitPhysicsWorld(Vector2 _gravity)
+        /// <param name="_solverIterations"></param>
+        /// <param name="_maxVelocity"></param>
+        public void InitPhysicsWorld(Vector2 _gravity, int _solverIterations, float _maxVelocity)
         {
             Current.PhysicsWorld = new PhysicsWorld();
-            Current.PhysicsWorld.Initialize(_gravity);
+            Current.PhysicsWorld.Initialize(_gravity, _solverIterations, _maxVelocity);
         }
 
         /// <summary>

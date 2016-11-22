@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Physics.Colliders
 {
-    public class CollisionInfoPair
+    public class CollisionManifold
     {
 
         public ABCollider ColliderA { get; private set; }
@@ -30,7 +30,7 @@ namespace Assets.Scripts.Physics.Colliders
         }
 
 
-        public CollisionInfoPair(ABCollider _a, ABCollider _b)
+        public CollisionManifold(ABCollider _a, ABCollider _b)
         {
             ContactDetected = false;
             ColliderA = _a;
@@ -188,8 +188,6 @@ namespace Assets.Scripts.Physics.Colliders
             {
                 // Collision occured between colliders.
                 ContactDetected = true;
-                ColliderA.RigidBody.IsColliding = true;
-                ColliderB.RigidBody.IsColliding = true;
 
                 // Difference between the 2 colliders.
                 var difference = _aabb1.Position - _aabb2.Position;
@@ -214,11 +212,6 @@ namespace Assets.Scripts.Physics.Colliders
                         }
                     }
                 }
-            }
-            else
-            {
-                ColliderA.RigidBody.IsColliding = false;
-                ColliderB.RigidBody.IsColliding = false;
             }
         }
 

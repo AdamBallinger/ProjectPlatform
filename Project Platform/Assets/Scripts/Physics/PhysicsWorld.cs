@@ -22,6 +22,11 @@ namespace Assets.Scripts.Physics
         public int SolveIterations { get; set; }
 
         /// <summary>
+        /// Maximum allowed velocity magnitude for a rigidbody
+        /// </summary>
+        public float MaxBodyVelocity { get; set; }
+
+        /// <summary>
         /// A list of rigid bodies for the current physics world.
         /// </summary>
         private List<ABRigidBody> RigidBodies { get; set; }
@@ -34,19 +39,22 @@ namespace Assets.Scripts.Physics
         /// <summary>
         /// Store a list of collision pairs that have collided.
         /// </summary>
-        private List<CollisionInfoPair> Contacts { get; set; }
+        private List<CollisionManifold> Contacts { get; set; }
 
         /// <summary>
         /// Initialize the physics world with physics settings.
         /// </summary>
         /// <param name="_gravity">Gravity value in meters per second.</param>
-        public void Initialize(Vector2 _gravity)
+        /// <param name="_iterations"></param>
+        /// <param name="_maxVelocity"></param>
+        public void Initialize(Vector2 _gravity, int _iterations, float _maxVelocity)
         {
-            SolveIterations = 8;
+            Gravity = _gravity;
+            SolveIterations = _iterations;
+            MaxBodyVelocity = _maxVelocity;
             RigidBodies = new List<ABRigidBody>();
             Colliders = new List<ABCollider>();
-            Contacts = new List<CollisionInfoPair>();
-            Gravity = _gravity;
+            Contacts = new List<CollisionManifold>();
         }
 
         /// <summary>
@@ -135,7 +143,7 @@ namespace Assets.Scripts.Physics
                 //body.AngularVelocity = angular_acceleration / Time.fixedDeltaTime;
 
                 // Clamp body velocity to the maximum allowed amount
-                body.LinearVelocity = Vector2.ClampMagnitude(body.LinearVelocity, World.Current.MaxBodyVelocity);
+                body.LinearVelocity = Vector2.ClampMagnitude(body.LinearVelocity, MaxBodyVelocity);
 
                 body.Position += body.LinearVelocity * Time.fixedDeltaTime;
 
@@ -175,7 +183,7 @@ namespace Assets.Scripts.Physics
                     if (Colliders[i].RigidBody.InvMass == 0.0f && Colliders[j].RigidBody.InvMass == 0.0f) continue;
 
                     // Check collisions between each collider.
-                    var colliderPair = new CollisionInfoPair(Colliders[i], Colliders[j]);
+                    var colliderPair = new CollisionManifold(Colliders[i], Colliders[j]);
 
                     colliderPair.Solve();
 

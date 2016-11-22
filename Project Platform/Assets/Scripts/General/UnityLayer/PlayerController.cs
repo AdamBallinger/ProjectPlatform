@@ -5,7 +5,7 @@ namespace Assets.Scripts.General.UnityLayer
     public class PlayerController : MonoBehaviour
     {
 
-        public float force = 1.0f;
+        public float force = 50.0f;
 
         private RigidBodyComponent rigidBodyComponent;
 
@@ -16,7 +16,7 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void FixedUpdate()
         {
-            if(Input.GetKey(KeyCode.Space) && rigidBodyComponent.RigidBody.IsColliding)
+            if(Input.GetKey(KeyCode.Space))
             {
                 rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * force);
             }

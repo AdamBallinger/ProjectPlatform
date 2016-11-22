@@ -105,9 +105,6 @@ namespace Assets.Scripts.Physics
         /// </summary>
         public bool Sleeping { get; set; }
 
-        //TODO: Move to a collision listening system.
-        public bool IsColliding { get; set; }
-
 
         public ABRigidBody(GameObject _gameObject)
         {
