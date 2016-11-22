@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Assets.Scripts.General.UnityLayer
 {
-    [RequireComponent(typeof(RigidBodyComponent))]
     public class BoxColliderComponent : MonoBehaviour
     {
 
@@ -32,10 +31,18 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void Create(Vector2 _size)
         {
+            var rigidBodyComponent = GetComponent<RigidBodyComponent>() ?? transform.root.gameObject.GetComponent<RigidBodyComponent>();
+
+            if(rigidBodyComponent == null)
+            {
+                Debug.LogError("You can't create a box collider component on a gameobject without a rigidbody at its root.");
+                return;
+            }
+
             if(Collider != null)
                 ClearCollider();
 
-            Collider = new ABBoxCollider(GetComponent<RigidBodyComponent>().RigidBody);
+            Collider = new ABBoxCollider(rigidBodyComponent.RigidBody);
             Collider.Offset = offset;
             Collider.Size = _size;
             Collider.IsTrigger = isTrigger;

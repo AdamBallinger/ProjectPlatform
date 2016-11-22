@@ -215,7 +215,7 @@ namespace Assets.Scripts.Physics
                         }
                         else
                         {
-                            // if not contact detected for this pair, check if the pair should trigger any exit callbacks.
+                            // if no contact detected for this pair, check if the pair should trigger any exit callbacks.
                             colliderPair.ColliderA.CollisionListener.HandleExit(colliderPair.ColliderB);
                             colliderPair.ColliderB.CollisionListener.HandleExit(colliderPair.ColliderA);
                         }
