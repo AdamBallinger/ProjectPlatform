@@ -124,7 +124,7 @@ namespace Assets.Scripts.Physics.Colliders
             var staticFriction = Mathf.Sqrt(ColliderA.RigidBody.Material.StaticFriction * ColliderA.RigidBody.Material.StaticFriction);
             var dynamicFriction = Mathf.Sqrt(ColliderA.RigidBody.Material.DynamicFriction * ColliderA.RigidBody.Material.DynamicFriction);
 
-            var tangentImpulse = Vector2.zero;
+            Vector2 tangentImpulse;
 
             if(Mathf.Abs(jt) < j * staticFriction)
             {
@@ -154,8 +154,8 @@ namespace Assets.Scripts.Physics.Colliders
                 return;
             }
 
-            var pentrationAllowance = 0.001f;
-            var penetrationCorrection = 0.8f; // % correction
+            var pentrationAllowance = 0.01f;
+            var penetrationCorrection = 0.6f; // % correction
 
             var correctionVector = Mathf.Max(Penetration - pentrationAllowance, 0.0f) / InvMassSum * Normal * penetrationCorrection;
             ColliderA.RigidBody.Position -= correctionVector * ColliderA.RigidBody.InvMass;
