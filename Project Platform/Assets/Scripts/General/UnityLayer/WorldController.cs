@@ -31,7 +31,7 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void Start()
         {
-            Profiler.maxNumberOfSamplesPerFrame = 100;
+            //Profiler.maxNumberOfSamplesPerFrame = -1;
             // Set the unity fixed update timestep. (Used to control the frequency of PhysicsWorld.Step).
             Time.fixedDeltaTime = timeStep;
             World.Create(worldWidth, worldHeight);

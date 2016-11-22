@@ -189,14 +189,22 @@ namespace Assets.Scripts.Physics
 
                     if (Colliders[i].RigidBody.InvMass == 0.0f && Colliders[j].RigidBody.InvMass == 0.0f) continue;
 
-                    // Check collisions between each collider.
-                    var colliderPair = new CollisionManifold(Colliders[i], Colliders[j]);
+                    // Check distance between 2 colliders.
+                    var dist = Vector2.Distance(Colliders[i].Position, Colliders[j].Position);
 
-                    colliderPair.Solve();
-
-                    if (colliderPair.ContactDetected)
+                    // All tiles/entities will have a max size of 1, so any colliders further than 1 unit away from each other
+                    // wont collide so dont waste time performing a collision check.
+                    if(dist <= 1.0f)
                     {
-                        Contacts.Add(colliderPair);
+                        // Check collisions between each collider.
+                        var colliderPair = new CollisionManifold(Colliders[i], Colliders[j]);
+
+                        colliderPair.Solve();
+
+                        if (colliderPair.ContactDetected)
+                        {
+                            Contacts.Add(colliderPair);
+                        }
                     }
                 }
             }
