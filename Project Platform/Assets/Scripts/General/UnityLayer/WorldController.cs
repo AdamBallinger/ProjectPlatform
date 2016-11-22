@@ -31,6 +31,7 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void Start()
         {
+            Profiler.maxNumberOfSamplesPerFrame = 100;
             // Set the unity fixed update timestep. (Used to control the frequency of PhysicsWorld.Step).
             Time.fixedDeltaTime = timeStep;
             World.Create(worldWidth, worldHeight);
@@ -95,8 +96,6 @@ namespace Assets.Scripts.General.UnityLayer
 
                 case TileType.Platform:
                     _tileGO.GetComponent<SpriteRenderer>().sprite = platformSprites[0];
-
-                    //if(_tileGO.GetComponent<PhysicsMaterialComponent>())
 
                     World.Current.PlatformCount++;
                     break;
