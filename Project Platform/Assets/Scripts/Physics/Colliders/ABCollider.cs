@@ -19,6 +19,8 @@ namespace Assets.Scripts.Physics.Colliders
             get { return RigidBody.Position + Offset; }
         }
 
+        public CollisionListener CollisionListener { get; private set; }
+
         /// <summary>
         /// Is the collider a trigger? I.e Triggers allow collisions to pass through but will fire an OnTriggerEnter callback to the object this collider enters.
         /// </summary>
@@ -27,6 +29,7 @@ namespace Assets.Scripts.Physics.Colliders
         protected ABCollider(ABRigidBody _body)
         {
             RigidBody = _body;
+            CollisionListener = new CollisionListener(this);
             IsTrigger = false;
             World.Current.PhysicsWorld.AddCollider(this);
         }

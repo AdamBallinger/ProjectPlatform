@@ -152,6 +152,13 @@ namespace Assets.Scripts.Physics
             // Generate collision pairs
             GeneratePairs();
 
+            // Handle collision listeners for collisions.
+            foreach (var contact in Contacts)
+            {
+                contact.ColliderA.CollisionListener.Handle(contact.ColliderB);
+                contact.ColliderB.CollisionListener.Handle(contact.ColliderA);
+            }
+
             // Iterative solve
             for (var i = 0; i < SolveIterations; i++)
             {
@@ -192,20 +199,27 @@ namespace Assets.Scripts.Physics
                     // Check distance between 2 colliders.
                     var dist = Vector2.Distance(Colliders[i].Position, Colliders[j].Position);
 
-                    // All tiles/entities will have a max size of 1, so any colliders further than 1 unit away from each other
-                    // wont collide so dont waste time performing a collision check.
-                    if(dist <= 1.0f)
-                    {
-                        // Check collisions between each collider.
-                        var colliderPair = new CollisionManifold(Colliders[i], Colliders[j]);
 
+                    // Check collisions between each collider.
+                    var colliderPair = new CollisionManifold(Colliders[i], Colliders[j]);
+
+                    // Limit the distance to check for collisions. Hacky but for now works
+                    // until I get around to spatial partitioning.
+                    if (dist <= 10.0f)
+                    {
                         colliderPair.Solve();
 
                         if (colliderPair.ContactDetected)
                         {
                             Contacts.Add(colliderPair);
                         }
-                    }
+                        else
+                        {
+                            // if not contact detected for this pair, check if the pair should trigger any exit callbacks.
+                            colliderPair.ColliderA.CollisionListener.HandleExit(colliderPair.ColliderB);
+                            colliderPair.ColliderB.CollisionListener.HandleExit(colliderPair.ColliderA);
+                        }
+                    }           
                 }
             }
         }
