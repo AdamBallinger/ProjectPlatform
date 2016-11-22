@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Physics.Colliders;
+using UnityEngine;
 
 namespace Assets.Scripts.General.UnityLayer
 {
     public class PlayerController : MonoBehaviour
     {
 
+        public BoxColliderComponent groundCheck;
         public float force = 50.0f;
 
         private RigidBodyComponent rigidBodyComponent;
@@ -12,6 +14,13 @@ namespace Assets.Scripts.General.UnityLayer
         public void Start()
         {
             rigidBodyComponent = GetComponent<RigidBodyComponent>();
+
+            if(groundCheck != null)
+            {
+                groundCheck.Collider.CollisionListener.RegisterTriggerEnterCallback(OnABTriggerEnter);
+                groundCheck.Collider.CollisionListener.RegisterTriggerStayCallback(OnABTriggerStay);
+                groundCheck.Collider.CollisionListener.RegisterTriggerLeaveCallback(OnABTriggerLeave);
+            }
         }
 
         public void FixedUpdate()
@@ -30,6 +39,21 @@ namespace Assets.Scripts.General.UnityLayer
             {
                 rigidBodyComponent.RigidBody.AddImpulse(Vector2.right * force);
             }
+        }
+
+        public void OnABTriggerEnter(ABCollider _collider)
+        {
+            //Debug.Log(gameObject.name + " entered " + _collider.RigidBody.GameObject.name);
+        }
+
+        public void OnABTriggerStay(ABCollider _collider)
+        {
+            //Debug.Log(gameObject.name + " stayed inside of " + _collider.RigidBody.GameObject.name);
+        }
+
+        public void OnABTriggerLeave(ABCollider _collider)
+        {
+            //Debug.Log(gameObject.name + " exited " + _collider.RigidBody.GameObject.name);
         }
     }
 }
