@@ -11,7 +11,10 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         // Reference to mouse controller for handling building/clearing tiles.
         public MouseController mouseController;
 
+        private GameObject activeSubMenu;
+
         public GameObject fileUI;
+        public GameObject platformSubMenu;
         public GameObject pathfindingSubMenu;
 
         public InputField levelName;
@@ -25,10 +28,15 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             levelName.text = World.Current.Load(Path.Combine(Application.persistentDataPath, "Save_Levels") + "\\AI Test Level 2.xml");
         }
 
-        public void OnSolidPlatformButtonPress()
+        public void OnPlatformButtonPress()
         {
             mouseController.SelectMode = SelectionMode.BuildMode;
             mouseController.TileBuildType = TileType.Platform;
+        }
+
+        public void OnPlatformSettingsButtonPress()
+        {
+            OpenSubMenu(platformSubMenu);
         }
 
         public void OnClearToolButtonPress()
@@ -43,7 +51,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         public void OnPathfindingButtonPress()
         {
-            pathfindingSubMenu.SetActive(!pathfindingSubMenu.activeSelf);
+            OpenSubMenu(pathfindingSubMenu);
         }
 
         public void OnSaveLevelButtonPress()
@@ -67,6 +75,34 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public void OnExitButtonPress()
         {
             SceneManager.LoadScene("_menu");
+        }
+
+        /// <summary>
+        /// Switch the active sub menu to the given menu.
+        /// Only 1 sub menu can be open at a time.
+        /// </summary>
+        /// <param name="_menu"></param>
+        private void OpenSubMenu(GameObject _menu)
+        {
+            if(activeSubMenu == null)
+            {
+                activeSubMenu = _menu;
+                activeSubMenu.SetActive(true);
+            }
+            else
+            {
+                if(activeSubMenu == _menu)
+                {
+                    activeSubMenu.SetActive(false);
+                    activeSubMenu = null;
+                }
+                else
+                {
+                    activeSubMenu.SetActive(false);
+                    activeSubMenu = _menu;
+                    activeSubMenu.SetActive(true);
+                }
+            }
         }
 
         public void Update()
