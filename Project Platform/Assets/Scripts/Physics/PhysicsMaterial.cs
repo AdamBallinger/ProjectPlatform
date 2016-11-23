@@ -22,6 +22,13 @@ namespace Assets.Scripts.Physics
             Default();
         }
 
+        public PhysicsMaterial(PhysicsMaterial _other)
+        {
+            Restitution = _other.Restitution;
+            StaticFriction = _other.StaticFriction;
+            DynamicFriction = _other.DynamicFriction;
+        }
+
         /// <summary>
         /// Set this material values to their default values.
         /// </summary>
