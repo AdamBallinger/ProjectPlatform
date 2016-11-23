@@ -259,7 +259,7 @@ namespace Assets.Scripts.Physics.Colliders
             _aabb.ComputeAABB();
 
             var xNear = Mathf.Max(_aabb.Min.x, Mathf.Min(_circle.Position.x, _aabb.Max.x));
-            var yNear = Mathf.Max(_aabb.Min.y, Mathf.Min(_circle.Position.y, _aabb.Max.y));
+            var yNear = Mathf.Max(_aabb.Max.y, Mathf.Min(_circle.Position.y, _aabb.Min.y));
 
             var closesPointToRect = new Vector2(xNear, yNear);
 
@@ -270,9 +270,8 @@ namespace Assets.Scripts.Physics.Colliders
                 // Collision between the circle and aabb.
                 ContactDetected = true;
                 Penetration = _circle.Radius - normal.magnitude;
-                Normal = _circle.Position - _aabb.Position;
-                Normal.Normalize();
-            }
+                Normal = normal;
+            }    
         }
 
         /// <summary>

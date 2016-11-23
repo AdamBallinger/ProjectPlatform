@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Assets.Scripts.General.UnityLayer
 {
-    [RequireComponent(typeof(RigidBodyComponent))]
     public class CircleColliderComponent : MonoBehaviour
     {
 
@@ -11,6 +10,9 @@ namespace Assets.Scripts.General.UnityLayer
 
         [SerializeField]
         private float radius = 1.0f;
+
+        [SerializeField]
+        private Vector2 offset = Vector2.zero;
 
         [SerializeField]
         private bool inspectorCreated = false;
@@ -37,11 +39,20 @@ namespace Assets.Scripts.General.UnityLayer
         /// <param name="_radius"></param>
         public void Create(float _radius)
         {
-            if(Collider != null)
+            var rigidBodyComponent = GetComponent<RigidBodyComponent>() ?? transform.root.gameObject.GetComponent<RigidBodyComponent>();
+
+            if (rigidBodyComponent == null)
+            {
+                Debug.LogError("You can't create a box collider component on a gameobject without a rigidbody at its root.");
+                return;
+            }
+
+            if (Collider != null)
                 ClearCollider();
 
-            Collider = new ABCircleCollider(GetComponent<RigidBodyComponent>().RigidBody);
+            Collider = new ABCircleCollider(rigidBodyComponent.RigidBody);
             Collider.Radius = _radius;
+            Collider.Offset = offset;
             Collider.IsTrigger = isTrigger;
         }
 
@@ -56,7 +67,7 @@ namespace Assets.Scripts.General.UnityLayer
                 return;
 
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, radius);
+            Gizmos.DrawWireSphere(transform.position + (Vector3)offset, radius);
         }
     }
 }
