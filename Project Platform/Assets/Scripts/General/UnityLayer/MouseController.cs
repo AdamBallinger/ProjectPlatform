@@ -13,6 +13,7 @@ namespace Assets.Scripts.General.UnityLayer
 
     public class MouseController : MonoBehaviour
     {
+        public WorldController worldController;
         public LevelEditorUIController editorUIController;
 
         public GameObject mouseSelectCursor;
@@ -190,6 +191,7 @@ namespace Assets.Scripts.General.UnityLayer
             {
                 case SelectionMode.BuildMode:
                     _tile.Type = TileBuildType;
+                    worldController.SetTileMaterial(_tile.X, _tile.Y);
                     break;
                 case SelectionMode.ClearMode:
                     _tile.Type = TileType.Empty;

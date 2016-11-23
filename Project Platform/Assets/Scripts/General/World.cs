@@ -97,7 +97,10 @@ namespace Assets.Scripts.General
                 }
             }
 
-            Current.OnWorldModifyFinishCallback();
+            if(Current.OnWorldModifyFinishCallback != null)
+            {
+                Current.OnWorldModifyFinishCallback();
+            }
         }
 
         /// <summary>

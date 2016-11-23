@@ -28,6 +28,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         {
             Material = new PhysicsMaterial();
             OnDefaultButtonPress();
+            gameObject.SetActive(false);
         }
 
         public void OnEnable()

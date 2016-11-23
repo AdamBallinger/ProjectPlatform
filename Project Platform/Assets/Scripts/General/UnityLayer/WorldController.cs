@@ -1,10 +1,14 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.General.UnityLayer.UI.LevelEditor;
+using Assets.Scripts.Physics;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.General.UnityLayer
 {
     public class WorldController : MonoBehaviour
     {
+
+        public EditSubMenuPlatformController platformSubMenu;
 
         // Store difference types of sprites based on platforms surrounding.
         public Sprite[] platformSprites;
@@ -31,7 +35,6 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void Start()
         {
-            //Profiler.maxNumberOfSamplesPerFrame = -1;
             // Set the unity fixed update timestep. (Used to control the frequency of PhysicsWorld.Step).
             Time.fixedDeltaTime = timeStep;
             World.Create(worldWidth, worldHeight);
@@ -97,6 +100,8 @@ namespace Assets.Scripts.General.UnityLayer
                 case TileType.Platform:
                     _tileGO.GetComponent<SpriteRenderer>().sprite = platformSprites[0];
 
+                    AddTileCollider(_tileGO);
+
                     World.Current.PlatformCount++;
                     break;
             }
@@ -137,7 +142,7 @@ namespace Assets.Scripts.General.UnityLayer
                         || (tileUp != null && tileUp.Type != TileType.Platform)
                         || (tileDown != null && tileDown.Type != TileType.Platform))
                     {
-                        AddTileCollider(tileGameObjects[x, y]);
+                        //AddTileCollider(tileGameObjects[x, y]);
                         continue;
                     }
 
@@ -149,9 +154,11 @@ namespace Assets.Scripts.General.UnityLayer
 
         private void AddTileCollider(GameObject _tileGO)
         {
-            if(_tileGO.GetComponent<RigidBodyComponent>() == null)
+            var rbc = _tileGO.GetComponent<RigidBodyComponent>();
+
+            if (rbc == null)
             {
-                var rbc = _tileGO.AddComponent<RigidBodyComponent>();
+                rbc = _tileGO.AddComponent<RigidBodyComponent>();
                 rbc.SetMass(0.0f);
                 rbc.SetIgnoreGravity(true);
                 rbc.Init();
@@ -166,6 +173,22 @@ namespace Assets.Scripts.General.UnityLayer
         {
             DestroyImmediate(_tileGO.GetComponent<BoxColliderComponent>()); 
             DestroyImmediate(_tileGO.GetComponent<RigidBodyComponent>());
+        }
+
+        /// <summary>
+        /// Sets the tile at the given X and Y material to the current material settings set by the platforms UI menu.
+        /// </summary>
+        /// <param name="_x"></param>
+        /// <param name="_y"></param>
+        public void SetTileMaterial(int _x, int _y)
+        {
+            var tileGO = tileGameObjects[_x, _y];
+            var rbc = tileGO.GetComponent<RigidBodyComponent>();
+
+            if(rbc != null)
+            {
+                rbc.RigidBody.Material = new PhysicsMaterial(platformSubMenu.Material);
+            }
         }
 
         /// <summary>
