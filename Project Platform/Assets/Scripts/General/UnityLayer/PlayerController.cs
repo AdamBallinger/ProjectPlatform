@@ -12,11 +12,13 @@ namespace Assets.Scripts.General.UnityLayer
 
         public float maxSpeed = 5f;
         public float force = 50.0f;
-        public float jumpHeight = 5.0f;
 
-        private bool isGrounded = false;
-        private bool isCollidingLeftWall = false;
-        private bool isCollidingRightWall = false;
+        [Tooltip("Height in tiles the player can jump.")]
+        public int jumpHeight = 5;
+
+        public bool isGrounded = false;
+        public bool isCollidingLeftWall = false;
+        public bool isCollidingRightWall = false;
 
         private RigidBodyComponent rigidBodyComponent;
 
@@ -32,13 +34,13 @@ namespace Assets.Scripts.General.UnityLayer
 
             if (leftWallCheck != null)
             {
-                leftWallCheck.Collider.CollisionListener.RegisterTriggerEnterCallback(OnLeftWallTriggerEnter);
+                leftWallCheck.Collider.CollisionListener.RegisterTriggerStayCallback(OnLeftWallTriggerStay);
                 leftWallCheck.Collider.CollisionListener.RegisterTriggerLeaveCallback(OnLeftWallTriggerLeave);
             }
 
             if (rightWallCheck != null)
             {
-                rightWallCheck.Collider.CollisionListener.RegisterTriggerEnterCallback(OnRightWallTriggerEnter);
+                rightWallCheck.Collider.CollisionListener.RegisterTriggerStayCallback(OnRightWallTriggerStay);
                 rightWallCheck.Collider.CollisionListener.RegisterTriggerLeaveCallback(OnRightWallTriggerLeave);
             }
         }
@@ -47,7 +49,8 @@ namespace Assets.Scripts.General.UnityLayer
         {
             if (Input.GetKey(KeyCode.Space) && isGrounded)
             {
-                rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * jumpHeight * (rigidBodyComponent.RigidBody.Mass * 2));
+                // add 0.1 to jump height as a slight offset since the player isn't the size of a full tile.
+                rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * jumpHeight * rigidBodyComponent.RigidBody.Mass * 2);
             }
 
             if(Input.GetKey(KeyCode.A) && !isCollidingLeftWall)
@@ -67,6 +70,8 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void OnGroundTriggerStay(ABCollider _collider)
         {
+            // Set grounded to true during stay as if the trigger enters a new tile, and leaves the previous after, grounded will be false 
+            // even though it is actually grounded.
             isGrounded = true;
         }
 
@@ -75,32 +80,24 @@ namespace Assets.Scripts.General.UnityLayer
             isGrounded = false;
         }
 
-        public void OnLeftWallTriggerEnter(ABCollider _collider)
+        public void OnLeftWallTriggerStay(ABCollider _collider)
         {
             isCollidingLeftWall = true;
         }
 
         public void OnLeftWallTriggerLeave(ABCollider _collider)
         {
-            // only allow left movment again if grounded (because triggers enter and leave as the object falls).
-            if(isGrounded)
-            {
-                isCollidingLeftWall = false;
-            }
+            isCollidingLeftWall = false;
         }
 
-        public void OnRightWallTriggerEnter(ABCollider _collider)
+        public void OnRightWallTriggerStay(ABCollider _collider)
         {
             isCollidingRightWall = true;
         }
 
         public void OnRightWallTriggerLeave(ABCollider _collider)
         {
-            // only allow right movment again if grounded (because triggers enter and leave as the object falls).
-            if (isGrounded)
-            {
-                isCollidingRightWall = false;
-            }
+            isCollidingRightWall = false;
         }
     }
 }
