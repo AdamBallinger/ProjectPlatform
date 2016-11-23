@@ -6,6 +6,8 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 {
     public class EditSubMenuPlatformController : MonoBehaviour
     {
+        public LevelEditorUIController editorUIController;
+        public GameObject platformSettingsPanel;
 
         public Text restitutionText;
         public Slider restitutionSlider;
@@ -28,17 +30,11 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         {
             Material = new PhysicsMaterial();
             OnDefaultButtonPress();
-            gameObject.SetActive(false);
         }
 
-        public void OnEnable()
+        public void OnPlatformSettingsButtonPress()
         {
-            toggleButton.GetComponentInChildren<Text>().text = " < ";
-        }
-
-        public void OnDisable()
-        {
-            toggleButton.GetComponentInChildren<Text>().text = " > ";
+            editorUIController.OpenSubMenu(platformSettingsPanel);
         }
 
         public void Update()
@@ -50,6 +46,9 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             Material.Restitution = restitutionSlider.value;
             Material.StaticFriction = staticFrictionSlider.value;
             Material.DynamicFriction = dynamicFrictionSlider.value;
+
+            var buttonText = editorUIController.GetActiveSubMenu() == platformSettingsPanel ? "<" : ">";
+            toggleButton.GetComponentInChildren<Text>().text = buttonText;
         }
 
         public void OnDefaultButtonPress()

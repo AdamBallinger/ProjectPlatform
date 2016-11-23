@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -10,11 +11,9 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         // Reference to mouse controller for handling building/clearing tiles.
         public MouseController mouseController;
 
-        private GameObject activeSubMenu;
-
         public GameObject fileUI;
-        public GameObject platformSubMenu;
-        public GameObject pathfindingSubMenu;
+
+        private GameObject activeSubMenu;
 
         public InputField levelName;
 
@@ -24,18 +23,13 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public void Start()
         {
             totalTilesText.text = "Total Tiles: " + World.Current.GetTileCount();
-            //levelName.text = World.Current.Load(Path.Combine(Application.persistentDataPath, "Save_Levels") + "\\AI Test Level 2.xml");
+            levelName.text = World.Current.Load(Path.Combine(Application.persistentDataPath, "Save_Levels") + "\\AI Test Level 2.xml");
         }
 
         public void OnPlatformButtonPress()
         {
             mouseController.SelectMode = SelectionMode.BuildMode;
             mouseController.TileBuildType = TileType.Platform;
-        }
-
-        public void OnPlatformSettingsButtonPress()
-        {
-            OpenSubMenu(platformSubMenu);
         }
 
         public void OnClearToolButtonPress()
@@ -46,11 +40,6 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public void OnSetPlayerSpawnButtonPress()
         {
             mouseController.SelectMode = SelectionMode.PlayerSpawnSet;
-        }
-
-        public void OnPathfindingButtonPress()
-        {
-            OpenSubMenu(pathfindingSubMenu);
         }
 
         public void OnSaveLevelButtonPress()
@@ -81,7 +70,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         /// Only 1 sub menu can be open at a time.
         /// </summary>
         /// <param name="_menu"></param>
-        private void OpenSubMenu(GameObject _menu)
+        public void OpenSubMenu(GameObject _menu)
         {
             if(activeSubMenu == null)
             {
@@ -102,6 +91,15 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
                     activeSubMenu.SetActive(true);
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns the currently active sub menu.
+        /// </summary>
+        /// <returns></returns>
+        public GameObject GetActiveSubMenu()
+        {
+            return activeSubMenu;
         }
 
         public void Update()

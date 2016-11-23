@@ -8,19 +8,22 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 {
     public class EditSubMenuPathfindingController : MonoBehaviour
     {
-
+        public LevelEditorUIController editorUIController;
         public Button pathfindingButton;
 
-        public bool displayGizmos = true;
+        public GameObject pathfindingMenu;
 
-        public void OnEnable()
+        public bool displayGizmos = false;
+
+        public void OnPathfindingButtonPress()
         {
-            pathfindingButton.GetComponentInChildren<Text>().text = "Pathfinding      <";
+            editorUIController.OpenSubMenu(pathfindingMenu);
         }
 
-        public void OnDisable()
+        public void Update()
         {
-            pathfindingButton.GetComponentInChildren<Text>().text = "Pathfinding      >";
+            var buttonText = editorUIController.GetActiveSubMenu() == pathfindingMenu ? "Pathfinding      <" : "Pathfinding      >";
+            pathfindingButton.GetComponentInChildren<Text>().text = buttonText;
         }
 
         public void OnBuildNavGraphButtonPress()
