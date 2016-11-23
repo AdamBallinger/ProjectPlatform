@@ -93,7 +93,7 @@ namespace Assets.Scripts.Physics.Colliders
             }
 
             // Restitution  0.0f - Inelastic  1.0f - full elastic
-            var e = Mathf.Sqrt(ColliderB.RigidBody.Material.Restitution * ColliderB.RigidBody.Material.Restitution);
+            var e = 0f;
 
             if(relativeVelocity.sqrMagnitude < (Time.fixedDeltaTime * World.Current.PhysicsWorld.Gravity).sqrMagnitude + Mathf.Epsilon)
             {
@@ -194,11 +194,11 @@ namespace Assets.Scripts.Physics.Colliders
 
                 var xPenetration = _aabb1.Size.x / 2 + _aabb2.Size.x / 2 - Mathf.Abs(difference.x);
 
-                if (xPenetration > 0)
+                if (xPenetration > 0.0f)
                 {
                     var yPenetration = _aabb1.Size.y / 2 + _aabb2.Size.y / 2 - Mathf.Abs(difference.y);
 
-                    if (yPenetration > 0)
+                    if (yPenetration > 0.0f)
                     {
                         if (xPenetration < yPenetration)
                         {
@@ -207,7 +207,7 @@ namespace Assets.Scripts.Physics.Colliders
                         }
                         else
                         {
-                            Normal = difference.y < 0 ? Vector2.up : Vector2.down;
+                            Normal = difference.y <= 0 ? Vector2.up : Vector2.down;
                             Penetration = yPenetration;
                         }
                     }
@@ -256,7 +256,6 @@ namespace Assets.Scripts.Physics.Colliders
         /// <param name="_circle"></param>
         private void AABB_Circle(ABBoxCollider _aabb, ABCircleCollider _circle)
         {
-            //TODO: Fix all. Only works for top face against AABB.
             _aabb.ComputeAABB();
 
             var xNear = Mathf.Max(_aabb.Min.x, Mathf.Min(_circle.Position.x, _aabb.Max.x));
@@ -270,8 +269,9 @@ namespace Assets.Scripts.Physics.Colliders
             {
                 // Collision between the circle and aabb.
                 ContactDetected = true;
-                Penetration = _circle.Radius * 2 - normal.magnitude;
-                Normal = normal.normalized;
+                Penetration = _circle.Radius - normal.magnitude;
+                Normal = _circle.Position - _aabb.Position;
+                Normal.Normalize();
             }
         }
 

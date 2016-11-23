@@ -29,7 +29,6 @@ namespace Assets.Scripts.General.UnityLayer
         [SerializeField]
         private float maxBodyVelocity = 100.0f;
 
-
         // Store private array of tile gameobjects so the unity gameobject for each tile can be modified if needed.
         private GameObject[,] tileGameObjects;
 
