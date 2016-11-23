@@ -1,5 +1,4 @@
 ﻿using Assets.Scripts.Physics.Colliders;
-using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Assets.Scripts.General.UnityLayer
@@ -27,7 +26,7 @@ namespace Assets.Scripts.General.UnityLayer
 
             if(groundCheck != null)
             {
-                groundCheck.Collider.CollisionListener.RegisterTriggerEnterCallback(OnGroundTriggerEnter);
+                groundCheck.Collider.CollisionListener.RegisterTriggerStayCallback(OnGroundTriggerStay);
                 groundCheck.Collider.CollisionListener.RegisterTriggerLeaveCallback(OnGroundTriggerLeave);
             }
 
@@ -66,7 +65,7 @@ namespace Assets.Scripts.General.UnityLayer
             rigidBodyComponent.RigidBody.LinearVelocity = vel;
         }
 
-        public void OnGroundTriggerEnter(ABCollider _collider)
+        public void OnGroundTriggerStay(ABCollider _collider)
         {
             isGrounded = true;
         }
@@ -85,7 +84,9 @@ namespace Assets.Scripts.General.UnityLayer
         {
             // only allow left movment again if grounded (because triggers enter and leave as the object falls).
             if(isGrounded)
+            {
                 isCollidingLeftWall = false;
+            }
         }
 
         public void OnRightWallTriggerEnter(ABCollider _collider)
@@ -97,7 +98,9 @@ namespace Assets.Scripts.General.UnityLayer
         {
             // only allow right movment again if grounded (because triggers enter and leave as the object falls).
             if (isGrounded)
+            {
                 isCollidingRightWall = false;
+            }
         }
     }
 }
