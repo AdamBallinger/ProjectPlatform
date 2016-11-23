@@ -52,7 +52,7 @@ namespace Assets.Scripts.Physics
             if (Collider.RigidBody.GameObject.transform.root == _colliding.RigidBody.GameObject.transform.root)
                 return;
 
-            if(_colliding.IsTrigger)
+            if(Collider.IsTrigger)
             {
                 HandleTrigger(_colliding);
             }
@@ -111,7 +111,7 @@ namespace Assets.Scripts.Physics
             }
 
             // Otherwise handle exit callback based on collider type.
-            if(_collider.IsTrigger)
+            if(Collider.IsTrigger)
             {
                 if (OnTriggerLeave != null)
                 {
