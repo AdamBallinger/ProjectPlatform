@@ -5,6 +5,12 @@ namespace Assets.Scripts.Physics
     public class PhysicsMaterial
     {
 
+        private const float defaultRestitution = 0.0f;
+
+        private const float defaultStaticFriction = 1.0f;
+
+        private const float defaultDynamicFriction = 0.8f;
+
         public float Restitution { get; set; }
 
         public float StaticFriction { get; set; }
@@ -13,10 +19,17 @@ namespace Assets.Scripts.Physics
 
         public PhysicsMaterial()
         {
-            Restitution = 0.0f;
-            StaticFriction = 1.0f;
-            DynamicFriction = 0.8f;
+            Default();
         }
 
+        /// <summary>
+        /// Set this material values to their default values.
+        /// </summary>
+        public void Default()
+        {
+            Restitution = defaultRestitution;
+            StaticFriction = defaultStaticFriction;
+            DynamicFriction = defaultDynamicFriction;
+        }
     }
 }
