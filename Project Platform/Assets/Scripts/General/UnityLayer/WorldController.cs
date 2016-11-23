@@ -149,6 +149,9 @@ namespace Assets.Scripts.General.UnityLayer
                     RemoveTileCollider(tileGameObjects[x, y]);
                 }
             }
+
+            // Updated pathing when world changes.
+            World.Current.NavGraph.ScanGraph();
         }
 
         private void AddTileCollider(GameObject _tileGO)

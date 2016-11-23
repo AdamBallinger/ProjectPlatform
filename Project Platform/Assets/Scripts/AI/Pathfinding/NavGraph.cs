@@ -126,6 +126,7 @@ namespace Assets.Scripts.AI.Pathfinding
             ComputeWalkLinks();
             ComputeFallLinks();
             ComputeJumpLinks();
+            RemoveLinklessNodes();
         }
 
         /// <summary>
@@ -228,6 +229,23 @@ namespace Assets.Scripts.AI.Pathfinding
                         || (node.NodeType == PathNodeType.Platform && node.HasLinkOfType(NodeLinkType.Fall)))
                     {
                         
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// If a node has no links then set it as a none type as its unreachable from any other node in the graph.
+        /// </summary>
+        private void RemoveLinklessNodes()
+        {
+            for(var x = 0; x < Width; x++)
+            {
+                for(var y = 0; y < Height; y++)
+                {
+                    if(Nodes[x, y].NodeLinks.Count == 0)
+                    {
+                        Nodes[x, y].NodeType = PathNodeType.None;
                     }
                 }
             }
