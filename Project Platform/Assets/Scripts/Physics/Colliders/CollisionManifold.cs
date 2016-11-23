@@ -93,7 +93,7 @@ namespace Assets.Scripts.Physics.Colliders
             }
 
             // Restitution  0.0f - Inelastic  1.0f - full elastic
-            var e = 1.0f * ColliderA.RigidBody.Material.Restitution + ColliderB.RigidBody.Material.Restitution;
+            var e = Mathf.Sqrt(ColliderB.RigidBody.Material.Restitution * ColliderB.RigidBody.Material.Restitution);
 
             if(relativeVelocity.sqrMagnitude < (Time.fixedDeltaTime * World.Current.PhysicsWorld.Gravity).sqrMagnitude + Mathf.Epsilon)
             {
@@ -121,8 +121,8 @@ namespace Assets.Scripts.Physics.Colliders
             var jt = -Vector2.Dot(relativeVelocity, tangent);
             jt /= InvMassSum;
 
-            var staticFriction = Mathf.Sqrt(ColliderA.RigidBody.Material.StaticFriction * ColliderA.RigidBody.Material.StaticFriction);
-            var dynamicFriction = Mathf.Sqrt(ColliderA.RigidBody.Material.DynamicFriction * ColliderA.RigidBody.Material.DynamicFriction);
+            var staticFriction = Mathf.Sqrt(ColliderA.RigidBody.Material.StaticFriction * ColliderB.RigidBody.Material.StaticFriction);
+            var dynamicFriction = Mathf.Sqrt(ColliderA.RigidBody.Material.DynamicFriction * ColliderB.RigidBody.Material.DynamicFriction);
 
             Vector2 tangentImpulse;
 
@@ -222,19 +222,31 @@ namespace Assets.Scripts.Physics.Colliders
         /// <param name="_circle2"></param>
         private void Circle_Circle(ABCircleCollider _circle1, ABCircleCollider _circle2)
         {
-            var normal = _circle1.Position - _circle2.Position;
-            var distSq = normal.sqrMagnitude;
-            var radius = _circle1.Radius + _circle2.Radius;
+            var direction = _circle2.Position - _circle1.Position;
+            var radiusSum = _circle1.Radius + _circle2.Radius;
 
-            if (distSq >= radius * radius)
+            if (direction.sqrMagnitude > radiusSum * radiusSum)
             {
-                // No contact between 2 circles.
+                // No contact
+                ContactDetected = false;
                 return;
             }
 
-            ContactDetected = true;
-            Penetration = radius * radius - distSq;
-            Normal = -normal.normalized;
+            var dist = direction.magnitude;
+
+            // Circles are right on top of eachother
+            if(dist == 0.0f)
+            {
+                ContactDetected = true;
+                Penetration = _circle1.Radius;
+                Normal = Vector2.up;
+            }
+            else
+            {
+                ContactDetected = true;
+                Penetration = radiusSum - dist;
+                Normal = direction / dist;
+            }
         }
 
         /// <summary>
@@ -258,7 +270,7 @@ namespace Assets.Scripts.Physics.Colliders
             {
                 // Collision between the circle and aabb.
                 ContactDetected = true;
-                Penetration = _circle.Radius - normal.sqrMagnitude;
+                Penetration = _circle.Radius * 2 - normal.magnitude;
                 Normal = normal.normalized;
             }
         }
