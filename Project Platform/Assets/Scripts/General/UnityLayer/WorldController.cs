@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.General.UnityLayer.UI.LevelEditor;
+﻿using Assets.Scripts.General.UnityLayer.Physics_Components;
+using Assets.Scripts.General.UnityLayer.UI.LevelEditor;
 using Assets.Scripts.Physics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -141,7 +142,8 @@ namespace Assets.Scripts.General.UnityLayer
                         || (tileUp != null && tileUp.Type != TileType.Platform)
                         || (tileDown != null && tileDown.Type != TileType.Platform))
                     {
-                        //AddTileCollider(tileGameObjects[x, y]);
+                        // make sure the tile has a collider.
+                        AddTileCollider(tileGameObjects[x, y]);
                         continue;
                     }
 
@@ -163,7 +165,7 @@ namespace Assets.Scripts.General.UnityLayer
                 rbc = _tileGO.AddComponent<RigidBodyComponent>();
                 rbc.SetMass(0.0f);
                 rbc.SetIgnoreGravity(true);
-                rbc.Init();
+                rbc.Create();
 
                 // Adds box collider to the tile with a default size of 1,1
                 var coll = _tileGO.AddComponent<BoxColliderComponent>();
@@ -198,7 +200,8 @@ namespace Assets.Scripts.General.UnityLayer
         /// </summary>
         public void FixedUpdate()
         {
-            if(World.Current != null && World.Current.PhysicsWorld != null)
+            // Dont step physics when inside the level editor scene.
+            if(SceneManager.GetActiveScene().name != "level_editor" && World.Current != null && World.Current.PhysicsWorld != null)
             {
                 World.Current.PhysicsWorld.Step();
             }

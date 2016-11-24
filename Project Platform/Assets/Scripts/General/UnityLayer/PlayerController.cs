@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Physics.Colliders;
+﻿using Assets.Scripts.General.UnityLayer.Physics_Components;
+using Assets.Scripts.Physics.Colliders;
 using UnityEngine;
 
 namespace Assets.Scripts.General.UnityLayer
@@ -13,7 +14,6 @@ namespace Assets.Scripts.General.UnityLayer
         public float maxSpeed = 5f;
         public float force = 50.0f;
 
-        [Tooltip("Height in tiles the player can jump.")]
         public int jumpHeight = 5;
 
         public bool isGrounded = false;
@@ -25,6 +25,11 @@ namespace Assets.Scripts.General.UnityLayer
         public void Start()
         {
             rigidBodyComponent = GetComponent<RigidBodyComponent>();
+
+            if(rigidBodyComponent.RigidBody == null)
+            {
+                rigidBodyComponent.Create();
+            }
 
             if(groundCheck != null)
             {
@@ -47,6 +52,11 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void FixedUpdate()
         {
+            if(rigidBodyComponent.RigidBody == null)
+            {
+                return;
+            }
+
             if (Input.GetKey(KeyCode.Space) && isGrounded)
             {
                 // add 0.1 to jump height as a slight offset since the player isn't the size of a full tile.
