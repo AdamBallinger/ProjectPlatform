@@ -18,6 +18,8 @@ namespace Assets.Scripts.General.UnityLayer.Physics_Components
 
         public float dampen = 200.0f;
 
+        public Constraints jointConstraints = Constraints.LOCK_POSITION_X;
+
         [SerializeField]
         private bool inspectorCreated = false;
 
@@ -37,6 +39,7 @@ namespace Assets.Scripts.General.UnityLayer.Physics_Components
                 ClearSpringJoint();
             }
 
+            _a.Constraints = jointConstraints;
             Joint = new ABSpringJoint(_a, _b);
             Joint.Stiffness = stiffness;
             Joint.RestLength = restLength;

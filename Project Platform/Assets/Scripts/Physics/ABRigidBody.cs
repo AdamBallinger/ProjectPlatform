@@ -148,5 +148,23 @@ namespace Assets.Scripts.Physics
         {
             return (Constraints & _constraint) == _constraint;
         }
+
+        /// <summary>
+        /// Adds a given constraint to the body.
+        /// </summary>
+        /// <param name="_constraint"></param>
+        public void AddConstraint(Constraints _constraint)
+        {
+            // remove the none consraint if the given constraint isn't none.
+            if(_constraint != Constraints.NONE)
+            {
+                Constraints &= ~Constraints.NONE;
+                Constraints |= _constraint;
+            }
+            else
+            {
+                _constraint = Constraints.NONE;
+            }           
+        }
     }
 }
