@@ -11,7 +11,6 @@ namespace Assets.Scripts.Physics
         NONE = 0,                       // 00000000
         LOCK_POSITION_X = (1 << 0),     // 00000001
         LOCK_POSITION_Y = (1 << 1),     // 00000010       - Binary flags representation.
-        LOCK_ROTATION = (1 << 2),       // 00000100
 
         LOCK_POSITION = LOCK_POSITION_X | LOCK_POSITION_Y   // 00000011
     }
