@@ -34,6 +34,11 @@ namespace Assets.Scripts.Physics
         private List<ABCollider> Colliders { get; set; }
 
         /// <summary>
+        /// A list of all spring joints in the current physics world.
+        /// </summary>
+        private List<ABSpringJoint> Springs { get; set; }
+
+        /// <summary>
         /// Store a list of collision pairs that have collided.
         /// </summary>
         private List<CollisionManifold> Contacts { get; set; }
@@ -51,6 +56,7 @@ namespace Assets.Scripts.Physics
             MaxBodyVelocity = _maxVelocity;
             RigidBodies = new List<ABRigidBody>();
             Colliders = new List<ABCollider>();
+            Springs = new List<ABSpringJoint>();
             Contacts = new List<CollisionManifold>();
         }
 
@@ -84,6 +90,17 @@ namespace Assets.Scripts.Physics
             Colliders.Add(_collider);
         }
 
+        public void AddSpringJoint(ABSpringJoint _joint)
+        {
+            if(Springs.Contains(_joint))
+            {
+                Debug.LogWarning("Can't add duplicate spring joints!");
+                return;
+            }
+
+            Springs.Add(_joint);
+        }
+
         /// <summary>
         /// Removes a rigidbody from the world if it exists.
         /// </summary>
@@ -115,10 +132,27 @@ namespace Assets.Scripts.Physics
         }
 
         /// <summary>
+        /// Removes a given spring joint from the world if it exists.
+        /// </summary>
+        /// <param name="_joint"></param>
+        public void RemoveSpringJoint(ABSpringJoint _joint)
+        {
+            if(Springs.Contains(_joint))
+            {
+                Springs.Remove(_joint);
+                return;
+            }
+
+            Debug.LogWarning("Attempted to remove a spring joint from world that didn't exist.");
+        }
+
+        /// <summary>
         /// Performs the physics step for the world.
         /// </summary>
         public void Step()
         {
+
+
             // Apply forces to each rigid body in the world.
             foreach (var body in RigidBodies)
             {
@@ -147,6 +181,16 @@ namespace Assets.Scripts.Physics
                 // Clear forces
                 body.Force = Vector2.zero;
                 body.Torque = 0f;
+            }
+
+            // Apply spring forces
+            foreach (var spring in Springs)
+            {
+                // Hook's law
+                var f = -spring.Stiffness * (spring.Distance.magnitude - spring.RestLength);
+                var force = spring.Distance.normalized * f;
+                spring.BodyA.AddForce(-force - spring.BodyA.LinearVelocity * spring.Dampen);
+                spring.BodyB.AddForce(force - spring.BodyB.LinearVelocity * spring.Dampen);
             }
 
             // Generate collision pairs

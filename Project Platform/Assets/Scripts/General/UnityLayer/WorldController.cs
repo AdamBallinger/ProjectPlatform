@@ -22,6 +22,9 @@ namespace Assets.Scripts.General.UnityLayer
         public Vector2 worldGravity = new Vector2(0f, -9.807f);
         public float timeStep = 0.02f;
 
+        [SerializeField]
+        private bool shouldStepPhysics = true;
+
         // Howmany iterations to resolve collisions. Higher = better collisions at cost of FPS.
         [SerializeField]
         private int solverIterations = 8;
@@ -201,7 +204,7 @@ namespace Assets.Scripts.General.UnityLayer
         public void FixedUpdate()
         {
             // Dont step physics when inside the level editor scene.
-            if(SceneManager.GetActiveScene().name != "level_editor" && World.Current != null && World.Current.PhysicsWorld != null)
+            if(shouldStepPhysics && World.Current != null && World.Current.PhysicsWorld != null)
             {
                 World.Current.PhysicsWorld.Step();
             }

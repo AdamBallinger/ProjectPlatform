@@ -71,16 +71,17 @@
     <Compile Include="Assets\Scripts\AI\Pathfinding\PathNode.cs" />
     <Compile Include="Assets\Scripts\General\Tile.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\CameraFollow.cs" />
-    <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\EditorPlayModeTransition.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\LevelManager.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\MouseController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\Physics Components\BoxColliderComponent.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\Physics Components\CircleColliderComponent.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\Physics Components\PhysicsMaterialComponent.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\Physics Components\RigidBodyComponent.cs" />
+    <Compile Include="Assets\Scripts\General\UnityLayer\Physics Components\SpringJointComponent.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\PlayerController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\EditSubMenuPathfindingController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\EditSubMenuPlatformController.cs" />
+    <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\EditorPlayModeTransition.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\FileButtonController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\LevelEditorUIController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\LoadLevelUIController.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Assets\Scripts\Physics\CollisionListener.cs" />
     <Compile Include="Assets\Scripts\Physics\PhysicsMaterial.cs" />
     <Compile Include="Assets\Scripts\Physics\PhysicsWorld.cs" />
+    <Compile Include="Assets\Scripts\Physics\ABSpringJoint.cs" />
     <Compile Include="Assets\TK2DROOT\tk2d\Code\Camera\tk2dCamera.cs" />
     <Compile Include="Assets\TK2DROOT\tk2d\Code\Camera\tk2dCameraAnchor.cs" />
     <Compile Include="Assets\TK2DROOT\tk2d\Code\Camera\tk2dCameraUtil.cs" />
