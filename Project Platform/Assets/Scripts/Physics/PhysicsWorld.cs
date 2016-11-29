@@ -154,8 +154,8 @@ namespace Assets.Scripts.Physics
             // Apply forces to each rigid body in the world.
             foreach (var body in RigidBodies)
             {
-                // Ignore infinite mass bodies and sleeping bodies.
-                if(body.InvMass == 0.0f || body.Sleeping) continue;
+                // Ignore infinite mass bodies, sleeping bodies, and bodies with the lock position constraints.
+                if(body.InvMass == 0.0f || body.Sleeping || body.HasConstraint(Constraints.LOCK_POSITION)) continue;
                 
                 var acceleration = body.Force * body.InvMass;
 
@@ -173,6 +173,22 @@ namespace Assets.Scripts.Physics
 
                 // Clamp body velocity to the maximum allowed amount
                 body.LinearVelocity = Vector2.ClampMagnitude(body.LinearVelocity, MaxBodyVelocity);
+
+                // Apply X position constraint if present on the body.
+                if(body.HasConstraint(Constraints.LOCK_POSITION_X))
+                {
+                    var vel = body.LinearVelocity;
+                    vel.x = 0.0f;
+                    body.LinearVelocity = vel;
+                }
+
+                // Apply Y position constraint if present on the body.
+                if (body.HasConstraint(Constraints.LOCK_POSITION_Y))
+                {
+                    var vel = body.LinearVelocity;
+                    vel.y = 0.0f;
+                    body.LinearVelocity = vel;
+                }
 
                 body.Position += body.LinearVelocity * Time.fixedDeltaTime;
 
