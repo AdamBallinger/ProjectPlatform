@@ -126,6 +126,16 @@ namespace Assets.Scripts.Physics
         /// <param name="_force"></param>
         public void AddForce(Vector2 _force)
         {
+            if(HasConstraint(Constraints.LOCK_POSITION_X))
+            {
+                _force.x = 0.0f;
+            }
+
+            if(HasConstraint(Constraints.LOCK_POSITION_Y))
+            {
+                _force.y = 0.0f;
+            }
+
             Force += _force;
         }
 
@@ -135,6 +145,16 @@ namespace Assets.Scripts.Physics
         /// <param name="_impulse"></param>
         public void AddImpulse(Vector2 _impulse)
         {
+            if (HasConstraint(Constraints.LOCK_POSITION_X))
+            {
+                _impulse.x = 0.0f;
+            }
+
+            if (HasConstraint(Constraints.LOCK_POSITION_Y))
+            {
+                _impulse.y = 0.0f;
+            }
+
             LinearVelocity += InvMass * _impulse;
         }
 

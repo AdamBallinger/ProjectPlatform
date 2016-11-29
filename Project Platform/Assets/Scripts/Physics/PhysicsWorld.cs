@@ -151,6 +151,16 @@ namespace Assets.Scripts.Physics
         /// </summary>
         public void Step()
         {
+            // Apply spring forces
+            foreach (var spring in Springs)
+            {
+                // Hook's law
+                var f = -spring.Stiffness * (spring.Distance.magnitude - spring.RestLength);
+                var force = spring.Distance.normalized * f;
+                spring.BodyA.AddForce(-force - spring.BodyA.LinearVelocity * spring.Dampen);
+                spring.BodyB.AddForce(force - spring.BodyB.LinearVelocity * spring.Dampen);
+            }
+
             // Apply forces to each rigid body in the world.
             foreach (var body in RigidBodies)
             {
@@ -174,37 +184,11 @@ namespace Assets.Scripts.Physics
                 // Clamp body velocity to the maximum allowed amount
                 body.LinearVelocity = Vector2.ClampMagnitude(body.LinearVelocity, MaxBodyVelocity);
 
-                // Apply X position constraint if present on the body.
-                if(body.HasConstraint(Constraints.LOCK_POSITION_X))
-                {
-                    var vel = body.LinearVelocity;
-                    vel.x = 0.0f;
-                    body.LinearVelocity = vel;
-                }
-
-                // Apply Y position constraint if present on the body.
-                if (body.HasConstraint(Constraints.LOCK_POSITION_Y))
-                {
-                    var vel = body.LinearVelocity;
-                    vel.y = 0.0f;
-                    body.LinearVelocity = vel;
-                }
-
                 body.Position += body.LinearVelocity * Time.fixedDeltaTime;
 
                 // Clear forces
                 body.Force = Vector2.zero;
                 body.Torque = 0f;
-            }
-
-            // Apply spring forces
-            foreach (var spring in Springs)
-            {
-                // Hook's law
-                var f = -spring.Stiffness * (spring.Distance.magnitude - spring.RestLength);
-                var force = spring.Distance.normalized * f;
-                spring.BodyA.AddForce(-force - spring.BodyA.LinearVelocity * spring.Dampen);
-                spring.BodyB.AddForce(force - spring.BodyB.LinearVelocity * spring.Dampen);
             }
 
             // Generate collision pairs
