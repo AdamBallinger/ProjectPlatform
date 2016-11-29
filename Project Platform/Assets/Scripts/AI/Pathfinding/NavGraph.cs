@@ -225,6 +225,31 @@ namespace Assets.Scripts.AI.Pathfinding
                         || (node.NodeType == PathNodeType.Platform && node.HasLinkOfType(NodeLinkType.Fall)))
                     {
                         // Computer trajectories here (left and right).
+                        for(var i = 1; i <= 3; i++)
+                        {
+                            var jumpHeight = /* TODO: Change this number */ 5f * (i / 3);
+                            for(var j = 1; j <= 3; j++)
+                            {
+                                var jumpSpeed = /* TODO: Change this number */ 5f * (j / 3);
+
+                                var leftTrajectory = new JumpTrajectory(new Vector2(node.X, node.Y), TrajectoryDirection.Left, jumpHeight, jumpSpeed);
+                                var rightTrajectory = new JumpTrajectory(new Vector2(node.X, node.Y), TrajectoryDirection.Right, jumpHeight, jumpSpeed);
+                                
+                                if(leftTrajectory.IsValidJump())
+                                {
+                                    var link = new NodeLink(leftTrajectory.LandingNode, NodeLinkType.Jump);
+                                    link.SetData(leftTrajectory);
+                                    node.AddLink(link);
+                                }
+
+                                if(rightTrajectory.IsValidJump())
+                                {
+                                    var link = new NodeLink(rightTrajectory.LandingNode, NodeLinkType.Jump);
+                                    link.SetData(rightTrajectory);
+                                    node.AddLink(link);
+                                }
+                            }
+                        }
                     }
                 }
             }

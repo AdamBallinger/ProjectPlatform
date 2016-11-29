@@ -98,17 +98,24 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
                                 case NodeLinkType.Jump:
                                     Gizmos.color = Color.green;
-                                    var trajectory = link.GetData<JumpTrajectory>().Trajectory;
-                                    var lastPoint = trajectory[0];
-                                    for(var i = 1; i < trajectory.Count - 1; i++)
-                                    {
-                                        Gizmos.DrawLine(lastPoint, trajectory[i]);
-                                        lastPoint = trajectory[i];
-                                    }
                                     break;
                             }
 
-                            Gizmos.DrawLine(new Vector2(x, y - 0.5f), new Vector2(link.DestinationNode.X, link.DestinationNode.Y - 0.5f));
+                            if (link.LinkType == NodeLinkType.Jump)
+                            {
+                                var trajectory = link.GetData<JumpTrajectory>().Trajectory;
+
+                                for (var i = 0; i < trajectory.Count - 2; i++)
+                                {
+                                    Gizmos.DrawLine(trajectory[i], trajectory[i + 1]);
+                                }
+                            }
+                            else
+                            {
+                                Gizmos.DrawLine(new Vector2(x, y - 0.5f), new Vector2(link.DestinationNode.X, link.DestinationNode.Y - 0.5f));
+                            }
+
+                            //Gizmos.DrawLine(new Vector2(x, y - 0.5f), new Vector2(link.DestinationNode.X, link.DestinationNode.Y - 0.5f));
                         }
                     }
                 }

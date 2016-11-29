@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using Assets.Scripts.General;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Pathfinding
 {
     public enum TrajectoryDirection
     {
-        Left,
-        Right
+        Left = -1,      // Invert left direction (-velocity)
+        Right = 1
     }
 
     public class JumpTrajectory
@@ -18,9 +19,14 @@ namespace Assets.Scripts.AI.Pathfinding
         public Vector2 StartPoint { get; private set; }
 
         /// <summary>
+        /// Starting node for the trajectory.
+        /// </summary>
+        public PathNode StartNode { get; private set; }
+
+        /// <summary>
         /// The direction for this trajectory. (left of right)
         /// </summary>
-        public TrajectoryDirection Direction { get; private set; }
+        private TrajectoryDirection Direction { get; set; }
 
         /// <summary>
         /// Jump height for this jump trajectory.
@@ -37,19 +43,49 @@ namespace Assets.Scripts.AI.Pathfinding
         /// </summary>
         public List<Vector2> Trajectory { get; private set; }
 
+        /// <summary>
+        /// Path node this trajectory lands on (if any).
+        /// </summary>
+        public PathNode LandingNode { get; private set; }
+
+        /// <summary>
+        /// Max number of points to create when calculating a trajectory.
+        /// </summary>
+        private const int maxTrajectoryPoints = 25;
+
+        /// <summary>
+        /// Time to simulate between each trajectory point.
+        /// </summary>
+        private const float timeBetweenPoints = 0.2f;
+
         public JumpTrajectory(Vector2 _start, TrajectoryDirection _direction, float _jumpHeight, float _jumpSpeed)
         {
             Trajectory = new List<Vector2>();
             StartPoint = _start;
             Direction = _direction;
             JumpHeight = _jumpHeight;
-            JumpSpeed = _jumpSpeed;
+            JumpSpeed = _jumpSpeed * (float)Direction;
+
+            StartNode = World.Current.NavGraph.Nodes[(int)StartPoint.x, (int)StartPoint.y];
+            
+            CalculateTrajectory();
         }
 
         private void CalculateTrajectory()
         {
             Trajectory.Clear();
 
+            // time between each point
+            var time = 0.0f;
+
+            for(var i = 0; i < maxTrajectoryPoints; i++)
+            {
+                var dx = JumpSpeed * time;
+                var dy = JumpHeight * time - (World.Current.PhysicsWorld.Gravity.magnitude * time * time / 2.0f);
+                var point = new Vector2(StartPoint.x + dx, StartPoint.y + dy);
+                Trajectory.Add(point);
+                time += timeBetweenPoints;
+            }
         }
 
         /// <summary>
@@ -59,6 +95,26 @@ namespace Assets.Scripts.AI.Pathfinding
         /// <returns></returns>
         public bool IsValidJump()
         {
+            foreach(var point in Trajectory)
+            {
+                var tileAtPoint = World.Current.GetTileAtWorldCoord(point);
+                var tileAbovePoint = World.Current.GetTileAt(tileAtPoint.X, tileAtPoint.Y);
+
+                if((tileAtPoint != null && tileAtPoint.Type == TileType.Empty)
+                    && tileAbovePoint != null && tileAbovePoint.Type == TileType.Empty)
+                {
+                    var nodeAtPoint = World.Current.NavGraph.Nodes[tileAtPoint.X, tileAtPoint.Y];
+                    if(nodeAtPoint.NodeType != PathNodeType.None)
+                    {
+                        LandingNode = nodeAtPoint;
+                        return true;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
 
             return false;
         }
