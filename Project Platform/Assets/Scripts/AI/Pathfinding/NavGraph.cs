@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using Assets.Scripts.General;
+﻿using Assets.Scripts.General;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Pathfinding
@@ -52,16 +50,13 @@ namespace Assets.Scripts.AI.Pathfinding
         /// </summary>
         private void PlaceNodes()
         {
-            // Is there a platform thats already been started. To begin with no.
-            var hasPlatformStarted = false;
-
             // Store the currently started platforms ID.
             var currentPlatformID = 0;
 
             for (var y = 0; y < Height; y++)
             {
-                // Y axis has increased so force a new platform.
-                hasPlatformStarted = false;
+                // Is there a platform thats already been started. When starting on a new Y level, then there isn't a current platform.
+                var hasPlatformStarted = false;
 
                 // Go through each row in the world
                 for (var x = 0; x < Width; x++)
@@ -101,8 +96,8 @@ namespace Assets.Scripts.AI.Pathfinding
                         
                         // if the lower right tile is an empty tile OR the tile to the right is a platform
                         // We need to check then if the tile is a single platform node or the right edge of a platform.
-                        if (tileLowerRight != null && tileLowerRight.Type == TileType.Empty
-                            || tileRight != null && tileRight.Type == TileType.Platform)
+                        if ((tileLowerRight != null && tileLowerRight.Type == TileType.Empty)
+                            || (tileRight != null && tileRight.Type == TileType.Platform))
                         {
                             // If the current node is a left edge node then change the node to be a single node type.
                             // otherwise set it as a right edge node.
@@ -126,7 +121,6 @@ namespace Assets.Scripts.AI.Pathfinding
             ComputeWalkLinks();
             ComputeFallLinks();
             ComputeJumpLinks();
-            RemoveLinklessNodes();
         }
 
         /// <summary>
@@ -142,7 +136,9 @@ namespace Assets.Scripts.AI.Pathfinding
                     {
                         if(Nodes[x + 1, y] != null && Nodes[x + 1, y].NodeType != PathNodeType.None)
                         {
+                            // Add walk links both ways.
                             Nodes[x, y].AddLink(new NodeLink(Nodes[x + 1, y], NodeLinkType.Walk));
+                            Nodes[x + 1, y].AddLink(new NodeLink(Nodes[x, y], NodeLinkType.Walk));
                         }
                     }
                 }
@@ -228,24 +224,7 @@ namespace Assets.Scripts.AI.Pathfinding
                     if(node.NodeType == PathNodeType.LeftEdge || node.NodeType == PathNodeType.RightEdge || node.NodeType == PathNodeType.Single
                         || (node.NodeType == PathNodeType.Platform && node.HasLinkOfType(NodeLinkType.Fall)))
                     {
-                        
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// If a node has no links then set it as a none type as its unreachable from any other node in the graph.
-        /// </summary>
-        private void RemoveLinklessNodes()
-        {
-            for(var x = 0; x < Width; x++)
-            {
-                for(var y = 0; y < Height; y++)
-                {
-                    if(Nodes[x, y].NodeLinks.Count == 0)
-                    {
-                        Nodes[x, y].NodeType = PathNodeType.None;
+                        // Computer trajectories here (left and right).
                     }
                 }
             }

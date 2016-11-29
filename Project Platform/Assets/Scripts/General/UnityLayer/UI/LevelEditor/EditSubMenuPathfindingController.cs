@@ -56,19 +56,20 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
                     {
                         var nodeType = nodes[x, y].NodeType;
 
-                        if (nodeType == PathNodeType.LeftEdge || nodeType == PathNodeType.RightEdge)
+                        switch (nodeType)
                         {
-                            Gizmos.color = Color.magenta;
-                        }
+                            case PathNodeType.LeftEdge:
+                            case PathNodeType.RightEdge:
+                                Gizmos.color = Color.magenta;
+                                break;
 
-                        if (nodeType == PathNodeType.Platform)
-                        {
-                            Gizmos.color = Color.black;
-                        }
+                            case PathNodeType.Platform:
+                                Gizmos.color = Color.black;
+                                break;
 
-                        if (nodeType == PathNodeType.Single)
-                        {
-                            Gizmos.color = Color.yellow;
+                            case PathNodeType.Single:
+                                Gizmos.color = Color.yellow;
+                                break;
                         }
 
                         Gizmos.DrawCube(new Vector2(x, y - 0.5f), Vector2.one * 0.4f);
@@ -97,6 +98,13 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
                                 case NodeLinkType.Jump:
                                     Gizmos.color = Color.green;
+                                    var trajectory = link.GetData<JumpTrajectory>().Trajectory;
+                                    var lastPoint = trajectory[0];
+                                    for(var i = 1; i < trajectory.Count - 1; i++)
+                                    {
+                                        Gizmos.DrawLine(lastPoint, trajectory[i]);
+                                        lastPoint = trajectory[i];
+                                    }
                                     break;
                             }
 

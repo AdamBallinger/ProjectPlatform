@@ -16,8 +16,8 @@ namespace Assets.Scripts.General.UnityLayer
 
         public Sprite gridSprite;
 
-        public int worldWidth = 128;
-        public int worldHeight = 128;
+        public int worldWidth = 60;
+        public int worldHeight = 30;
 
         public Vector2 worldGravity = new Vector2(0f, -9.807f);
         public float timeStep = 0.02f;
