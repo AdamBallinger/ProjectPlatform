@@ -151,8 +151,6 @@ namespace Assets.Scripts.Physics
         /// </summary>
         public void Step()
         {
-
-
             // Apply forces to each rigid body in the world.
             foreach (var body in RigidBodies)
             {
@@ -248,7 +246,7 @@ namespace Assets.Scripts.Physics
                     var colliderPair = new CollisionManifold(Colliders[i], Colliders[j]);
 
                     // Limit the distance to check for collisions. Hacky but for now works
-                    // until I get around to spatial partitioning.
+                    // until I get around to TODO: spatial partitioning.
                     if (dist <= 10.0f)
                     {
                         colliderPair.Solve();
@@ -259,7 +257,7 @@ namespace Assets.Scripts.Physics
                         }
                         else
                         {
-                            // if no contact detected for this pair, check if the pair should trigger any exit callbacks.
+                            // if no contact detected for this pair, check if the pair should trigger any collision exit callbacks.
                             colliderPair.ColliderA.CollisionListener.HandleExit(colliderPair.ColliderB);
                             colliderPair.ColliderB.CollisionListener.HandleExit(colliderPair.ColliderA);
                         }
