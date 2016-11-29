@@ -162,8 +162,18 @@ namespace Assets.Scripts.Physics
             }
             else
             {
-                _constraint = Constraints.NONE;
+                // If adding the NONE constraint set the current constraints to none, clearing any previous constraints.
+                Constraints = Constraints.NONE;
             }           
+        }
+
+        /// <summary>
+        /// Sets this bodies constraints to the given constraints, clearing any previously set constraints.
+        /// </summary>
+        /// <param name="_constraints"></param>
+        public void SetConstraints(Constraints _constraints)
+        {
+            Constraints = _constraints;
         }
     }
 }

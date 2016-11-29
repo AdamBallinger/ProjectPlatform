@@ -39,7 +39,7 @@ namespace Assets.Scripts.General.UnityLayer.Physics_Components
                 ClearSpringJoint();
             }
 
-            _a.Constraints = jointConstraints;
+            _a.SetConstraints(jointConstraints);
             Joint = new ABSpringJoint(_a, _b);
             Joint.Stiffness = stiffness;
             Joint.RestLength = restLength;
