@@ -23,8 +23,8 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public void Start()
         {
             totalTilesText.text = "Total Tiles: " + World.Current.GetTileCount();
-            levelName.text = FindObjectOfType<WorldController>().Load(Directories.Stock_Levels_Directory + "\\AI Test Level 2.xml",
-                                                                        Directories.Stock_Levels_Data_Directory + "\\AI Test Level 2.xml");
+            //levelName.text = FindObjectOfType<WorldController>().Load(Directories.Stock_Levels_Directory + "\\AI Test Level 2.xml",
+            //                                                            Directories.Stock_Levels_Data_Directory + "\\AI Test Level 2.xml");
         }
 
         public void OnPlatformButtonPress()

@@ -49,6 +49,11 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
                 var fileEntry = Instantiate(fileEntryPrefab);
                 fileEntryObjects.Add(fileEntry);
                 fileEntry.transform.SetParent(fileListObject.transform, false);
+                if(_type == LevelFileTypes.Stock)
+                {
+                    // Hide the delete button from stock levels.
+                    fileEntry.transform.FindChild("Delete").gameObject.SetActive(false);
+                }
                 fileEntry.GetComponentInChildren<Text>().text = Path.GetFileName(file);
                 fileEntry.GetComponent<FileButtonController>().LoadFile = file;
                 fileEntry.GetComponent<FileButtonController>().LoadDataFile = fileDataDirectories[fileDirectories.IndexOf(file)];

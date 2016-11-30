@@ -1,9 +1,10 @@
 ﻿using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Assets.Scripts.General.UnityLayer
+namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 {
     public class EditorPlayModeTransition : MonoBehaviour
     {
@@ -32,8 +33,15 @@ namespace Assets.Scripts.General.UnityLayer
         {
             if(SceneManager.GetActiveScene().name == "level_editor")
             {
-                World.Current.Save(levelName.text);
-                PlayModeLevel = Path.Combine(Application.persistentDataPath, "Save_Levels" + "\\" + levelName.text + ".xml");
+                var levName = levelName.text;
+
+                if(levName.All(char.IsLetter))
+                {
+                    levName = "un-named level";
+                }
+
+                FindObjectOfType<WorldController>().Save(levName);
+                PlayModeLevel = Path.Combine(Application.persistentDataPath, "Save_Levels" + "\\" + levName + ".xml");
                 SceneManager.LoadScene("editor_playmode");
             }
         }
