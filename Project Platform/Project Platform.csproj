@@ -129,8 +129,8 @@
     <Compile Include="Assets\TK2DROOT\tk2d\Code\tk2dUtil.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\StreamingAssets\AI Test Level 1.xml" />
-    <None Include="Assets\StreamingAssets\AI Test Level 2.xml" />
+    <None Include="Assets\StreamingAssets\Stock_Levels\AI Test Level 1.xml" />
+    <None Include="Assets\StreamingAssets\Stock_Levels\AI Test Level 2.xml" />
     <None Include="Assets\TK2DROOT\tk2d\Editor\EditorUtility.shader" />
     <None Include="Assets\TK2DROOT\tk2d\Goodies\TexturePacker\Exporter\2dtoolkit\exporter.xml" />
     <None Include="Assets\TK2DROOT\tk2d\Shaders\AdditiveVertexColor.shader" />

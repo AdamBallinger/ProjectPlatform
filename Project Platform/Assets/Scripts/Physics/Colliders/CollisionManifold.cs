@@ -158,9 +158,31 @@ namespace Assets.Scripts.Physics.Colliders
             var penetrationCorrection = 0.6f; // % correction
 
             var correctionVector = Mathf.Max(Penetration - pentrationAllowance, 0.0f) / InvMassSum * Normal * penetrationCorrection;
+            var correctionA = correctionVector;
+            var correctionB = correctionVector;
 
-            ColliderA.RigidBody.Position -= correctionVector * ColliderA.RigidBody.InvMass;
-            ColliderB.RigidBody.Position += correctionVector * ColliderB.RigidBody.InvMass;
+            if(ColliderA.RigidBody.HasConstraint(Constraints.LOCK_POSITION_X))
+            {
+                correctionA.x = 0.0f;
+            }
+
+            if(ColliderA.RigidBody.HasConstraint(Constraints.LOCK_POSITION_Y))
+            {
+                correctionA.y = 0.0f;
+            }
+
+            if (ColliderB.RigidBody.HasConstraint(Constraints.LOCK_POSITION_X))
+            {
+                correctionB.x = 0.0f;
+            }
+
+            if (ColliderB.RigidBody.HasConstraint(Constraints.LOCK_POSITION_Y))
+            {
+                correctionB.y = 0.0f;
+            }
+
+            ColliderA.RigidBody.Position -= correctionA * ColliderA.RigidBody.InvMass;
+            ColliderB.RigidBody.Position += correctionB * ColliderB.RigidBody.InvMass;
         }
 
         /// <summary>
