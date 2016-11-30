@@ -6,12 +6,14 @@ namespace Assets.Scripts.General
     public class Directories
     {
         /// <summary>
-        /// Directory for saved levels XML files to be written to. (Normal save files only contain basic level information, tile positions and tile type data.
+        /// Directory for saved levels XML files to be written to. 
+        /// (Normal save files only contain basic level information, tile positions and properties etc.
         /// </summary>
         public static readonly string Save_Levels_Directory = Path.Combine(Application.persistentDataPath, "Save_Levels");
 
         /// <summary>
-        /// Directory for saved levels data XML files to be written to. (Data files contains tiles physics properties, pickup positions etc.)
+        /// Directory for saved levels data XML files to be written to. 
+        /// (Data files contains pickup positions and other none tile objects etc.)
         /// </summary>
         public static readonly string Save_Levels_Data_Directory = Path.Combine(Save_Levels_Directory, "Level_Data");
 
@@ -27,7 +29,8 @@ namespace Assets.Scripts.General
 
 
         /// <summary>
-        /// Checks that the required directories for saveing and loading levels exist, and creates them if they don't.
+        /// Checks that the required directories for saveing and loading levels exist,
+        /// and creates them if they don't.
         /// </summary>
         public static void CheckDirectories()
         {

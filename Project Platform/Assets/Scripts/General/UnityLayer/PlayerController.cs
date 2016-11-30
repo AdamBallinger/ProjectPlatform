@@ -121,7 +121,7 @@ namespace Assets.Scripts.General.UnityLayer
         {
             if(_collider.RigidBody.GameObject.tag == "Coin")
             {
-                // Destroy coin object and add to player score.
+                // TODO: Destroy coin object and add to player score.
                 Debug.Log("Collided with coin.");
                 Destroy(_collider.RigidBody.GameObject);
             }

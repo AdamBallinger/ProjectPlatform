@@ -1,4 +1,6 @@
-﻿using Assets.Scripts.General.UnityLayer.Physics_Components;
+﻿using System.IO;
+using System.Xml;
+using Assets.Scripts.General.UnityLayer.Physics_Components;
 using Assets.Scripts.General.UnityLayer.UI.LevelEditor;
 using Assets.Scripts.Physics;
 using UnityEngine;
@@ -10,6 +12,11 @@ namespace Assets.Scripts.General.UnityLayer
     {
 
         public EditSubMenuPlatformController platformSubMenu;
+
+        /// <summary>
+        /// Prefab for the coin pickup object.
+        /// </summary>
+        public GameObject coinPrefab;
 
         // Store difference types of sprites based on platforms surrounding.
         public Sprite[] platformSprites;
@@ -36,6 +43,11 @@ namespace Assets.Scripts.General.UnityLayer
         // Store private array of tile gameobjects so the unity gameobject for each tile can be modified if needed.
         private GameObject[,] tileGameObjects;
 
+        /// <summary>
+        /// Array of coin pickups in the world.
+        /// </summary>
+        private GameObject[,] coinObjects;
+
         public void Start()
         {
             // Set the unity fixed update timestep. (Used to control the frequency of PhysicsWorld.Step).
@@ -45,6 +57,7 @@ namespace Assets.Scripts.General.UnityLayer
             World.Current.RegisterWorldModifyFinishCallback(OnWorldChangeFinish);
 
             tileGameObjects = new GameObject[worldWidth, worldHeight];
+            coinObjects = new GameObject[worldWidth, worldHeight];
 
             // Setup the Unity Gameobjects for the Tiles.
             for(var x = 0; x < World.Current.Width; x++)
@@ -132,6 +145,12 @@ namespace Assets.Scripts.General.UnityLayer
                         continue;
                     }
 
+                    if(coinObjects[x, y] != null)
+                    {
+                        // remove a coin if the tile  at current x and y was changed from an empty tile.
+                        RemoveCoinPickup(new Vector2(x, y));
+                    }
+
                     var tileLeft = World.Current.GetTileAt(x - 1, y);
                     var tileRight = World.Current.GetTileAt(x + 1, y);
                     var tileUp = World.Current.GetTileAt(x, y + 1);
@@ -199,6 +218,45 @@ namespace Assets.Scripts.General.UnityLayer
         }
 
         /// <summary>
+        /// Adds a coin pickup object at the given world coordinate.
+        /// </summary>
+        /// <param name="_coord"></param>
+        public void AddCoinPickup(Vector2 _coord)
+        {
+            var worldCoord = _coord;
+            var gridCoord = World.Current.WorldPointToGridPoint(worldCoord);
+            var gridX = (int) gridCoord.x;
+            var gridY = (int) gridCoord.y;
+
+            if((coinObjects[gridX, gridY] != null) || (World.Current.GetTileAt(gridX, gridY).Type != TileType.Empty))
+            {
+                // dont allow coins to be placed at same position or on a tile that isn't empty.
+                return;
+            }
+
+            var coinObject = Instantiate(coinPrefab, worldCoord, Quaternion.identity) as GameObject;
+
+            coinObjects[gridX, gridY] = coinObject;
+        }
+
+        /// <summary>
+        /// Removes a coin pickup from the given world/grid coordinate.
+        /// Coordinates are recalculated regardless of what type is given.
+        /// </summary>
+        /// <param name="_coord"></param>
+        public void RemoveCoinPickup(Vector2 _coord)
+        {
+            var gridCoord = World.Current.WorldPointToGridPoint(_coord);
+            var gridX = (int) gridCoord.x;
+            var gridY = (int) gridCoord.y;
+
+            if(coinObjects[gridX, gridY] != null)
+            {
+                DestroyImmediate(coinObjects[gridX, gridY]);
+            }
+        }
+
+        /// <summary>
         /// Use Unity fixed update for stepping physics world. Timestep is determined by Time.fixedDeltaTime. (0.02 by default)
         /// </summary>
         public void FixedUpdate()
@@ -219,19 +277,79 @@ namespace Assets.Scripts.General.UnityLayer
         /// <summary>
         /// Saves the current world to the disk with the given filename.
         /// </summary>
-        /// <param name="_saveFile">File name for save file (Not full directory).</param>
+        /// <param name="_saveFile">File name for save file (Level name and not full directory or file extension).</param>
         public void Save(string _saveFile)
         {
             World.Current.Save(_saveFile);
+            Debug.Log("Saving level data for level: " + _saveFile);
+
+            var settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.IndentChars = "    ";
+            settings.NewLineOnAttributes = false;
+
+            Directories.CheckDirectories();
+
+            var saveFileLocation = Path.Combine(Directories.Save_Levels_Data_Directory, _saveFile + ".xml");
+
+            using (var xmlWriter = XmlWriter.Create(saveFileLocation, settings))
+            {
+                xmlWriter.WriteStartDocument();
+
+                xmlWriter.WriteStartElement("LevelCoinPickupsData");
+
+                // Write coin pickup data to file.
+                for(var x = 0; x < worldWidth; x++)
+                {
+                    for(var y = 0; y < worldHeight; y++)
+                    {
+                        // If there isnt a coin at current x,y then continue.
+                        if (coinObjects[x, y] == null) continue;
+
+                        xmlWriter.WriteStartElement("CoinPickup");
+                        xmlWriter.WriteAttributeString("X", x.ToString());
+                        xmlWriter.WriteAttributeString("Y", y.ToString());
+                        xmlWriter.WriteEndElement();
+                    }
+                }
+
+                xmlWriter.WriteEndElement();
+                xmlWriter.WriteEndDocument();
+            }
+
+            Debug.Log("Finished saving level data for level: " + _saveFile);
         }
 
         /// <summary>
-        /// Loads the given file (full directory) from disk.
+        /// Loads the given file (full directory) from disk and returns the name of the loaded level.
         /// </summary>
-        /// <param name="_loadFile"></param>
-        public void Load(string _loadFile)
+        /// <param name="_loadFile">Directory for the save level XML file.</param>
+        /// <param name="_loadDataFile">Directory for the save level data XML file.</param>
+        public string Load(string _loadFile, string _loadDataFile)
         {
-            World.Current.Load(_loadFile);
+            var levelName = World.Current.Load(_loadFile);
+            Debug.Log("Loading level data for level: " + levelName + " from: " + _loadDataFile);
+
+            using (var xmlReader = XmlReader.Create(_loadDataFile))
+            {
+                while (xmlReader.Read())
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        switch (xmlReader.Name)
+                        {
+                            case "CoinPickup":
+                                var cX = int.Parse(xmlReader["X"]);
+                                var cY = int.Parse(xmlReader["Y"]);
+                                AddCoinPickup(new Vector2(cX, cY));
+                                break;
+                        }
+                    }
+                }
+            }
+
+            Debug.Log("Finished loading level data for level: " + levelName);
+            return levelName;
         }
 
         /// <summary>

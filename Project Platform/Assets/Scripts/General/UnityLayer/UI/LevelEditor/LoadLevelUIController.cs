@@ -15,12 +15,15 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public Button cancelButton;
 
         private List<string> fileDirectories = new List<string>();
+        private List<string> fileDataDirectories = new List<string>();
 
         private List<GameObject> fileEntryObjects = new List<GameObject>();
 
         public void OnEnable()
         {
+            Directories.CheckDirectories();
             fileDirectories.Clear();
+            fileDataDirectories.Clear();
             AddLevelFilesToWindow();
         }
 
@@ -31,8 +34,11 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         private void AddLevelFilesToWindow()
         {
-            var saveFolder = Path.Combine(Application.persistentDataPath, "Save_Levels");
+            var saveFolder = Directories.Save_Levels_Directory;
+            var saveDataFolder = Directories.Save_Levels_Data_Directory;
+
             fileDirectories.AddRange(Directory.GetFiles(saveFolder));
+            fileDataDirectories.AddRange(Directory.GetFiles(saveDataFolder));
 
             foreach (var file in fileDirectories)
             {
@@ -41,6 +47,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
                 fileEntry.transform.SetParent(fileListObject.transform, false);
                 fileEntry.GetComponentInChildren<Text>().text = Path.GetFileName(file);
                 fileEntry.GetComponent<FileButtonController>().LoadFile = file;
+                fileEntry.GetComponent<FileButtonController>().LoadDataFile = fileDataDirectories[fileDirectories.IndexOf(file)];
             }
         }
 
