@@ -158,6 +158,7 @@ namespace Assets.Scripts.Physics.Colliders
             var penetrationCorrection = 0.6f; // % correction
 
             var correctionVector = Mathf.Max(Penetration - pentrationAllowance, 0.0f) / InvMassSum * Normal * penetrationCorrection;
+
             ColliderA.RigidBody.Position -= correctionVector * ColliderA.RigidBody.InvMass;
             ColliderB.RigidBody.Position += correctionVector * ColliderB.RigidBody.InvMass;
         }

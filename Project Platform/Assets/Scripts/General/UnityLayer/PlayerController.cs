@@ -11,6 +11,8 @@ namespace Assets.Scripts.General.UnityLayer
         public BoxColliderComponent leftWallCheck;
         public BoxColliderComponent rightWallCheck;
 
+        public BoxColliderComponent playerBody;
+
         public float maxSpeed = 5f;
         public float force = 50.0f;
 
@@ -47,6 +49,11 @@ namespace Assets.Scripts.General.UnityLayer
             {
                 rightWallCheck.Collider.CollisionListener.RegisterTriggerStayCallback(OnRightWallTriggerStay);
                 rightWallCheck.Collider.CollisionListener.RegisterTriggerLeaveCallback(OnRightWallTriggerLeave);
+            }
+
+            if(playerBody != null)
+            {
+                playerBody.Collider.CollisionListener.RegisterTriggerEnterCallback(OnBodyTriggerEnter);
             }
         }
 
@@ -108,6 +115,16 @@ namespace Assets.Scripts.General.UnityLayer
         public void OnRightWallTriggerLeave(ABCollider _collider)
         {
             isCollidingRightWall = false;
+        }
+
+        public void OnBodyTriggerEnter(ABCollider _collider)
+        {
+            if(_collider.RigidBody.GameObject.tag == "Coin")
+            {
+                // Destroy coin object and add to player score.
+                Debug.Log("Collided with coin.");
+                Destroy(_collider.RigidBody.GameObject);
+            }
         }
     }
 }

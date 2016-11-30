@@ -9,7 +9,6 @@ namespace Assets.Scripts.General
 {
     public class World
     {
-
         public static World Current { get; private set; }
 
         public PhysicsWorld PhysicsWorld { get; private set; }
@@ -206,14 +205,9 @@ namespace Assets.Scripts.General
             settings.IndentChars = "    ";
             settings.NewLineOnAttributes = false;
 
-            var saveFileLocation = Path.Combine(Application.persistentDataPath, "Save_Levels");
+            Directories.CheckDirectories();
 
-            if (!Directory.Exists(saveFileLocation))
-            {
-                Directory.CreateDirectory(saveFileLocation);
-            }
-
-            saveFileLocation = Path.Combine(saveFileLocation, _saveFile + ".xml");
+            var saveFileLocation = Path.Combine(Directories.Save_Levels_Directory, _saveFile + ".xml");
 
             Debug.Log("Saving level to: " + saveFileLocation);
 

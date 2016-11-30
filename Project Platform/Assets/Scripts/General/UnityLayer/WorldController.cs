@@ -217,6 +217,24 @@ namespace Assets.Scripts.General.UnityLayer
         }
 
         /// <summary>
+        /// Saves the current world to the disk with the given filename.
+        /// </summary>
+        /// <param name="_saveFile">File name for save file (Not full directory).</param>
+        public void Save(string _saveFile)
+        {
+            World.Current.Save(_saveFile);
+        }
+
+        /// <summary>
+        /// Loads the given file (full directory) from disk.
+        /// </summary>
+        /// <param name="_loadFile"></param>
+        public void Load(string _loadFile)
+        {
+            World.Current.Load(_loadFile);
+        }
+
+        /// <summary>
         /// Sets the sprite for given tile based on its surrounding tiles.
         /// </summary>
         /// <param name="_tile">The tile being set.</param>

@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.4.3f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -69,6 +67,7 @@
     <Compile Include="Assets\Scripts\AI\Pathfinding\NavGraph.cs" />
     <Compile Include="Assets\Scripts\AI\Pathfinding\NodeLink.cs" />
     <Compile Include="Assets\Scripts\AI\Pathfinding\PathNode.cs" />
+    <Compile Include="Assets\Scripts\General\Directories.cs" />
     <Compile Include="Assets\Scripts\General\Tile.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\CameraFollow.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\LevelManager.cs" />
@@ -89,6 +88,7 @@
     <Compile Include="Assets\Scripts\General\UnityLayer\WorldController.cs" />
     <Compile Include="Assets\Scripts\General\World.cs" />
     <Compile Include="Assets\Scripts\Physics\ABRigidBody.cs" />
+    <Compile Include="Assets\Scripts\Physics\ABSpringJoint.cs" />
     <Compile Include="Assets\Scripts\Physics\Colliders\ABBoxCollider.cs" />
     <Compile Include="Assets\Scripts\Physics\Colliders\ABCircleCollider.cs" />
     <Compile Include="Assets\Scripts\Physics\Colliders\ABCollider.cs" />
@@ -96,7 +96,6 @@
     <Compile Include="Assets\Scripts\Physics\CollisionListener.cs" />
     <Compile Include="Assets\Scripts\Physics\PhysicsMaterial.cs" />
     <Compile Include="Assets\Scripts\Physics\PhysicsWorld.cs" />
-    <Compile Include="Assets\Scripts\Physics\ABSpringJoint.cs" />
     <Compile Include="Assets\TK2DROOT\tk2d\Code\Camera\tk2dCamera.cs" />
     <Compile Include="Assets\TK2DROOT\tk2d\Code\Camera\tk2dCameraAnchor.cs" />
     <Compile Include="Assets\TK2DROOT\tk2d\Code\Camera\tk2dCameraUtil.cs" />
@@ -130,6 +129,8 @@
     <Compile Include="Assets\TK2DROOT\tk2d\Code\tk2dUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\StreamingAssets\AI Test Level 1.xml" />
+    <None Include="Assets\StreamingAssets\AI Test Level 2.xml" />
     <None Include="Assets\TK2DROOT\tk2d\Editor\EditorUtility.shader" />
     <None Include="Assets\TK2DROOT\tk2d\Goodies\TexturePacker\Exporter\2dtoolkit\exporter.xml" />
     <None Include="Assets\TK2DROOT\tk2d\Shaders\AdditiveVertexColor.shader" />
