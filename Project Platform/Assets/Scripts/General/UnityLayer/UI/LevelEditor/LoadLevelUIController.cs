@@ -6,6 +6,12 @@ using System.IO;
 
 namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 {
+    public enum LevelFileTypes
+    {
+        Stock,
+        Saved
+    }
+
     public class LoadLevelUIController : MonoBehaviour
     {
 
@@ -19,26 +25,24 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         private List<GameObject> fileEntryObjects = new List<GameObject>();
 
+
         public void OnEnable()
         {
             Directories.CheckDirectories();
             fileDirectories.Clear();
             fileDataDirectories.Clear();
-            AddLevelFilesToWindow();
+            AddLevelFilesToWindow(LevelFileTypes.Stock);
         }
 
-        public void OnDisable()
+        private void AddLevelFilesToWindow(LevelFileTypes _type)
         {
             ClearEntryObjects();
-        }
 
-        private void AddLevelFilesToWindow()
-        {
-            var saveFolder = Directories.Save_Levels_Directory;
-            var saveDataFolder = Directories.Save_Levels_Data_Directory;
+            var saveFolder = _type == LevelFileTypes.Stock ? Directories.Stock_Levels_Directory : Directories.Save_Levels_Directory;
+            var saveDataFolder =  _type == LevelFileTypes.Stock ? Directories.Stock_Levels_Data_Directory : Directories.Save_Levels_Data_Directory;
 
-            fileDirectories.AddRange(Directory.GetFiles(saveFolder));
-            fileDataDirectories.AddRange(Directory.GetFiles(saveDataFolder));
+            fileDirectories.AddRange(Directory.GetFiles(saveFolder, "*.xml"));
+            fileDataDirectories.AddRange(Directory.GetFiles(saveDataFolder, "*.xml"));
 
             foreach (var file in fileDirectories)
             {
@@ -56,14 +60,27 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
            gameObject.SetActive(false); 
         }
 
+        public void OnStockLevelsButtonPress()
+        {
+            AddLevelFilesToWindow(LevelFileTypes.Stock);
+        }
+
+        public void OnSavedLevelsButtonPress()
+        {
+            AddLevelFilesToWindow(LevelFileTypes.Saved);
+        }
+
         /// <summary>
-        /// Destroy all file entry gameobjects that were instantiated.
+        /// Destroy all file entry gameobjects that were instantiated and clear the file lists.
         /// </summary>
         private void ClearEntryObjects()
         {
+            fileDirectories.Clear();
+            fileDataDirectories.Clear();
+
             for(var i = fileEntryObjects.Count - 1; i >= 0; i--)
             {
-                Destroy(fileEntryObjects[i]);
+                DestroyImmediate(fileEntryObjects[i]);
             }
         }
     }
