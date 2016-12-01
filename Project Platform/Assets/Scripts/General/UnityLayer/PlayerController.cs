@@ -18,6 +18,10 @@ namespace Assets.Scripts.General.UnityLayer
 
         public int jumpHeight = 5;
 
+        public bool enableJumpSensitivity = true;
+        public float jumpPower = 0.0f;
+        public float jumpPowerIncrement = 1f;
+
         public bool isGrounded = false;
         public bool isCollidingLeftWall = false;
         public bool isCollidingRightWall = false;
@@ -64,10 +68,22 @@ namespace Assets.Scripts.General.UnityLayer
                 return;
             }
 
-            if (Input.GetKey(KeyCode.Space) && isGrounded)
+            if(Input.GetKey(KeyCode.Space) && isGrounded)
             {
+                jumpPower += jumpPowerIncrement;
+                jumpPower = Mathf.Clamp01(jumpPower);
+            }
+
+            if (Input.GetKeyUp(KeyCode.Space) && isGrounded)
+            {
+                if(!enableJumpSensitivity)
+                {
+                    jumpPower = 1.0f;
+                }
+
                 // add 0.1 to jump height as a slight offset since the player isn't the size of a full tile.
-                rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * jumpHeight * rigidBodyComponent.RigidBody.Mass * 2);
+                rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * (jumpHeight * jumpPower) * rigidBodyComponent.RigidBody.Mass * 2);
+                jumpPower = 0.0f;
             }
 
             if (Input.GetKey(KeyCode.A) && !isCollidingLeftWall)
