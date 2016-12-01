@@ -18,6 +18,7 @@ namespace Assets.Scripts.General.UnityLayer
 
         public int jumpHeight = 5;
 
+        // Control whether or not player jumping should handle 
         public bool enableJumpSensitivity = true;
         public float jumpPower = 0.0f;
         public float jumpPowerIncrement = 1f;
@@ -74,7 +75,7 @@ namespace Assets.Scripts.General.UnityLayer
                 jumpPower = Mathf.Clamp01(jumpPower);
             }
 
-            if (Input.GetKeyUp(KeyCode.Space) && isGrounded)
+            if ((Input.GetKeyUp(KeyCode.Space) || jumpPower == 1.0f) && isGrounded)
             {
                 if(!enableJumpSensitivity)
                 {
