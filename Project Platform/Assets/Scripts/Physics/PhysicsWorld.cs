@@ -126,7 +126,8 @@ namespace Assets.Scripts.Physics
             {
                 Colliders.Remove(_collider);
 
-                // Remove the collider from the last step collisions list of any collider it was colliding with before it exited.
+                // Remove the collider from the last step collisions list of any collider it was colliding with if it was
+                // destroyed before it exited.
                 foreach(var collision in _collider.CollisionListener.LastStepCollisions)
                 {
                     if(collision.CollisionListener.LastStepCollisions.Contains(_collider))
