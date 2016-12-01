@@ -28,12 +28,12 @@ namespace Assets.Scripts.General.UnityLayer
         {
             rigidBodyComponent = GetComponent<RigidBodyComponent>();
 
-            if(rigidBodyComponent.RigidBody == null)
+            if (rigidBodyComponent.RigidBody == null)
             {
                 rigidBodyComponent.Create();
             }
 
-            if(groundCheck != null)
+            if (groundCheck != null)
             {
                 groundCheck.Collider.CollisionListener.RegisterTriggerStayCallback(OnGroundTriggerStay);
                 groundCheck.Collider.CollisionListener.RegisterTriggerLeaveCallback(OnGroundTriggerLeave);
@@ -51,7 +51,7 @@ namespace Assets.Scripts.General.UnityLayer
                 rightWallCheck.Collider.CollisionListener.RegisterTriggerLeaveCallback(OnRightWallTriggerLeave);
             }
 
-            if(playerBody != null)
+            if (playerBody != null)
             {
                 playerBody.Collider.CollisionListener.RegisterOnCollisionCallback(OnBodyCollision);
             }
@@ -59,7 +59,7 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void FixedUpdate()
         {
-            if(rigidBodyComponent.RigidBody == null)
+            if (rigidBodyComponent.RigidBody == null)
             {
                 return;
             }
@@ -70,12 +70,12 @@ namespace Assets.Scripts.General.UnityLayer
                 rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * jumpHeight * rigidBodyComponent.RigidBody.Mass * 2);
             }
 
-            if(Input.GetKey(KeyCode.A) && !isCollidingLeftWall)
+            if (Input.GetKey(KeyCode.A) && !isCollidingLeftWall)
             {
-                rigidBodyComponent.RigidBody.AddImpulse(Vector2.left * force);              
+                rigidBodyComponent.RigidBody.AddImpulse(Vector2.left * force);
             }
 
-            if(Input.GetKey(KeyCode.D) && !isCollidingRightWall)
+            if (Input.GetKey(KeyCode.D) && !isCollidingRightWall)
             {
                 rigidBodyComponent.RigidBody.AddImpulse(Vector2.right * force);
             }
@@ -83,26 +83,18 @@ namespace Assets.Scripts.General.UnityLayer
             var vel = rigidBodyComponent.RigidBody.LinearVelocity;
             vel.x = Mathf.Clamp(vel.x, -maxSpeed, maxSpeed);
             rigidBodyComponent.RigidBody.LinearVelocity = vel;
-
-            Debug.Log("Listener count: " + playerBody.Collider.CollisionListener.LastStepCollisions.Count);
         }
 
         public void OnGroundTriggerStay(ABCollider _collider)
         {
             // Set grounded to true during stay as if the trigger enters a new tile, and leaves the previous after, grounded will be false 
             // even though it is actually grounded.
-            if (_collider.RigidBody.GameObject.tag == "Tile")
-            {
-                isGrounded = true;
-            }
+            isGrounded = true;
         }
 
         public void OnGroundTriggerLeave(ABCollider _collider)
         {
-            if (_collider.RigidBody.GameObject.tag == "Tile")
-            {
-                isGrounded = false;
-            }
+            isGrounded = false;
         }
 
         public void OnLeftWallTriggerStay(ABCollider _collider)
@@ -115,10 +107,7 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void OnLeftWallTriggerLeave(ABCollider _collider)
         {
-            if (_collider.RigidBody.GameObject.tag == "Tile")
-            {
-                isCollidingLeftWall = false;
-            }
+            isCollidingLeftWall = false;
         }
 
         public void OnRightWallTriggerStay(ABCollider _collider)
@@ -131,15 +120,12 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void OnRightWallTriggerLeave(ABCollider _collider)
         {
-            if(_collider.RigidBody.GameObject.tag == "Tile")
-            {
-                isCollidingRightWall = false;
-            }
+            isCollidingRightWall = false;
         }
 
         public void OnBodyCollision(ABCollider _collider)
         {
-            if(_collider.RigidBody.GameObject.tag == "Coin")
+            if (_collider.RigidBody.GameObject.tag == "Coin")
             {
                 // TODO: Add to player score.
                 var pos = World.Current.WorldPointToGridPoint(_collider.Position);
