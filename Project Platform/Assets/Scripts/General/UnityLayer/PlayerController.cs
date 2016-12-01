@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.General.UnityLayer.Physics_Components;
 using Assets.Scripts.Physics.Colliders;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 namespace Assets.Scripts.General.UnityLayer
 {
@@ -12,6 +13,8 @@ namespace Assets.Scripts.General.UnityLayer
         public BoxColliderComponent rightWallCheck;
 
         public BoxColliderComponent playerBody;
+
+        public int score = 0;
 
         public float maxSpeed = 5f;
         public float force = 50.0f;
@@ -144,9 +147,9 @@ namespace Assets.Scripts.General.UnityLayer
         {
             if (_collider.RigidBody.GameObject.tag == "Coin")
             {
-                // TODO: Add to player score.
                 var pos = World.Current.WorldPointToGridPoint(_collider.Position);
                 FindObjectOfType<WorldController>().RemoveCoinPickup(pos);
+                score++;
             }
         }
     }

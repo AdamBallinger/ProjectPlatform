@@ -81,6 +81,7 @@
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\EditSubMenuPathfindingController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\EditSubMenuPlatformController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\EditorPlayModeTransition.cs" />
+    <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\EditorPlayModeUIController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\FileButtonController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\LevelEditorUIController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\LoadLevelUIController.cs" />
