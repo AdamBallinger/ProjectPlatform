@@ -16,6 +16,7 @@ namespace Assets.Scripts.General.UnityLayer
     {
         public WorldController worldController;
         public LevelEditorUIController editorUIController;
+        public EditSubMenuPlatformController platformSubMenu;
 
         public GameObject mouseSelectCursor;
         public GameObject playerSpawnObject;
@@ -192,7 +193,7 @@ namespace Assets.Scripts.General.UnityLayer
             {
                 case SelectionMode.BuildMode:
                     _tile.Type = TileBuildType;
-                    worldController.SetTileMaterial(_tile.X, _tile.Y);
+                    worldController.SetTileMaterial(_tile.X, _tile.Y, platformSubMenu.Material);
                     break;
                 case SelectionMode.ClearMode:
                     _tile.Type = TileType.Empty;

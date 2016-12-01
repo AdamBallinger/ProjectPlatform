@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Xml;
 using Assets.Scripts.General.UnityLayer.Physics_Components;
-using Assets.Scripts.General.UnityLayer.UI.LevelEditor;
 using Assets.Scripts.Physics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,8 +9,6 @@ namespace Assets.Scripts.General.UnityLayer
 {
     public class WorldController : MonoBehaviour
     {
-
-        public EditSubMenuPlatformController platformSubMenu;
 
         /// <summary>
         /// Prefab for the coin pickup object.
@@ -202,18 +199,19 @@ namespace Assets.Scripts.General.UnityLayer
         }
 
         /// <summary>
-        /// Sets the tile at the given X and Y material to the current material settings set by the platforms UI menu.
+        /// Sets the material for the tile at the given x and y to the given material.
         /// </summary>
         /// <param name="_x"></param>
         /// <param name="_y"></param>
-        public void SetTileMaterial(int _x, int _y)
+        /// <param name="_material"></param>
+        public void SetTileMaterial(int _x, int _y, PhysicsMaterial _material)
         {
             var tileGO = tileGameObjects[_x, _y];
             var rbc = tileGO.GetComponent<RigidBodyComponent>();
 
             if(rbc != null)
             {
-                rbc.RigidBody.Material = new PhysicsMaterial(platformSubMenu.Material);
+                rbc.RigidBody.Material = _material;
             }
         }
 
