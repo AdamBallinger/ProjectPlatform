@@ -8,7 +8,8 @@ namespace Assets.Scripts.General.UnityLayer
     {
         BuildMode,
         ClearMode,
-        PlayerSpawnSet
+        PlayerSpawnSet,
+        CoinPickup
     }
 
     public class MouseController : MonoBehaviour
@@ -195,6 +196,9 @@ namespace Assets.Scripts.General.UnityLayer
                     break;
                 case SelectionMode.ClearMode:
                     _tile.Type = TileType.Empty;
+                    break;
+                case SelectionMode.CoinPickup:
+                    worldController.AddCoinPickup(new Vector2(_tile.X, _tile.Y));
                     break;
             }
         }

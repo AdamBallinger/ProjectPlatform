@@ -8,6 +8,9 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
     public class LevelEditorUIController : MonoBehaviour
     {
 
+        // Reference to the world controller.
+        public WorldController worldController;
+
         // Reference to mouse controller for handling building/clearing tiles.
         public MouseController mouseController;
 
@@ -23,8 +26,6 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public void Start()
         {
             totalTilesText.text = "Total Tiles: " + World.Current.GetTileCount();
-            //levelName.text = FindObjectOfType<WorldController>().Load(Directories.Stock_Levels_Directory + "\\AI Test Level 2.xml",
-            //                                                            Directories.Stock_Levels_Data_Directory + "\\AI Test Level 2.xml");
         }
 
         public void OnPlatformButtonPress()
@@ -43,9 +44,14 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             mouseController.SelectMode = SelectionMode.PlayerSpawnSet;
         }
 
+        public void OnCoinPickupButtonPress()
+        {
+            mouseController.SelectMode = SelectionMode.CoinPickup;
+        }
+
         public void OnSaveLevelButtonPress()
         {
-            FindObjectOfType<WorldController>().Save(levelName.text);
+            worldController.Save(levelName.text);
         }
 
         public void OnLoadLevelButtonPress()
