@@ -67,6 +67,10 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
                                 Gizmos.color = Color.black;
                                 break;
 
+                            case PathNodeType.DropTo:
+                                Gizmos.color = Color.red;
+                                break;
+
                             case PathNodeType.Single:
                                 Gizmos.color = Color.yellow;
                                 break;
