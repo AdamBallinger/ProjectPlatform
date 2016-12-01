@@ -9,7 +9,6 @@ namespace Assets.Scripts.General.UnityLayer
 {
     public class WorldController : MonoBehaviour
     {
-
         /// <summary>
         /// Prefab for the coin pickup object.
         /// </summary>
@@ -175,6 +174,10 @@ namespace Assets.Scripts.General.UnityLayer
             World.Current.NavGraph.ScanGraph();
         }
 
+        /// <summary>
+        /// Adds a collider component to a given tile gameobject.
+        /// </summary>
+        /// <param name="_tileGO"></param>
         private void AddTileCollider(GameObject _tileGO)
         {
             var rbc = _tileGO.GetComponent<RigidBodyComponent>();
@@ -192,6 +195,10 @@ namespace Assets.Scripts.General.UnityLayer
             }
         }
 
+        /// <summary>
+        /// Removes a collider and rigidbody component from a given tile gameobject.
+        /// </summary>
+        /// <param name="_tileGO"></param>
         private void RemoveTileCollider(GameObject _tileGO)
         {
             DestroyImmediate(_tileGO.GetComponent<BoxColliderComponent>()); 
@@ -348,6 +355,24 @@ namespace Assets.Scripts.General.UnityLayer
 
             Debug.Log("Finished loading level data for level: " + levelName);
             return levelName;
+        }
+
+        /// <summary>
+        /// Clears the world of all objects, and creates an empty bordered level.
+        /// </summary>
+        public void Clear()
+        {
+            World.Current.Clear();
+
+            for(var x = 0; x < worldWidth; x++)
+            {
+                for(var y = 0; y < worldHeight; y++)
+                {
+                    DestroyImmediate(coinObjects[x, y]);
+                }
+            }
+
+            World.Current.SetBorderAsPlatform();
         }
 
         /// <summary>

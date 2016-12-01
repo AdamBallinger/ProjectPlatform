@@ -61,9 +61,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         public void OnClearLevelButtonPress()
         {
-            World.Current.Clear();
-            World.Current.SetBorderAsPlatform();
-
+            worldController.Clear();
             levelName.text = string.Empty;
         }
 
