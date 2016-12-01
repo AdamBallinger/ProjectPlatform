@@ -20,6 +20,9 @@ namespace Assets.Scripts.General.UnityLayer.Physics_Components
         [SerializeField]
         private bool isTrigger = false;
 
+        [SerializeField]
+        private bool drawGizmo = false;
+
         public void Start()
         {
             if(inspectorCreated)
@@ -63,7 +66,7 @@ namespace Assets.Scripts.General.UnityLayer.Physics_Components
 
         public void OnDrawGizmos()
         {
-            if (!inspectorCreated)
+            if (!inspectorCreated || !drawGizmo)
                 return;
 
             Gizmos.color = Color.green;
