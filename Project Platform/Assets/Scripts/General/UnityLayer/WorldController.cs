@@ -64,6 +64,7 @@ namespace Assets.Scripts.General.UnityLayer
                     // Set each tile as a child to the WorldController object.
                     tileGO.transform.SetParent(transform);
                     tileGO.name = string.Format("Tile:   X: {0}    Y: {1}", x, y);
+                    tileGO.tag = "Tile";
 
                     var tileData = World.Current.GetTileAt(x, y);
                     tileData.RegisterTileTypeChangeCallback(tile => { OnTileTypeChanged(tileGO, tile); });
@@ -257,7 +258,7 @@ namespace Assets.Scripts.General.UnityLayer
 
             if(coinObjects[gridX, gridY] != null)
             {
-                DestroyImmediate(coinObjects[gridX, gridY]);
+                Destroy(coinObjects[gridX, gridY]);
             }
         }
 

@@ -53,7 +53,7 @@ namespace Assets.Scripts.General.UnityLayer
 
             if(playerBody != null)
             {
-                playerBody.Collider.CollisionListener.RegisterTriggerEnterCallback(OnBodyTriggerEnter);
+                playerBody.Collider.CollisionListener.RegisterOnCollisionCallback(OnBodyCollision);
             }
         }
 
@@ -83,47 +83,67 @@ namespace Assets.Scripts.General.UnityLayer
             var vel = rigidBodyComponent.RigidBody.LinearVelocity;
             vel.x = Mathf.Clamp(vel.x, -maxSpeed, maxSpeed);
             rigidBodyComponent.RigidBody.LinearVelocity = vel;
+
+            Debug.Log("Listener count: " + playerBody.Collider.CollisionListener.LastStepCollisions.Count);
         }
 
         public void OnGroundTriggerStay(ABCollider _collider)
         {
             // Set grounded to true during stay as if the trigger enters a new tile, and leaves the previous after, grounded will be false 
             // even though it is actually grounded.
-            isGrounded = true;
+            if (_collider.RigidBody.GameObject.tag == "Tile")
+            {
+                isGrounded = true;
+            }
         }
 
         public void OnGroundTriggerLeave(ABCollider _collider)
         {
-            isGrounded = false;
+            if (_collider.RigidBody.GameObject.tag == "Tile")
+            {
+                isGrounded = false;
+            }
         }
 
         public void OnLeftWallTriggerStay(ABCollider _collider)
         {
-            isCollidingLeftWall = true;
+            if (_collider.RigidBody.GameObject.tag == "Tile")
+            {
+                isCollidingLeftWall = true;
+            }
         }
 
         public void OnLeftWallTriggerLeave(ABCollider _collider)
         {
-            isCollidingLeftWall = false;
+            if (_collider.RigidBody.GameObject.tag == "Tile")
+            {
+                isCollidingLeftWall = false;
+            }
         }
 
         public void OnRightWallTriggerStay(ABCollider _collider)
         {
-            isCollidingRightWall = true;
+            if (_collider.RigidBody.GameObject.tag == "Tile")
+            {
+                isCollidingRightWall = true;
+            }
         }
 
         public void OnRightWallTriggerLeave(ABCollider _collider)
         {
-            isCollidingRightWall = false;
+            if(_collider.RigidBody.GameObject.tag == "Tile")
+            {
+                isCollidingRightWall = false;
+            }
         }
 
-        public void OnBodyTriggerEnter(ABCollider _collider)
+        public void OnBodyCollision(ABCollider _collider)
         {
             if(_collider.RigidBody.GameObject.tag == "Coin")
             {
-                // TODO: Destroy coin object and add to player score.
-                Debug.Log("Collided with coin.");
-                Destroy(_collider.RigidBody.GameObject);
+                // TODO: Add to player score.
+                var pos = World.Current.WorldPointToGridPoint(_collider.Position);
+                FindObjectOfType<WorldController>().RemoveCoinPickup(pos);
             }
         }
     }

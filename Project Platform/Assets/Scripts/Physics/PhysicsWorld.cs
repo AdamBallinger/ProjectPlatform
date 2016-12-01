@@ -125,6 +125,15 @@ namespace Assets.Scripts.Physics
             if(Colliders.Contains(_collider))
             {
                 Colliders.Remove(_collider);
+
+                // Remove the collider from the last step collisions list of any collider it was colliding with before it exited.
+                foreach(var collision in _collider.CollisionListener.LastStepCollisions)
+                {
+                    if(collision.CollisionListener.LastStepCollisions.Contains(_collider))
+                    {
+                        collision.CollisionListener.LastStepCollisions.Remove(_collider);
+                    }
+                }
                 return;
             }
 
