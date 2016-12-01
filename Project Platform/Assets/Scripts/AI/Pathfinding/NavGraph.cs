@@ -120,7 +120,7 @@ namespace Assets.Scripts.AI.Pathfinding
         {
             ComputeWalkLinks();
             ComputeFallLinks();
-            ComputeJumpLinks();
+            //ComputeJumpLinks();
         }
 
         /// <summary>
@@ -196,6 +196,10 @@ namespace Assets.Scripts.AI.Pathfinding
                                         // Found a node that isnt of type none, so add a fall link to this node from
                                         // current node and break from the loop.
                                         Nodes[x, y].AddLink(new NodeLink(nodeToCheck, NodeLinkType.Fall));
+                                        if(nodeToCheck.NodeType == PathNodeType.Platform)
+                                        {
+                                            nodeToCheck.NodeType = PathNodeType.DropTo;
+                                        }
                                         break;
                                     }
 
@@ -220,9 +224,9 @@ namespace Assets.Scripts.AI.Pathfinding
                 {
                     var node = Nodes[x, y];
 
-                    // Only check trajectories for Edge / single and platform nodes with fall links.
+                    // Only check trajectories for Edge / single and platform nodes with fall links (DropTo).
                     if(node.NodeType == PathNodeType.LeftEdge || node.NodeType == PathNodeType.RightEdge || node.NodeType == PathNodeType.Single
-                        || (node.NodeType == PathNodeType.Platform && node.HasLinkOfType(NodeLinkType.Fall)))
+                        || (node.NodeType == PathNodeType.DropTo))
                     {
                         // Computer trajectories here (left and right).
                         for(var i = 1; i <= 3; i++)
