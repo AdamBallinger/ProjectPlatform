@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -26,6 +27,12 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public void Start()
         {
             totalTilesText.text = "Total Tiles: " + World.Current.GetTileCount();
+
+            // if the last loaded level for the editor transition object isnt empty then load the last loaded level.
+            if(EditorPlayModeTransition.LastLoadedLevelName != null)
+            {
+                levelName.text = worldController.Load(EditorPlayModeTransition.PlayModeLevel, EditorPlayModeTransition.PlayModeLevelData);
+            }
         }
 
         public void OnPlatformButtonPress()

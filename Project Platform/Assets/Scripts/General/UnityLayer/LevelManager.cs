@@ -10,8 +10,7 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void Start()
         {
-            Debug.Log("Level manager started.");
-            World.Current.Load(EditorPlayModeTransition.PlayModeLevel);
+            FindObjectOfType<WorldController>().Load(EditorPlayModeTransition.PlayModeLevel, EditorPlayModeTransition.PlayModeLevelData);
         }
 
         public void Update()

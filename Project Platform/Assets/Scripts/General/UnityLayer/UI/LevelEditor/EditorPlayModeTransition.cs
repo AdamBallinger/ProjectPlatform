@@ -10,8 +10,11 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
     {
 
         public static string PlayModeLevel { get; private set; }
+        public static string PlayModeLevelData { get; private set; }
 
-        public Text levelName;
+        public InputField levelName;
+
+        public static string LastLoadedLevelName { get; private set; }
 
         /// <summary>
         /// Returns from the editor play scene to the editor scene.
@@ -21,8 +24,9 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             // Only load the level editor scene if it is the current scene.
             if(SceneManager.GetActiveScene().name != "level_editor")
             {
+                Debug.Log("Pre scene load: " + LastLoadedLevelName);
                 SceneManager.LoadScene("level_editor");
-                World.Current.Load(PlayModeLevel);
+                Debug.Log("Post scene load: " + LastLoadedLevelName);
             }
         }
 
@@ -33,15 +37,17 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         {
             if(SceneManager.GetActiveScene().name == "level_editor")
             {
-                var levName = levelName.text;
-
-                if(levName.All(char.IsLetter))
+                if(levelName.text == string.Empty)
                 {
-                    levName = "un-named level";
+                    levelName.text = "un-named level";
                 }
 
-                FindObjectOfType<WorldController>().Save(levName);
-                PlayModeLevel = Path.Combine(Application.persistentDataPath, "Save_Levels" + "\\" + levName + ".xml");
+                LastLoadedLevelName = levelName.text;
+                Debug.Log("Set last loaded level name to " + LastLoadedLevelName);
+
+                FindObjectOfType<WorldController>().Save(levelName.text);
+                PlayModeLevel = Path.Combine(Directories.Save_Levels_Directory, levelName.text + ".xml");
+                PlayModeLevelData = Path.Combine(Directories.Save_Levels_Data_Directory, levelName.text + ".xml");
                 SceneManager.LoadScene("editor_playmode");
             }
         }

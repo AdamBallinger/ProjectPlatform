@@ -333,6 +333,7 @@ namespace Assets.Scripts.General.UnityLayer
         /// <param name="_loadDataFile">Directory for the save level data XML file.</param>
         public string Load(string _loadFile, string _loadDataFile)
         {
+            Clear();
             var levelName = World.Current.Load(_loadFile);
             Debug.Log("Loading level data for level: " + levelName + " from: " + _loadDataFile);
 
@@ -369,7 +370,7 @@ namespace Assets.Scripts.General.UnityLayer
             {
                 for(var y = 0; y < worldHeight; y++)
                 {
-                    DestroyImmediate(coinObjects[x, y]);
+                    RemoveCoinPickup(new Vector2(x, y));
                 }
             }
 
