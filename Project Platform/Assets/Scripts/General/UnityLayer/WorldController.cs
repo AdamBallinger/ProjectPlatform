@@ -349,125 +349,6 @@ namespace Assets.Scripts.General.UnityLayer
         }
 
         /// <summary>
-        /// Saves the current world to the disk with the given filename.
-        /// </summary>
-        /// <param name="_saveFile">File name for save file (Level name and not full directory or file extension).</param>
-        public void Save(string _saveFile)
-        {
-            World.Current.Save(_saveFile);
-            Debug.Log("Saving level data for level: " + _saveFile);
-
-            var settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.IndentChars = "    ";
-            settings.NewLineOnAttributes = false;
-
-            Directories.CheckDirectories();
-
-            var saveFileLocation = Path.Combine(Directories.Save_Levels_Data_Directory, _saveFile + ".xml");
-
-            using (var xmlWriter = XmlWriter.Create(saveFileLocation, settings))
-            {
-                xmlWriter.WriteStartDocument();
-                xmlWriter.WriteStartElement("LevelDataFile");
-
-                xmlWriter.WriteStartElement("LevelCoinPickupsData");
-    
-                // Write coin pickup data to file.
-                for(var x = 0; x < worldWidth; x++)
-                {
-                    for(var y = 0; y < worldHeight; y++)
-                    {
-                        // If there isnt a coin at current x,y then continue.
-                        if (coinObjects[x, y] == null) continue;
-
-                        xmlWriter.WriteStartElement("CoinPickup");
-                        xmlWriter.WriteAttributeString("X", x.ToString());
-                        xmlWriter.WriteAttributeString("Y", y.ToString());
-                        xmlWriter.WriteEndElement();
-                    }
-                }
-
-                xmlWriter.WriteEndElement();
-
-                xmlWriter.WriteStartElement("LevelBouncePadData");
-
-                // Write bounce pad data to file.
-                for (var x = 0; x < worldWidth; x++)
-                {
-                    for (var y = 0; y < worldHeight; y++)
-                    {
-                        // If there isnt a pad at current x,y then continue.
-                        if (bouncePadObjects[x, y] == null) continue;
-
-                        var springComp = bouncePadObjects[x, y].GetComponent<SpringJointComponent>();
-
-                        xmlWriter.WriteStartElement("BouncePad");
-                        xmlWriter.WriteAttributeString("X", x.ToString());
-                        xmlWriter.WriteAttributeString("Y", y.ToString());
-                        xmlWriter.WriteAttributeString("Stiffness", springComp.Joint.Stiffness.ToString());
-                        xmlWriter.WriteAttributeString("RestLength", springComp.Joint.RestLength.ToString());
-                        xmlWriter.WriteAttributeString("Dampen", springComp.Joint.Dampen.ToString());
-                        xmlWriter.WriteEndElement();
-                    }
-                }
-
-                xmlWriter.WriteEndElement();
-
-                xmlWriter.WriteEndElement();
-                xmlWriter.WriteEndDocument();
-            }
-
-            Debug.Log("Finished saving level data for level: " + _saveFile);
-        }
-
-        /// <summary>
-        /// Loads the given file (full directory) from disk and returns the name of the loaded level.
-        /// </summary>
-        /// <param name="_loadFile">Directory for the save level XML file.</param>
-        /// <param name="_loadDataFile">Directory for the save level data XML file.</param>
-        public string Load(string _loadFile, string _loadDataFile)
-        {
-            Clear();
-            var levelName = World.Current.Load(_loadFile);
-            Debug.Log("Loading level data for level: " + levelName + " from: " + _loadDataFile);
-
-            using (var xmlReader = XmlReader.Create(_loadDataFile))
-            {
-                while (xmlReader.Read())
-                {
-                    if (xmlReader.IsStartElement())
-                    {
-                        switch (xmlReader.Name)
-                        {
-                            case "CoinPickup":
-                                var cX = int.Parse(xmlReader["X"]);
-                                var cY = int.Parse(xmlReader["Y"]);
-                                AddCoinPickup(new Vector2(cX, cY));
-                                break;
-
-                            case "BouncePad":
-                                var pX = int.Parse(xmlReader["X"]);
-                                var pY = int.Parse(xmlReader["Y"]);
-                                var stiff = float.Parse(xmlReader["Stiffness"]);
-                                var rest = float.Parse(xmlReader["RestLength"]);
-                                var dampen = float.Parse(xmlReader["Dampen"]);
-                                var pad = AddBouncePad(new Vector2(pX, pY));
-                                var springComp = pad.GetComponent<SpringJointComponent>();
-                                springComp.stiffness = stiff;
-                                springComp.restLength = rest;
-                                springComp.dampen = dampen;
-                                break;
-                        }
-                    }
-                }
-            }
-
-            Debug.Log("Finished loading level data for level: " + levelName);
-            return levelName;
-        }
-
-        /// <summary>
         /// Clears the world of all objects, and creates an empty bordered level.
         /// </summary>
         public void Clear()
@@ -534,6 +415,160 @@ namespace Assets.Scripts.General.UnityLayer
             }
 
             spriteRenderer.sprite = platformSprites[spriteIndex];
+        }
+
+        /// <summary>
+        /// Saves the current world to the disk with the given filename.
+        /// </summary>
+        /// <param name="_saveFile">File name for save file (Level name and not full directory or file extension).</param>
+        public void Save(string _saveFile)
+        {
+            World.Current.Save(_saveFile);
+            Debug.Log("Saving level data for level: " + _saveFile);
+
+            var settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.IndentChars = "    ";
+            settings.NewLineOnAttributes = false;
+
+            Directories.CheckDirectories();
+
+            var saveFileLocation = Path.Combine(Directories.Save_Levels_Data_Directory, _saveFile + ".xml");
+
+            using (var xmlWriter = XmlWriter.Create(saveFileLocation, settings))
+            {
+                xmlWriter.WriteStartDocument();
+                xmlWriter.WriteStartElement("LevelDataFile");
+
+                xmlWriter.WriteStartElement("LevelPlatformPhysicalProperties");
+
+                for (var x = 0; x < worldWidth; x++)
+                {
+                    for (var y = 0; y < worldHeight; y++)
+                    {
+                        var rbc = tileGameObjects[x, y].GetComponent<RigidBodyComponent>();
+
+                        if (rbc == null)
+                        {
+                            continue;
+                        }
+
+                        xmlWriter.WriteStartElement("PlatformProperties");
+                        xmlWriter.WriteAttributeString("X", x.ToString());
+                        xmlWriter.WriteAttributeString("Y", y.ToString());
+                        xmlWriter.WriteAttributeString("Restitution", rbc.RigidBody.Material.Restitution.ToString());
+                        xmlWriter.WriteAttributeString("StaticFriction", rbc.RigidBody.Material.StaticFriction.ToString());
+                        xmlWriter.WriteAttributeString("DynamicFriction", rbc.RigidBody.Material.DynamicFriction.ToString());
+                        xmlWriter.WriteEndElement();
+                    }
+                }
+
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteStartElement("LevelCoinPickupsData");
+
+                // Write coin pickup data to file.
+                for (var x = 0; x < worldWidth; x++)
+                {
+                    for (var y = 0; y < worldHeight; y++)
+                    {
+                        // If there isnt a coin at current x,y then continue.
+                        if (coinObjects[x, y] == null) continue;
+
+                        xmlWriter.WriteStartElement("CoinPickup");
+                        xmlWriter.WriteAttributeString("X", x.ToString());
+                        xmlWriter.WriteAttributeString("Y", y.ToString());
+                        xmlWriter.WriteEndElement();
+                    }
+                }
+
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteStartElement("LevelBouncePadData");
+
+                // Write bounce pad data to file.
+                for (var x = 0; x < worldWidth; x++)
+                {
+                    for (var y = 0; y < worldHeight; y++)
+                    {
+                        // If there isnt a pad at current x,y then continue.
+                        if (bouncePadObjects[x, y] == null) continue;
+
+                        var springComp = bouncePadObjects[x, y].GetComponent<SpringJointComponent>();
+
+                        xmlWriter.WriteStartElement("BouncePad");
+                        xmlWriter.WriteAttributeString("X", x.ToString());
+                        xmlWriter.WriteAttributeString("Y", y.ToString());
+                        xmlWriter.WriteAttributeString("Stiffness", springComp.Joint.Stiffness.ToString());
+                        xmlWriter.WriteAttributeString("RestLength", springComp.Joint.RestLength.ToString());
+                        xmlWriter.WriteAttributeString("Dampen", springComp.Joint.Dampen.ToString());
+                        xmlWriter.WriteEndElement();
+                    }
+                }
+
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteEndElement();
+                xmlWriter.WriteEndDocument();
+            }
+
+            Debug.Log("Finished saving level data for level: " + _saveFile);
+        }
+
+        /// <summary>
+        /// Loads the given file (full directory) from disk and returns the name of the loaded level.
+        /// </summary>
+        /// <param name="_loadFile">Directory for the save level XML file.</param>
+        /// <param name="_loadDataFile">Directory for the save level data XML file.</param>
+        public string Load(string _loadFile, string _loadDataFile)
+        {
+            Clear();
+            var levelName = World.Current.Load(_loadFile);
+            Debug.Log("Loading level data for level: " + levelName + " from: " + _loadDataFile);
+
+            using (var xmlReader = XmlReader.Create(_loadDataFile))
+            {
+                while (xmlReader.Read())
+                {
+                    if (xmlReader.IsStartElement())
+                    {
+                        switch (xmlReader.Name)
+                        {
+                            case "PlatformProperties":
+                                var x = int.Parse(xmlReader["X"]);
+                                var y = int.Parse(xmlReader["Y"]);
+                                var material = new PhysicsMaterial();
+                                material.Restitution = float.Parse(xmlReader["Restitution"]);
+                                material.StaticFriction = float.Parse(xmlReader["StaticFriction"]);
+                                material.DynamicFriction = float.Parse(xmlReader["DynamicFriction"]);
+                                SetTileMaterial(x, y, material);
+                                break;
+
+                            case "CoinPickup":
+                                var cX = int.Parse(xmlReader["X"]);
+                                var cY = int.Parse(xmlReader["Y"]);
+                                AddCoinPickup(new Vector2(cX, cY));
+                                break;
+
+                            case "BouncePad":
+                                var pX = int.Parse(xmlReader["X"]);
+                                var pY = int.Parse(xmlReader["Y"]);
+                                var stiff = float.Parse(xmlReader["Stiffness"]);
+                                var rest = float.Parse(xmlReader["RestLength"]);
+                                var dampen = float.Parse(xmlReader["Dampen"]);
+                                var pad = AddBouncePad(new Vector2(pX, pY));
+                                var springComp = pad.GetComponent<SpringJointComponent>();
+                                springComp.stiffness = stiff;
+                                springComp.restLength = rest;
+                                springComp.dampen = dampen;
+                                break;
+                        }
+                    }
+                }
+            }
+
+            Debug.Log("Finished loading level data for level: " + levelName);
+            return levelName;
         }
     }
 }
