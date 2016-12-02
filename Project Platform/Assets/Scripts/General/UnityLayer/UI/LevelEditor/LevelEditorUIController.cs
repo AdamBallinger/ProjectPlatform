@@ -37,8 +37,13 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         public void OnPlatformButtonPress()
         {
-            mouseController.SelectMode = SelectionMode.BuildMode;
+            mouseController.SelectMode = SelectionMode.Platform;
             mouseController.TileBuildType = TileType.Platform;
+        }
+
+        public void OnBouncePadButtonPress()
+        {
+            mouseController.SelectMode = SelectionMode.BouncePad;
         }
 
         public void OnClearToolButtonPress()

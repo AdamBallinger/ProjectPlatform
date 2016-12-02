@@ -14,6 +14,11 @@ namespace Assets.Scripts.General.UnityLayer
         /// </summary>
         public GameObject coinPrefab;
 
+        /// <summary>
+        /// Prefab for the bounce pad object.
+        /// </summary>
+        public GameObject bouncePadPrefab;
+
         // Store difference types of sprites based on platforms surrounding.
         public Sprite[] platformSprites;
 
@@ -44,6 +49,11 @@ namespace Assets.Scripts.General.UnityLayer
         /// </summary>
         private GameObject[,] coinObjects;
 
+        /// <summary>
+        /// Array of bounce pad objects in the world.
+        /// </summary>
+        private GameObject[,] bouncePadObjects;
+
         public void Start()
         {
             // Set the unity fixed update timestep. (Used to control the frequency of PhysicsWorld.Step).
@@ -54,6 +64,7 @@ namespace Assets.Scripts.General.UnityLayer
 
             tileGameObjects = new GameObject[worldWidth, worldHeight];
             coinObjects = new GameObject[worldWidth, worldHeight];
+            bouncePadObjects = new GameObject[worldWidth, worldHeight];
 
             // Setup the Unity Gameobjects for the Tiles.
             for(var x = 0; x < World.Current.Width; x++)
@@ -144,7 +155,7 @@ namespace Assets.Scripts.General.UnityLayer
 
                     if(coinObjects[x, y] != null)
                     {
-                        // remove a coin if the tile  at current x and y was changed from an empty tile.
+                        // remove a coin if the tile at current x and y was changed from an empty tile.
                         RemoveCoinPickup(new Vector2(x, y));
                     }
 
@@ -234,9 +245,16 @@ namespace Assets.Scripts.General.UnityLayer
             var gridX = (int) gridCoord.x;
             var gridY = (int) gridCoord.y;
 
-            if((coinObjects[gridX, gridY] != null) || (World.Current.GetTileAt(gridX, gridY).Type != TileType.Empty))
+            if(World.Current.GetTileAt(gridX, gridY).Type != TileType.Empty)
             {
-                // dont allow coins to be placed at same position or on a tile that isn't empty.
+                // dont allow coins to be placed ontop of none empty tiles.
+                return;
+            }
+
+            if(coinObjects[gridX, gridY] != null)
+            {
+                // if a coin already exists then remove it from the current position. (easy cheat for removing coins in editor)
+                RemoveCoinPickup(_coord);
                 return;
             }
 
@@ -259,6 +277,51 @@ namespace Assets.Scripts.General.UnityLayer
             if(coinObjects[gridX, gridY] != null)
             {
                 Destroy(coinObjects[gridX, gridY]);
+            }
+        }
+
+        /// <summary>
+        /// Adds a bounce pad object to the world at the given coordinate (world or grid).
+        /// </summary>
+        /// <param name="_coord"></param>
+        public void AddBouncePad(Vector2 _coord)
+        {
+            var worldCoord = _coord;
+            var gridCoord = World.Current.WorldPointToGridPoint(worldCoord);
+            var gridX = (int) gridCoord.x;
+            var gridY = (int) gridCoord.y;
+
+            if (World.Current.GetTileAt(gridX, gridY).Type != TileType.Empty)
+            {
+                // dont allow bounce pads to be placed ontop of none empty tiles.
+                return;
+            }
+
+            if (bouncePadObjects[gridX, gridY] != null)
+            {
+                // if a pad already exists then remove it from the current position. (easy cheat for removing pads in editor)
+                RemoveBouncePad(_coord);
+                return;
+            }
+
+            var padObject = Instantiate(bouncePadPrefab, worldCoord, Quaternion.identity) as GameObject;
+
+            bouncePadObjects[gridX, gridY] = padObject;
+        }
+
+        /// <summary>
+        /// Removes a bounce pad from the world at the given coordinate (world or grid) if one exists.
+        /// </summary>
+        /// <param name="_coord"></param>
+        public void RemoveBouncePad(Vector2 _coord)
+        {
+            var gridCoord = World.Current.WorldPointToGridPoint(_coord);
+            var gridX = (int) gridCoord.x;
+            var gridY = (int) gridCoord.y;
+
+            if(bouncePadObjects[gridX, gridY] != null)
+            {
+                Destroy(bouncePadObjects[gridX, gridY]);
             }
         }
 
@@ -301,9 +364,10 @@ namespace Assets.Scripts.General.UnityLayer
             using (var xmlWriter = XmlWriter.Create(saveFileLocation, settings))
             {
                 xmlWriter.WriteStartDocument();
+                xmlWriter.WriteStartElement("LevelDataFile");
 
                 xmlWriter.WriteStartElement("LevelCoinPickupsData");
-
+    
                 // Write coin pickup data to file.
                 for(var x = 0; x < worldWidth; x++)
                 {
@@ -318,6 +382,27 @@ namespace Assets.Scripts.General.UnityLayer
                         xmlWriter.WriteEndElement();
                     }
                 }
+
+                xmlWriter.WriteEndElement();
+
+                xmlWriter.WriteStartElement("LevelBouncePadData");
+
+                // Write bounce pad data to file.
+                for (var x = 0; x < worldWidth; x++)
+                {
+                    for (var y = 0; y < worldHeight; y++)
+                    {
+                        // If there isnt a pad at current x,y then continue.
+                        if (bouncePadObjects[x, y] == null) continue;
+
+                        xmlWriter.WriteStartElement("BouncePad");
+                        xmlWriter.WriteAttributeString("X", x.ToString());
+                        xmlWriter.WriteAttributeString("Y", y.ToString());
+                        xmlWriter.WriteEndElement();
+                    }
+                }
+
+                xmlWriter.WriteEndElement();
 
                 xmlWriter.WriteEndElement();
                 xmlWriter.WriteEndDocument();
@@ -350,6 +435,12 @@ namespace Assets.Scripts.General.UnityLayer
                                 var cY = int.Parse(xmlReader["Y"]);
                                 AddCoinPickup(new Vector2(cX, cY));
                                 break;
+
+                            case "BouncePad":
+                                var pX = int.Parse(xmlReader["X"]);
+                                var pY = int.Parse(xmlReader["Y"]);
+                                AddBouncePad(new Vector2(pX, pY));
+                                break;
                         }
                     }
                 }
@@ -371,6 +462,7 @@ namespace Assets.Scripts.General.UnityLayer
                 for(var y = 0; y < worldHeight; y++)
                 {
                     RemoveCoinPickup(new Vector2(x, y));
+                    RemoveBouncePad(new Vector2(x, y));
                 }
             }
 

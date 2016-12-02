@@ -6,7 +6,9 @@ namespace Assets.Scripts.General.UnityLayer
 {
     public enum SelectionMode
     {
-        BuildMode,
+        None,
+        Platform,
+        BouncePad,
         ClearMode,
         PlayerSpawnSet,
         CoinPickup
@@ -40,7 +42,7 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void Start()
         {
-            SelectMode = SelectionMode.ClearMode;
+            SelectMode = SelectionMode.None;
         }
 
         public void Update()
@@ -191,15 +193,21 @@ namespace Assets.Scripts.General.UnityLayer
         {
             switch (SelectMode)
             {
-                case SelectionMode.BuildMode:
+                case SelectionMode.Platform:
                     _tile.Type = TileBuildType;
                     worldController.SetTileMaterial(_tile.X, _tile.Y, platformSubMenu.Material);
                     break;
+
                 case SelectionMode.ClearMode:
                     _tile.Type = TileType.Empty;
                     break;
+
                 case SelectionMode.CoinPickup:
                     worldController.AddCoinPickup(new Vector2(_tile.X, _tile.Y));
+                    break;
+
+                case SelectionMode.BouncePad:
+                    worldController.AddBouncePad(new Vector2(_tile.X, _tile.Y));
                     break;
             }
         }
