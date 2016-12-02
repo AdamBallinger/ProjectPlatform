@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Xml;
 using Assets.Scripts.General.UnityLayer.Physics_Components;
+using Assets.Scripts.General.UnityLayer.UI.LevelEditor;
 using Assets.Scripts.Physics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,6 +19,8 @@ namespace Assets.Scripts.General.UnityLayer
         /// Prefab for the bounce pad object.
         /// </summary>
         public GameObject bouncePadPrefab;
+
+        public EditSubMenuBounceBadController bouncePadSubMenu;
 
         // Store difference types of sprites based on platforms surrounding.
         public Sprite[] platformSprites;
@@ -305,6 +308,10 @@ namespace Assets.Scripts.General.UnityLayer
             }
 
             var padObject = Instantiate(bouncePadPrefab, worldCoord, Quaternion.identity) as GameObject;
+            var springComp = padObject.GetComponent<SpringJointComponent>();
+            springComp.stiffness = bouncePadSubMenu.Stiffness;
+            springComp.restLength = bouncePadSubMenu.RestLength;
+            springComp.dampen = bouncePadSubMenu.Dampen;
 
             bouncePadObjects[gridX, gridY] = padObject;
         }

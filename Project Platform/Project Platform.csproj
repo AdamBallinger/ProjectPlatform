@@ -78,6 +78,7 @@
     <Compile Include="Assets\Scripts\General\UnityLayer\Physics Components\RigidBodyComponent.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\Physics Components\SpringJointComponent.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\EditSubMenuBounceBadController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\EditSubMenuPathfindingController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\EditSubMenuPlatformController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\UI\LevelEditor\EditorPlayModeTransition.cs" />
