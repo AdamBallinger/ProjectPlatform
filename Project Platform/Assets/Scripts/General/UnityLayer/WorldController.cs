@@ -287,7 +287,7 @@ namespace Assets.Scripts.General.UnityLayer
         /// Adds a bounce pad object to the world at the given coordinate (world or grid).
         /// </summary>
         /// <param name="_coord"></param>
-        public void AddBouncePad(Vector2 _coord)
+        public GameObject AddBouncePad(Vector2 _coord)
         {
             var worldCoord = _coord;
             var gridCoord = World.Current.WorldPointToGridPoint(worldCoord);
@@ -297,23 +297,21 @@ namespace Assets.Scripts.General.UnityLayer
             if (World.Current.GetTileAt(gridX, gridY).Type != TileType.Empty)
             {
                 // dont allow bounce pads to be placed ontop of none empty tiles.
-                return;
+                return null;
             }
 
             if (bouncePadObjects[gridX, gridY] != null)
             {
                 // if a pad already exists then remove it from the current position. (easy cheat for removing pads in editor)
                 RemoveBouncePad(_coord);
-                return;
+                return null;
             }
 
             var padObject = Instantiate(bouncePadPrefab, worldCoord, Quaternion.identity) as GameObject;
-            var springComp = padObject.GetComponent<SpringJointComponent>();
-            springComp.stiffness = bouncePadSubMenu.Stiffness;
-            springComp.restLength = bouncePadSubMenu.RestLength;
-            springComp.dampen = bouncePadSubMenu.Dampen;
 
             bouncePadObjects[gridX, gridY] = padObject;
+
+            return padObject;
         }
 
         /// <summary>
@@ -402,9 +400,14 @@ namespace Assets.Scripts.General.UnityLayer
                         // If there isnt a pad at current x,y then continue.
                         if (bouncePadObjects[x, y] == null) continue;
 
+                        var springComp = bouncePadObjects[x, y].GetComponent<SpringJointComponent>();
+
                         xmlWriter.WriteStartElement("BouncePad");
                         xmlWriter.WriteAttributeString("X", x.ToString());
                         xmlWriter.WriteAttributeString("Y", y.ToString());
+                        xmlWriter.WriteAttributeString("Stiffness", springComp.Joint.Stiffness.ToString());
+                        xmlWriter.WriteAttributeString("RestLength", springComp.Joint.RestLength.ToString());
+                        xmlWriter.WriteAttributeString("Dampen", springComp.Joint.Dampen.ToString());
                         xmlWriter.WriteEndElement();
                     }
                 }
@@ -446,7 +449,14 @@ namespace Assets.Scripts.General.UnityLayer
                             case "BouncePad":
                                 var pX = int.Parse(xmlReader["X"]);
                                 var pY = int.Parse(xmlReader["Y"]);
-                                AddBouncePad(new Vector2(pX, pY));
+                                var stiff = float.Parse(xmlReader["Stiffness"]);
+                                var rest = float.Parse(xmlReader["RestLength"]);
+                                var dampen = float.Parse(xmlReader["Dampen"]);
+                                var pad = AddBouncePad(new Vector2(pX, pY));
+                                var springComp = pad.GetComponent<SpringJointComponent>();
+                                springComp.stiffness = stiff;
+                                springComp.restLength = rest;
+                                springComp.dampen = dampen;
                                 break;
                         }
                     }

@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.General.UnityLayer.UI.LevelEditor;
+﻿using Assets.Scripts.General.UnityLayer.Physics_Components;
+using Assets.Scripts.General.UnityLayer.UI.LevelEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -19,6 +20,7 @@ namespace Assets.Scripts.General.UnityLayer
         public WorldController worldController;
         public LevelEditorUIController editorUIController;
         public EditSubMenuPlatformController platformSubMenu;
+        public EditSubMenuBounceBadController bouncePadSubMenu;
 
         public GameObject mouseSelectCursor;
         public GameObject playerSpawnObject;
@@ -207,7 +209,17 @@ namespace Assets.Scripts.General.UnityLayer
                     break;
 
                 case SelectionMode.BouncePad:
-                    worldController.AddBouncePad(new Vector2(_tile.X, _tile.Y));
+                    var pad = worldController.AddBouncePad(new Vector2(_tile.X, _tile.Y));
+
+                    // if pad wasn't removed
+                    if (pad != null)
+                    {
+                        var springComp = pad.GetComponent<SpringJointComponent>();
+                        springComp.stiffness = bouncePadSubMenu.Stiffness;
+                        springComp.restLength = bouncePadSubMenu.RestLength;
+                        springComp.dampen = bouncePadSubMenu.Dampen;
+                    }
+                    
                     break;
             }
         }
