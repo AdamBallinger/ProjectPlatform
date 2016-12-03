@@ -204,7 +204,7 @@ namespace Assets.Scripts.Physics
             // Generate collision pairs
             GeneratePairs();
 
-            // Handle collision listeners for collisions.
+            // Handle collision callbacks for collisions.
             foreach (var contact in Contacts)
             {
                 contact.ColliderA.CollisionListener.Handle(contact.ColliderB);
@@ -245,6 +245,9 @@ namespace Assets.Scripts.Physics
                 {
                     // Prevent collider self check.
                     if (Colliders[i] == Colliders[j]) continue;
+
+                    // Prevent colliders on same object creating collisions.
+                    if(Colliders[i].RigidBody.GameObject == Colliders[j].RigidBody.GameObject) continue;
 
                     if (Colliders[i].RigidBody.InvMass == 0.0f && Colliders[j].RigidBody.InvMass == 0.0f) continue;
 
