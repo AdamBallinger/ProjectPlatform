@@ -155,7 +155,7 @@ namespace Assets.Scripts.Physics.Colliders
             }
 
             var pentrationAllowance = 0.01f;
-            var penetrationCorrection = 0.6f; // % correction
+            var penetrationCorrection = 0.2f; // % correction
 
             var correctionVector = Mathf.Max(Penetration - pentrationAllowance, 0.0f) / InvMassSum * Normal * penetrationCorrection;
             var correctionA = correctionVector;
