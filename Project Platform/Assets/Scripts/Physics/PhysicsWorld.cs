@@ -254,13 +254,12 @@ namespace Assets.Scripts.Physics
                     // Check distance between 2 colliders.
                     var dist = Vector2.Distance(Colliders[i].Position, Colliders[j].Position);
 
-
                     // Check collisions between each collider.
                     var colliderPair = new CollisionManifold(Colliders[i], Colliders[j]);
 
                     // Limit the distance to check for collisions. Hacky but for now works
                     // until I get around to TODO: spatial partitioning.
-                    if (dist <= 10.0f)
+                    if (dist <= 5.0f)
                     {
                         colliderPair.Solve();
 

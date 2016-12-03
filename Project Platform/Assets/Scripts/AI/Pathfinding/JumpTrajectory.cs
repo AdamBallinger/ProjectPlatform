@@ -51,7 +51,7 @@ namespace Assets.Scripts.AI.Pathfinding
         /// <summary>
         /// Max number of points to create when calculating a trajectory.
         /// </summary>
-        private const int maxTrajectoryPoints = 25;
+        private const int maxTrajectoryPoints = 200;
 
         /// <summary>
         /// Time to simulate between each trajectory point.
@@ -83,6 +83,7 @@ namespace Assets.Scripts.AI.Pathfinding
                 var dx = JumpSpeed * time;
                 var dy = JumpHeight * time - (World.Current.PhysicsWorld.Gravity.magnitude * time * time / 2.0f);
                 var point = new Vector2(StartPoint.x + dx, StartPoint.y + dy);
+
                 Trajectory.Add(point);
                 time += timeBetweenPoints;
             }
@@ -98,7 +99,7 @@ namespace Assets.Scripts.AI.Pathfinding
             foreach(var point in Trajectory)
             {
                 var tileAtPoint = World.Current.GetTileAtWorldCoord(point);
-                var tileAbovePoint = World.Current.GetTileAt(tileAtPoint.X, tileAtPoint.Y);
+                var tileAbovePoint = World.Current.GetTileAt(tileAtPoint.X, tileAtPoint.Y + 1);
 
                 if((tileAtPoint != null && tileAtPoint.Type == TileType.Empty)
                     && tileAbovePoint != null && tileAbovePoint.Type == TileType.Empty)
