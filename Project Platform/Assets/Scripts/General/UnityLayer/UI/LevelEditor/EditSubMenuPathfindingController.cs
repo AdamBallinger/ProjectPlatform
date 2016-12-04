@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Assets.Scripts.AI.Pathfinding;
+using Assets.Scripts.General.UnityLayer.AI;
 using UnityEngine;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
@@ -83,7 +84,12 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public void CreatePath(Vector2 _start, Vector2 _end)
         {
             var pathFinder = new PathFinder(_start, _end);
+            var watch = new Stopwatch();
+            watch.Start();
             testPath = pathFinder.FindPath();
+            watch.Stop();
+            Debug.Log("Path created in " + watch.ElapsedMilliseconds + " ms");
+            GameObject.FindGameObjectWithTag("AI").GetComponent<PathfinderAgent>().SetPath(testPath);
         }
 
         public void OnDrawGizmos()
