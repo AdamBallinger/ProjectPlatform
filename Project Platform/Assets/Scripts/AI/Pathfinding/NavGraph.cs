@@ -5,6 +5,10 @@ namespace Assets.Scripts.AI.Pathfinding
 {
     public class NavGraph
     {
+        // G cost constants for different link types.
+        public const float WALK_COST = 1.0f;
+        public const float FALL_COST = 1.5f;
+        public const float JUMP_COST = 2.0f;
 
         /// <summary>
         /// 2D node graph array for the world.
@@ -139,6 +143,8 @@ namespace Assets.Scripts.AI.Pathfinding
                             // Add walk links both ways.
                             Nodes[x, y].AddLink(new NodeLink(Nodes[x + 1, y], NodeLinkType.Walk));
                             Nodes[x + 1, y].AddLink(new NodeLink(Nodes[x, y], NodeLinkType.Walk));
+                            Nodes[x, y].G = WALK_COST;
+                            Nodes[x + 1, y].G = WALK_COST;
                         }
                     }
                 }
@@ -181,23 +187,23 @@ namespace Assets.Scripts.AI.Pathfinding
                         {
                             // Use fall links for jumping too so check along the X axis for additional links. scanWidth controls how many tiles across to scan
                             var scanWidth = 4;
-                            for (var cX = 0; cX < scanWidth; cX++)
+                            for (var scanX = 0; scanX < scanWidth; scanX++)
                             {
                                 // If i is 0 then get the left tile else get the right tile. (from current tile at x and y)
-                                var sideTile = i == 0 ? World.Current.GetTileAt(x - (1 + cX), y) : World.Current.GetTileAt(x + (1 + cX), y);
+                                var sideTile = i == 0 ? World.Current.GetTileAt(x - (1 + scanX), y) : World.Current.GetTileAt(x + (1 + scanX), y);
 
                                 // If the tile to the left/right isn't null and isn't a platform tile then theres an opening to start scanning down the Y.
                                 if (sideTile != null && sideTile.Type != TileType.Platform)
                                 {
                                     // Start at same Y position as the tile to the left or right.
-                                    var targetY = sideTile.Y;
+                                    var scanY = sideTile.Y;
 
                                     // Until we reach the bottom of the world (y = 0) find the next node that isnt of type none,
                                     // and add a fall link to it from the current node
-                                    while (targetY > 0)
+                                    while (scanY > 0)
                                     {
-                                        var nodeToCheck = Nodes[sideTile.X, targetY];
-                                        var tileToCheck = World.Current.GetTileAt(sideTile.X, targetY);
+                                        var nodeToCheck = Nodes[sideTile.X, scanY];
+                                        var tileToCheck = World.Current.GetTileAt(sideTile.X, scanY);
 
                                         if (nodeToCheck != null && nodeToCheck.NodeType != PathNodeType.None)
                                         {
@@ -211,6 +217,7 @@ namespace Assets.Scripts.AI.Pathfinding
                                             if (dist <= 4f)
                                             {
                                                 nodeToCheck.AddLink(new NodeLink(Nodes[x, y], NodeLinkType.Jump));
+                                                Nodes[x, y].G = JUMP_COST;
 
                                                 if (nodeToCheck.NodeType == PathNodeType.Platform)
                                                 {
@@ -219,9 +226,11 @@ namespace Assets.Scripts.AI.Pathfinding
                                             }
 
                                             // Only add fall links to the first X scan.
-                                            if (cX == 0)
+                                            if (scanX == 0)
                                             {
                                                 Nodes[x, y].AddLink(new NodeLink(nodeToCheck, NodeLinkType.Fall));
+                                                nodeToCheck.G = FALL_COST;
+
                                                 if (nodeToCheck.NodeType == PathNodeType.Platform)
                                                 {
                                                     nodeToCheck.NodeType = PathNodeType.DropTo;
@@ -234,13 +243,13 @@ namespace Assets.Scripts.AI.Pathfinding
                                         // If the node at scanned X and Y was null or was a none type then
                                         // Check if this is not the first X scan from the current node. If there is a platform tile
                                         // at the current scan X and Y then break out of the Y scan and move over to the next X scan.
-                                        if(cX > 0 && tileToCheck.Type == TileType.Platform)
+                                        if(scanX > 0 && tileToCheck.Type == TileType.Platform)
                                         {
                                             break;
                                         }
 
                                         // If this is the first X scan and the node type was none, then check the next tile below as normal.
-                                        targetY--;
+                                        scanY--;
                                     }
                                 }
                                 else

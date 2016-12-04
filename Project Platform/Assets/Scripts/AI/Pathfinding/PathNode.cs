@@ -28,6 +28,17 @@ namespace Assets.Scripts.AI.Pathfinding
 
         public List<NodeLink> NodeLinks { get; private set; }
 
+        public PathNode Parent { get; set; }
+
+        public float G { get; set; }
+
+        public float H { get; set; }
+
+        public float F
+        {
+            get { return G + H; }
+        }
+
 
         public PathNode(int _x, int _y, PathNodeType _type)
         {

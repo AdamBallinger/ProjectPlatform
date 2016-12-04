@@ -1,6 +1,4 @@
 ﻿
-using System;
-
 namespace Assets.Scripts.AI.Pathfinding
 {
 
@@ -19,8 +17,6 @@ namespace Assets.Scripts.AI.Pathfinding
         public PathNode DestinationNode { get; private set; }
 
         public NodeLinkType LinkType { get; private set; }
-
-        public float LinkScore { get; set; }
 
         private object LinkData { get; set; }
 
