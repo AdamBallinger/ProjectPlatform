@@ -13,7 +13,11 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         public GameObject pathfindingMenu;
 
-        public bool displayGizmos = false;
+        private bool displayGizmos = false;
+        private bool displayNodeGizmos = true;
+        private bool displayWalkLinkGizmos = true;
+        private bool displayFallLinkGizmos = true;
+        private bool displayJumpLinkGizmos = true;
 
         public void OnPathfindingButtonPress()
         {
@@ -38,6 +42,26 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public void OnToggleGizmosButtonPress()
         {
             displayGizmos = !displayGizmos;
+        }
+
+        public void OnToggleNodeGizmosButtonPress()
+        {
+            displayNodeGizmos = !displayNodeGizmos;
+        }
+
+        public void OnToggleWalkLinkGizmosButtonPress()
+        {
+            displayWalkLinkGizmos = !displayWalkLinkGizmos;
+        }
+
+        public void OnToggleFallLinkGizmosButtonPress()
+        {
+            displayFallLinkGizmos = !displayFallLinkGizmos;
+        }
+
+        public void OnToggleJumpLinkGizmosButtonPress()
+        {
+            displayJumpLinkGizmos = !displayJumpLinkGizmos;
         }
 
         public void OnDrawGizmos()
@@ -80,6 +104,11 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
                                 break;
                         }
 
+                        if(!displayNodeGizmos)
+                        {
+                            Gizmos.color = Color.clear;
+                        }
+
                         Gizmos.DrawCube(new Vector2(x, y - 0.5f), Vector2.one * 0.4f);
                     }
                 }
@@ -97,15 +126,15 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
                             switch (link.LinkType)
                             {
                                 case NodeLinkType.Walk:
-                                    Gizmos.color = Color.cyan;
+                                    Gizmos.color = displayWalkLinkGizmos ? Color.cyan : Color.clear;
                                     break;
 
                                 case NodeLinkType.Fall:
-                                    Gizmos.color = Color.blue;
+                                    Gizmos.color = displayFallLinkGizmos ? Color.blue : Color.clear;
                                     break;
 
                                 case NodeLinkType.Jump:
-                                    Gizmos.color = Color.green;
+                                    Gizmos.color = displayJumpLinkGizmos ? Color.green : Color.clear;
                                     break;
                             }
 

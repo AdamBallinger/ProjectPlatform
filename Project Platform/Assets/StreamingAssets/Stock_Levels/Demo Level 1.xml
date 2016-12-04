@@ -84,11 +84,13 @@
         <Tile TileX="10" TileY="15" TileType="Platform" />
         <Tile TileX="11" TileY="0" TileType="Platform" />
         <Tile TileX="11" TileY="3" TileType="Platform" />
+        <Tile TileX="11" TileY="5" TileType="Platform" />
         <Tile TileX="11" TileY="10" TileType="Platform" />
         <Tile TileX="11" TileY="15" TileType="Platform" />
         <Tile TileX="12" TileY="0" TileType="Platform" />
         <Tile TileX="12" TileY="2" TileType="Platform" />
         <Tile TileX="12" TileY="3" TileType="Platform" />
+        <Tile TileX="12" TileY="5" TileType="Platform" />
         <Tile TileX="12" TileY="10" TileType="Platform" />
         <Tile TileX="12" TileY="15" TileType="Platform" />
         <Tile TileX="13" TileY="0" TileType="Platform" />
@@ -96,6 +98,7 @@
         <Tile TileX="13" TileY="10" TileType="Platform" />
         <Tile TileX="13" TileY="15" TileType="Platform" />
         <Tile TileX="14" TileY="0" TileType="Platform" />
+        <Tile TileX="14" TileY="5" TileType="Platform" />
         <Tile TileX="14" TileY="15" TileType="Platform" />
         <Tile TileX="15" TileY="0" TileType="Platform" />
         <Tile TileX="15" TileY="2" TileType="Platform" />

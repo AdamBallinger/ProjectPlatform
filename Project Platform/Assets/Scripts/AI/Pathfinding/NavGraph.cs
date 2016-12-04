@@ -26,9 +26,9 @@ namespace Assets.Scripts.AI.Pathfinding
             Height = _height;
             Nodes = new PathNode[Width, Height];
 
-            for(var x = 0; x < Width; x++)
+            for (var x = 0; x < Width; x++)
             {
-                for(var y = 0; y < Height; y++)
+                for (var y = 0; y < Height; y++)
                 {
                     Nodes[x, y] = new PathNode(x, y, PathNodeType.None);
                 }
@@ -93,7 +93,7 @@ namespace Assets.Scripts.AI.Pathfinding
                             Nodes[x, y].NodeType = PathNodeType.Platform;
                             Nodes[x, y].PlatformID = currentPlatformID;
                         }
-                        
+
                         // if the lower right tile is an empty tile OR the tile to the right is a platform
                         // We need to check then if the tile is a single platform node or the right edge of a platform.
                         if ((tileLowerRight != null && tileLowerRight.Type == TileType.Empty)
@@ -128,13 +128,13 @@ namespace Assets.Scripts.AI.Pathfinding
         /// </summary>
         private void ComputeWalkLinks()
         {
-            for(var y = 0; y < Height; y++)
+            for (var y = 0; y < Height; y++)
             {
-                for(var x = 0; x < Width; x++)
+                for (var x = 0; x < Width; x++)
                 {
-                    if(Nodes[x, y].NodeType != PathNodeType.None && Nodes[x, y].NodeType != PathNodeType.RightEdge)
+                    if (Nodes[x, y].NodeType != PathNodeType.None && Nodes[x, y].NodeType != PathNodeType.RightEdge)
                     {
-                        if(Nodes[x + 1, y] != null && Nodes[x + 1, y].NodeType != PathNodeType.None)
+                        if (Nodes[x + 1, y] != null && Nodes[x + 1, y].NodeType != PathNodeType.None)
                         {
                             // Add walk links both ways.
                             Nodes[x, y].AddLink(new NodeLink(Nodes[x + 1, y], NodeLinkType.Walk));
@@ -156,14 +156,14 @@ namespace Assets.Scripts.AI.Pathfinding
                 for (var x = 0; x < Width; x++)
                 {
                     // Only generate fall links from LeftEdge / RightEdge / Single node types
-                    if(Nodes[x, y].NodeType == PathNodeType.LeftEdge || Nodes[x, y].NodeType == PathNodeType.RightEdge || Nodes[x, y].NodeType == PathNodeType.Single)
+                    if (Nodes[x, y].NodeType == PathNodeType.LeftEdge || Nodes[x, y].NodeType == PathNodeType.RightEdge || Nodes[x, y].NodeType == PathNodeType.Single)
                     {
                         // Control variables to determine side of the current tile to create a fall link.
                         // Default of 0 and 0 will be for the tile to the left.
                         var j = 0;
                         var k = 0;
 
-                        switch(Nodes[x, y].NodeType)
+                        switch (Nodes[x, y].NodeType)
                         {
                             case PathNodeType.RightEdge:
                                 j = 1; // start from 1 (right tile)
@@ -177,59 +177,63 @@ namespace Assets.Scripts.AI.Pathfinding
                         }
 
                         // Based on j and k values, create the fall links.
-                        for(var i = j; i <= k; i++)
+                        for (var i = j; i <= k; i++)
                         {
                             // Use fall links for jumping too so check along the X axis for additional links. scanWidth controls how many tiles across to scan
                             var scanWidth = 4;
-                            for(var cX = 0; cX < scanWidth; cX++)
+                            for (var cX = 0; cX < scanWidth; cX++)
                             {
                                 // If i is 0 then get the left tile else get the right tile. (from current tile at x and y)
                                 var sideTile = i == 0 ? World.Current.GetTileAt(x - (1 + cX), y) : World.Current.GetTileAt(x + (1 + cX), y);
 
                                 if (sideTile != null && sideTile.Type != TileType.Platform)
                                 {
-                                    var targetY = sideTile.Y - 1;
+                                    var targetY = sideTile.Y;
 
                                     // Until we reach the bottom of the world (y = 0) find the next node that isnt of type none,
                                     // and add a fall link to it from the current node
                                     while (targetY > 0)
                                     {
                                         var nodeToCheck = Nodes[sideTile.X, targetY];
+                                        var tileToCheck = World.Current.GetTileAt(sideTile.X, targetY);
 
                                         if (nodeToCheck != null && nodeToCheck.NodeType != PathNodeType.None)
                                         {
                                             // Found a node that isnt of type none, so add a fall link or jump link to this node from
                                             // current node and break from the loop.
 
-                                            if(cX > 0)
-                                            {
-                                                // if cX is over 0 we treat the link as a jump link since its more than 1 tile on the
-                                                // x axis away from the start node, so add the link from the checked node to the current Node
-                                                // since its a jump, and since its a jump check the distance isn't too high for the AI to jump.
-                                                if(Vector2.Distance(new Vector2(x, y), new Vector2(nodeToCheck.X, nodeToCheck.Y)) <= 4f)
-                                                {
-                                                    nodeToCheck.AddLink(new NodeLink(Nodes[x, y], NodeLinkType.Jump));
+                                            var dist = Vector2.Distance(new Vector2(x, y), new Vector2(nodeToCheck.X, nodeToCheck.Y));
 
-                                                    if (nodeToCheck.NodeType == PathNodeType.Platform)
-                                                    {
-                                                        nodeToCheck.NodeType = PathNodeType.JumpFrom; 
-                                                    }
+                                            // if the distance from the 2 nodes is less than the jump height for an AI, then
+                                            // add a jump link from the checked node to the node at the current x and y.
+                                            if (dist <= 4f)
+                                            {
+                                                nodeToCheck.AddLink(new NodeLink(Nodes[x, y], NodeLinkType.Jump));
+
+                                                if (nodeToCheck.NodeType == PathNodeType.Platform)
+                                                {
+                                                    nodeToCheck.NodeType = PathNodeType.JumpFrom;
                                                 }
                                             }
-                                            else
+
+                                            if (cX == 0)
                                             {
                                                 Nodes[x, y].AddLink(new NodeLink(nodeToCheck, NodeLinkType.Fall));
-
                                                 if (nodeToCheck.NodeType == PathNodeType.Platform)
                                                 {
                                                     nodeToCheck.NodeType = PathNodeType.DropTo;
                                                 }
                                             }
-
+                                            
                                             break;
                                         }
 
                                         // if node type was none, then check the next tile below.
+                                        if(cX > 0 && tileToCheck.Type == TileType.Platform)
+                                        {
+                                            break;
+                                        }
+
                                         targetY--;
                                     }
                                 }
@@ -237,7 +241,7 @@ namespace Assets.Scripts.AI.Pathfinding
                                 {
                                     break;
                                 }
-                            }                  
+                            }
                         }
                     }
                 }
@@ -271,7 +275,7 @@ namespace Assets.Scripts.AI.Pathfinding
 
         //                        var leftTrajectory = new JumpTrajectory(new Vector2(node.X, node.Y), TrajectoryDirection.Left, jumpHeight, jumpSpeed);
         //                        var rightTrajectory = new JumpTrajectory(new Vector2(node.X, node.Y), TrajectoryDirection.Right, jumpHeight, jumpSpeed);
-                                
+
         //                        if(leftTrajectory.IsValidJump())
         //                        {
         //                            var link = new NodeLink(leftTrajectory.LandingNode, NodeLinkType.Jump);
@@ -297,9 +301,9 @@ namespace Assets.Scripts.AI.Pathfinding
         /// </summary>
         public void Clear()
         {
-            for(var x = 0; x < Width; x++)
+            for (var x = 0; x < Width; x++)
             {
-                for(var y = 0; y < Height; y++)
+                for (var y = 0; y < Height; y++)
                 {
                     Nodes[x, y].NodeType = PathNodeType.None;
                     Nodes[x, y].ClearLinks();
