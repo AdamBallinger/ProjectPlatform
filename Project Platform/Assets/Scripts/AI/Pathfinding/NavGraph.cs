@@ -186,8 +186,10 @@ namespace Assets.Scripts.AI.Pathfinding
                                 // If i is 0 then get the left tile else get the right tile. (from current tile at x and y)
                                 var sideTile = i == 0 ? World.Current.GetTileAt(x - (1 + cX), y) : World.Current.GetTileAt(x + (1 + cX), y);
 
+                                // If the tile to the left/right isn't null and isn't a platform tile then theres an opening to start scanning down the Y.
                                 if (sideTile != null && sideTile.Type != TileType.Platform)
                                 {
+                                    // Start at same Y position as the tile to the left or right.
                                     var targetY = sideTile.Y;
 
                                     // Until we reach the bottom of the world (y = 0) find the next node that isnt of type none,
@@ -216,6 +218,7 @@ namespace Assets.Scripts.AI.Pathfinding
                                                 }
                                             }
 
+                                            // Only add fall links to the first X scan.
                                             if (cX == 0)
                                             {
                                                 Nodes[x, y].AddLink(new NodeLink(nodeToCheck, NodeLinkType.Fall));
@@ -228,17 +231,21 @@ namespace Assets.Scripts.AI.Pathfinding
                                             break;
                                         }
 
-                                        // if node type was none, then check the next tile below.
+                                        // Check if this is not the first X scan from the current node. If there is a platform tile
+                                        // at the current scan X and Y then break out of the Y scan and move over to the next X scan.
                                         if(cX > 0 && tileToCheck.Type == TileType.Platform)
                                         {
                                             break;
                                         }
 
+                                        // if node type was none, then check the next tile below.
                                         targetY--;
                                     }
                                 }
                                 else
                                 {
+                                    // if the tile to the left/right of the current node was null, or was a platform tile then
+                                    // break and move to the next side to check if another side is available for this node.
                                     break;
                                 }
                             }
