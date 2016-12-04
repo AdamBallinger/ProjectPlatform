@@ -180,11 +180,6 @@ namespace Assets.Scripts.General.UnityLayer
 
         private void HandleZooming()
         {
-            //Camera.main.GetComponent<tk2dCamera>().CameraSettings.orthographicSize -=
-            //    Camera.main.GetComponent<tk2dCamera>().CameraSettings.orthographicSize * Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
-
-            //Camera.main.GetComponent<tk2dCamera>().CameraSettings.orthographicSize =
-            //    Mathf.Clamp(Camera.main.GetComponent<tk2dCamera>().CameraSettings.orthographicSize, maxZoomIn, maxZoomOut);
             Camera.main.orthographicSize -= Camera.main.orthographicSize * Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
             Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, maxZoomIn, maxZoomOut);
         }
