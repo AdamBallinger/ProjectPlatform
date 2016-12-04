@@ -231,6 +231,7 @@ namespace Assets.Scripts.AI.Pathfinding
                                             break;
                                         }
 
+                                        // If the node at scanned X and Y was null or was a none type then
                                         // Check if this is not the first X scan from the current node. If there is a platform tile
                                         // at the current scan X and Y then break out of the Y scan and move over to the next X scan.
                                         if(cX > 0 && tileToCheck.Type == TileType.Platform)
@@ -238,7 +239,7 @@ namespace Assets.Scripts.AI.Pathfinding
                                             break;
                                         }
 
-                                        // if node type was none, then check the next tile below.
+                                        // If this is the first X scan and the node type was none, then check the next tile below as normal.
                                         targetY--;
                                     }
                                 }

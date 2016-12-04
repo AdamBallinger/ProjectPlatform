@@ -1,9 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Xml;
 using Assets.Scripts.AI.Pathfinding;
 using Assets.Scripts.Physics;
 using UnityEngine;
+using Path = System.IO.Path;
 
 namespace Assets.Scripts.General
 {

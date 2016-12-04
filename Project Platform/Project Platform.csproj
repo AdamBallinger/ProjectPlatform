@@ -78,6 +78,8 @@
     <Compile Include="Assets\Scripts\AI\Pathfinding\JumpTrajectory.cs" />
     <Compile Include="Assets\Scripts\AI\Pathfinding\NavGraph.cs" />
     <Compile Include="Assets\Scripts\AI\Pathfinding\NodeLink.cs" />
+    <Compile Include="Assets\Scripts\AI\Pathfinding\Path.cs" />
+    <Compile Include="Assets\Scripts\AI\Pathfinding\PathFinder.cs" />
     <Compile Include="Assets\Scripts\AI\Pathfinding\PathNode.cs" />
     <Compile Include="Assets\Scripts\General\Directories.cs" />
     <Compile Include="Assets\Scripts\General\Tile.cs" />
