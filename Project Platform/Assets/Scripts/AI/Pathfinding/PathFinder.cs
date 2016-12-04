@@ -84,17 +84,17 @@ namespace Assets.Scripts.AI.Pathfinding
                     
                     if(link.DestinationNode.Parent == null)
                     {
-                        link.DestinationNode.G = DistanceBetween(currentNode, link.DestinationNode);
+                        link.DestinationNode.G = link.LinkCost + DistanceBetween(currentNode, link.DestinationNode);
                         link.DestinationNode.Parent = currentNode;
                         link.DestinationNode.H = GetHeuristicCost(link.DestinationNode, path.EndNode);
                         openList.Add(link.DestinationNode);
                     }
                     else
                     {
-                        if(DistanceBetween(currentNode, link.DestinationNode) < link.DestinationNode.G)
+                        if(link.LinkCost + DistanceBetween(currentNode, link.DestinationNode) < link.DestinationNode.G)
                         {
                             link.DestinationNode.Parent = currentNode;
-                            link.DestinationNode.G = DistanceBetween(currentNode, link.DestinationNode);
+                            link.DestinationNode.G = link.LinkCost + DistanceBetween(currentNode, link.DestinationNode);
                         }
                     }
                 }

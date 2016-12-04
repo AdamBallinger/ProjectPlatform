@@ -207,7 +207,6 @@ namespace Assets.Scripts.AI.Pathfinding
 
                                             // if the distance from the 2 nodes is less than the jump height for an AI, then
                                             // add a jump link from the checked node to the node at the current x and y.
-                                            if (dist <= 4f)
                                             {
                                                 nodeToCheck.AddLink(new NodeLink(Nodes[x, y], NodeLinkType.Jump));
 
