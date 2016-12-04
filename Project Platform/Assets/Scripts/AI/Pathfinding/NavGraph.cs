@@ -212,7 +212,7 @@ namespace Assets.Scripts.AI.Pathfinding
 
                                                     if (nodeToCheck.NodeType == PathNodeType.Platform)
                                                     {
-                                                        nodeToCheck.NodeType = PathNodeType.JumpFrom;
+                                                        nodeToCheck.NodeType = PathNodeType.JumpFrom; 
                                                     }
                                                 }
                                             }
