@@ -9,6 +9,7 @@ namespace Assets.Scripts.AI.Pathfinding
         None,
         Platform,
         DropTo,
+        JumpFrom,
         LeftEdge,
         RightEdge,
         Single

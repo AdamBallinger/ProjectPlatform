@@ -68,7 +68,11 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
                                 break;
 
                             case PathNodeType.DropTo:
-                                Gizmos.color = Color.red;
+                                Gizmos.color = Color.blue;
+                                break;
+
+                            case PathNodeType.JumpFrom:
+                                Gizmos.color = Color.green;
                                 break;
 
                             case PathNodeType.Single:
@@ -105,21 +109,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
                                     break;
                             }
 
-                            if (link.LinkType == NodeLinkType.Jump)
-                            {
-                                var trajectory = link.GetData<JumpTrajectory>().Trajectory;
-
-                                for (var i = 0; i < trajectory.Count - 2; i++)
-                                {
-                                    Gizmos.DrawLine(trajectory[i], trajectory[i + 1]);
-                                }
-                            }
-                            else
-                            {
-                                Gizmos.DrawLine(new Vector2(x, y - 0.5f), new Vector2(link.DestinationNode.X, link.DestinationNode.Y - 0.5f));
-                            }
-
-                            //Gizmos.DrawLine(new Vector2(x, y - 0.5f), new Vector2(link.DestinationNode.X, link.DestinationNode.Y - 0.5f));
+                            Gizmos.DrawLine(new Vector2(x, y - 0.5f), new Vector2(link.DestinationNode.X, link.DestinationNode.Y - 0.5f));
                         }
                     }
                 }

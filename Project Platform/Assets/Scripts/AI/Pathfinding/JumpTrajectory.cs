@@ -10,6 +10,9 @@ namespace Assets.Scripts.AI.Pathfinding
         Right = 1
     }
 
+    /// <summary>
+    /// Unused as was part of old jump link calculation system but was replaced. 
+    /// </summary>
     public class JumpTrajectory
     {
 
@@ -51,12 +54,12 @@ namespace Assets.Scripts.AI.Pathfinding
         /// <summary>
         /// Max number of points to create when calculating a trajectory.
         /// </summary>
-        private const int maxTrajectoryPoints = 200;
+        private const int maxTrajectoryPoints = 25;
 
         /// <summary>
         /// Time to simulate between each trajectory point.
         /// </summary>
-        private const float timeBetweenPoints = 0.2f;
+        private const float timeBetweenPoints = 0.1f;
 
         public JumpTrajectory(Vector2 _start, TrajectoryDirection _direction, float _jumpHeight, float _jumpSpeed)
         {
@@ -76,7 +79,7 @@ namespace Assets.Scripts.AI.Pathfinding
             Trajectory.Clear();
 
             // time between each point
-            var time = 0.0f;
+            var time = 0.01f;
 
             for(var i = 0; i < maxTrajectoryPoints; i++)
             {
@@ -96,26 +99,31 @@ namespace Assets.Scripts.AI.Pathfinding
         /// <returns></returns>
         public bool IsValidJump()
         {
-            foreach(var point in Trajectory)
-            {
-                var tileAtPoint = World.Current.GetTileAtWorldCoord(point);
-                var tileAbovePoint = World.Current.GetTileAt(tileAtPoint.X, tileAtPoint.Y + 1);
+            //foreach(var point in Trajectory)
+            //{
+            //    if (point.x < 0.0f || point.x > World.Current.Width) return false;
+            //    if (point.y < 0.0f || point.y > World.Current.Height) return false;
 
-                if((tileAtPoint != null && tileAtPoint.Type == TileType.Empty)
-                    && tileAbovePoint != null && tileAbovePoint.Type == TileType.Empty)
-                {
-                    var nodeAtPoint = World.Current.NavGraph.Nodes[tileAtPoint.X, tileAtPoint.Y];
-                    if(nodeAtPoint.NodeType != PathNodeType.None)
-                    {
-                        LandingNode = nodeAtPoint;
-                        return true;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            //    var tileAtPoint = World.Current.GetTileAtWorldCoord(point);
+            //    if (tileAtPoint == null) return false;
+
+            //    var tileAbovePoint = World.Current.GetTileAt(tileAtPoint.X, tileAtPoint.Y + 1);
+
+            //    if (tileAtPoint != null && tileAtPoint.Type == TileType.Empty
+            //        && tileAbovePoint != null && tileAbovePoint.Type == TileType.Empty)
+            //    {
+            //        var nodeAtPoint = World.Current.NavGraph.Nodes[tileAtPoint.X, tileAtPoint.Y];
+            //        if (nodeAtPoint.NodeType != PathNodeType.None)
+            //        {
+            //            LandingNode = nodeAtPoint;
+            //            return true;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        return false;
+            //    }
+            //}
 
             return false;
         }
