@@ -46,6 +46,7 @@ namespace Assets.Scripts.AI.Pathfinding
             Y = _y;
             NodeType = _type;
             NodeLinks = new List<NodeLink>();
+            H = 0.0f;
         }
 
         public void ClearLinks()

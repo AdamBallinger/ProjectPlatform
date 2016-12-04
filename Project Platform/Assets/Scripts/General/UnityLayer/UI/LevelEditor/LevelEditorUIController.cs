@@ -33,6 +33,11 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             {
                 levelName.text = worldController.Load(EditorPlayModeTransition.PlayModeLevel, EditorPlayModeTransition.PlayModeLevelData);
             }
+            else
+            {
+                levelName.text = worldController.Load(Directories.Stock_Levels_Directory + "\\Demo Level 1.xml",
+                    Directories.Stock_Levels_Data_Directory + "\\Demo Level 1.xml");
+            }
         }
 
         public void OnPlatformButtonPress()

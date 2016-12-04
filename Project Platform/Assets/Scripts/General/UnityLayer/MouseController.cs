@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.General.UnityLayer.Physics_Components;
+﻿using Assets.Scripts.AI.Pathfinding;
+using Assets.Scripts.General.UnityLayer.Physics_Components;
 using Assets.Scripts.General.UnityLayer.UI.LevelEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,7 +13,9 @@ namespace Assets.Scripts.General.UnityLayer
         BouncePad,
         ClearMode,
         PlayerSpawnSet,
-        CoinPickup
+        CoinPickup,
+        TestPathStart,
+        TestPathEnd
     }
 
     public class MouseController : MonoBehaviour
@@ -21,6 +24,10 @@ namespace Assets.Scripts.General.UnityLayer
         public LevelEditorUIController editorUIController;
         public EditSubMenuPlatformController platformSubMenu;
         public EditSubMenuBounceBadController bouncePadSubMenu;
+        public EditSubMenuPathfindingController pathfindingSubMenu;
+
+        private Vector2 pathStart;
+        private Vector2 pathEnd;
 
         public GameObject mouseSelectCursor;
         public GameObject playerSpawnObject;
@@ -217,6 +224,19 @@ namespace Assets.Scripts.General.UnityLayer
                         springComp.dampen = bouncePadSubMenu.Dampen;
                     }
                     
+                    break;
+                
+                case SelectionMode.TestPathStart:
+                    if (World.Current.NavGraph.Nodes[_tile.X, _tile.Y].NodeType == PathNodeType.None) break;
+                    pathStart = new Vector2(_tile.X, _tile.Y);
+                    SelectMode = SelectionMode.TestPathEnd;
+                    break;
+
+                case SelectionMode.TestPathEnd:
+                    if (World.Current.NavGraph.Nodes[_tile.X, _tile.Y].NodeType == PathNodeType.None) break;
+                    pathEnd = new Vector2(_tile.X, _tile.Y);
+                    pathfindingSubMenu.CreatePath(pathStart, pathEnd);
+                    SelectMode = SelectionMode.TestPathStart;
                     break;
             }
         }

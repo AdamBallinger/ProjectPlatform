@@ -5,11 +5,6 @@ namespace Assets.Scripts.AI.Pathfinding
 {
     public class NavGraph
     {
-        // G cost constants for different link types.
-        public const float WALK_COST = 1.0f;
-        public const float FALL_COST = 1.5f;
-        public const float JUMP_COST = 2.0f;
-
         /// <summary>
         /// 2D node graph array for the world.
         /// </summary>
@@ -143,8 +138,6 @@ namespace Assets.Scripts.AI.Pathfinding
                             // Add walk links both ways.
                             Nodes[x, y].AddLink(new NodeLink(Nodes[x + 1, y], NodeLinkType.Walk));
                             Nodes[x + 1, y].AddLink(new NodeLink(Nodes[x, y], NodeLinkType.Walk));
-                            Nodes[x, y].G = WALK_COST;
-                            Nodes[x + 1, y].G = WALK_COST;
                         }
                     }
                 }
@@ -217,7 +210,6 @@ namespace Assets.Scripts.AI.Pathfinding
                                             if (dist <= 4f)
                                             {
                                                 nodeToCheck.AddLink(new NodeLink(Nodes[x, y], NodeLinkType.Jump));
-                                                Nodes[x, y].G = JUMP_COST;
 
                                                 if (nodeToCheck.NodeType == PathNodeType.Platform)
                                                 {
@@ -229,7 +221,6 @@ namespace Assets.Scripts.AI.Pathfinding
                                             if (scanX == 0)
                                             {
                                                 Nodes[x, y].AddLink(new NodeLink(nodeToCheck, NodeLinkType.Fall));
-                                                nodeToCheck.G = FALL_COST;
 
                                                 if (nodeToCheck.NodeType == PathNodeType.Platform)
                                                 {

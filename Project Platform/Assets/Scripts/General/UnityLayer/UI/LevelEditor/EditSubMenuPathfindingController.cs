@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading;
 using Assets.Scripts.AI.Pathfinding;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,11 +14,13 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         public GameObject pathfindingMenu;
 
-        private bool displayGizmos = false;
+        private bool displayGizmos = true;
         private bool displayNodeGizmos = true;
-        private bool displayWalkLinkGizmos = true;
-        private bool displayFallLinkGizmos = true;
-        private bool displayJumpLinkGizmos = true;
+        private bool displayWalkLinkGizmos = false;
+        private bool displayFallLinkGizmos = false;
+        private bool displayJumpLinkGizmos = false;
+
+        private Path testPath = null;
 
         public void OnPathfindingButtonPress()
         {
@@ -62,6 +65,25 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public void OnToggleJumpLinkGizmosButtonPress()
         {
             displayJumpLinkGizmos = !displayJumpLinkGizmos;
+        }
+
+        public void OnCreateTestPathButtonPress()
+        {
+            editorUIController.mouseController.SelectMode = SelectionMode.TestPathStart;
+        }
+
+        public void OnClearTestPathButtonPress()
+        {
+            if(testPath != null)
+            {
+                testPath.ClearPath();
+            }
+        }
+
+        public void CreatePath(Vector2 _start, Vector2 _end)
+        {
+            var pathFinder = new PathFinder(_start, _end);
+            testPath = pathFinder.FindPath();
         }
 
         public void OnDrawGizmos()
@@ -141,6 +163,19 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
                             Gizmos.DrawLine(new Vector2(x, y - 0.5f), new Vector2(link.DestinationNode.X, link.DestinationNode.Y - 0.5f));
                         }
                     }
+                }
+            }
+
+            // Draw a test path if 1 is created.
+            if(testPath != null && testPath.VectorPath.Count > 0)
+            {
+                var last = testPath.VectorPath[0];
+
+                foreach(var vector in testPath.VectorPath)
+                {
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawLine(last, vector);
+                    last = vector;
                 }
             }
         }

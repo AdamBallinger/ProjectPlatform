@@ -41,31 +41,124 @@ namespace Assets.Scripts.AI.Pathfinding
         }
 
         /// <summary>
-        /// Finds and returns a path from start to end for this PathFinder instance.
+        /// Finds and returns a path from start to end for this PathFinder instance using A* algorithm.
         /// </summary>
         /// <returns></returns>
         public Path FindPath()
         {
             var path = new Path(World.Current.NavGraph.Nodes[(int)Start.x, (int)Start.y], World.Current.NavGraph.Nodes[(int)End.x, (int)End.y]);
-            var nodes = World.Current.NavGraph.Nodes;
+            
+            ResetNodes();
 
             closedList.Clear();
             openList.Clear();
 
-            var maxSearchCount = 1000;
+            var maxSearchCount = 5000;
             var currentSearchCount = 0;
             
             openList.Add(path.StartNode);
+            path.StartNode.H = GetHeuristicCost(path.StartNode, path.EndNode);
 
             while(openList.Count != 0)
             {
-                if (currentSearchCount >= maxSearchCount) break;
+                if (currentSearchCount >= maxSearchCount)
+                {
+                    Debug.LogWarning("FindPath terminated because it exceeded the maximum allowed search count. Something went wrong.");
+                    break;
+                }
                 currentSearchCount++;
 
+                var currentNode = GetLowestCostNodeFromOpenList();
 
+                if(currentNode == path.EndNode)
+                {
+                    Debug.Log("Path has reached its target node.");
+                    closedList.Add(currentNode);
+                    RetracePath(path, currentNode);
+                    break;
+                }
+
+                foreach(var link in currentNode.NodeLinks)
+                {
+                    if(closedList.Contains(link.DestinationNode)) continue;
+                    
+                    if(link.DestinationNode.Parent == null)
+                    {
+                        link.DestinationNode.G = DistanceBetween(currentNode, link.DestinationNode);
+                        link.DestinationNode.Parent = currentNode;
+                        link.DestinationNode.H = GetHeuristicCost(link.DestinationNode, path.EndNode);
+                        openList.Add(link.DestinationNode);
+                    }
+                    else
+                    {
+                        if(DistanceBetween(currentNode, link.DestinationNode) < link.DestinationNode.G)
+                        {
+                            link.DestinationNode.Parent = currentNode;
+                            link.DestinationNode.G = DistanceBetween(currentNode, link.DestinationNode);
+                        }
+                    }
+                }
+
+                openList.Remove(currentNode);
+                closedList.Add(currentNode);
             }
 
             return path;
+        }
+
+        /// <summary>
+        /// Gets the cheapest F cost node from the open list.
+        /// </summary>
+        /// <returns></returns>
+        private PathNode GetLowestCostNodeFromOpenList()
+        {
+            var cheapestNode = openList[0];
+
+            foreach(var node in openList)
+            {
+                if(node.F <= cheapestNode.F)
+                {
+                    cheapestNode = node;
+                }
+            }
+
+            return cheapestNode;
+        }
+
+        private void RetracePath(Path _path, PathNode _lastNode)
+        {
+            _path.NodePath.Insert(0, _path.EndNode);
+            _path.VectorPath.Insert(0, new Vector2(_path.EndNode.X, _path.EndNode.Y));
+            //for (var i = closedList.Count - 1; i > 0; i--)
+            //{
+            //    _path.NodePath.Insert(0, closedList[i].Parent);
+            //    _path.VectorPath.Insert(0, new Vector2(closedList[i].Parent.X, closedList[i].Parent.Y));
+            //    if (closedList[i] == _path.StartNode) break;
+            //}
+
+            while(_lastNode.Parent != null)
+            {
+                _path.NodePath.Insert(0, _lastNode.Parent);
+                _path.VectorPath.Insert(0, new Vector2(_lastNode.Parent.X, _lastNode.Parent.Y));
+                _lastNode = _lastNode.Parent;
+            }
+        }
+
+        /// <summary>
+        /// Reset any costs and parent references for nodes from previous path calculations.
+        /// </summary>
+        private void ResetNodes()
+        {
+            for(var x = 0; x < World.Current.NavGraph.Width; x++)
+            {
+                for(var y = 0; y < World.Current.NavGraph.Height; y++)
+                {
+                    var node = World.Current.NavGraph.Nodes[x, y];
+                    node.G = 0.0f;
+                    node.H = 0.0f;
+                    node.Parent = null;
+                }
+            }
         }
 
         /// <summary>
@@ -81,29 +174,21 @@ namespace Assets.Scripts.AI.Pathfinding
                 return Vector2.Distance(new Vector2(_a.X, _a.Y), new Vector2(_b.X, _b.Y));
             }
 
-            // Manhattan distance
+            // Manhattan heuristic
             var dx = Mathf.Abs(_a.X - _b.X);
             var dy = Mathf.Abs(_a.Y - _b.Y);
             return dx + dy;
         }
 
         /// <summary>
-        /// Returns the G cost from a to b.
+        /// Returns the direct distance between 2 given nodes.
         /// </summary>
         /// <param name="_a"></param>
         /// <param name="_b"></param>
         /// <returns></returns>
-        private float GetCost(PathNode _a, PathNode _b)
+        private float DistanceBetween(PathNode _a, PathNode _b)
         {
-            if (heuristicFunction == Heuristic.Euclidean)
-            {
-                return _a.G + Vector2.Distance(new Vector2(_a.X, _a.Y), new Vector2(_b.X, _b.Y));
-            }
-
-            // Manhattan distance
-            var dx = Mathf.Abs(_a.X - _b.X);
-            var dy = Mathf.Abs(_a.Y - _b.Y);
-            return _a.G + (dx + dy);
+            return Vector2.Distance(new Vector2(_a.X, _a.Y), new Vector2(_b.X, _b.Y));
         }
     }
 }
