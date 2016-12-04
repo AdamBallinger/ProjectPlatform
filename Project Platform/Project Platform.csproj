@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.5.0f3</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -112,54 +110,10 @@
     <Compile Include="Assets\Scripts\Physics\CollisionListener.cs" />
     <Compile Include="Assets\Scripts\Physics\PhysicsMaterial.cs" />
     <Compile Include="Assets\Scripts\Physics\PhysicsWorld.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Camera\tk2dCamera.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Camera\tk2dCameraAnchor.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Camera\tk2dCameraUtil.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Fonts\tk2dFont.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Fonts\tk2dFontData.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Fonts\tk2dTextGeomGen.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Fonts\tk2dTextMesh.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Gui\tk2dButton.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Runtime\tk2dResource.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Runtime\tk2dSystem.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Runtime\tk2dUpdateManager.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dAnimatedSprite.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dBaseSprite.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dClippedSprite.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dEditorSpriteDataUnloader.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dPixelPerfectHelper.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dRuntimeSpriteCollection.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dSlicedSprite.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dSprite.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dSpriteAnimation.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dSpriteAnimator.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dSpriteAttachPoint.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dSpriteCollection.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dSpriteCollectionData.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dSpriteCollectionInterfaces.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dSpriteCollectionSize.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dSpriteFromTexture.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dSpriteGeomGen.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dStaticSpriteBatcher.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dTiledSprite.cs" />
-    <Compile Include="Assets\TK2DROOT\tk2d\Code\tk2dUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\StreamingAssets\Stock_Levels\Demo Level 1.xml" />
     <None Include="Assets\StreamingAssets\Stock_Levels\Level_Data\Demo Level 1.xml" />
-    <None Include="Assets\TK2DROOT\tk2d\Editor\EditorUtility.shader" />
-    <None Include="Assets\TK2DROOT\tk2d\Goodies\TexturePacker\Exporter\2dtoolkit\exporter.xml" />
-    <None Include="Assets\TK2DROOT\tk2d\Shaders\AdditiveVertexColor.shader" />
-    <None Include="Assets\TK2DROOT\tk2d\Shaders\Blend2TexVertexColor.shader" />
-    <None Include="Assets\TK2DROOT\tk2d\Shaders\CutoutVertexColor.shader" />
-    <None Include="Assets\TK2DROOT\tk2d\Shaders\LitBlendVertexColor.shader" />
-    <None Include="Assets\TK2DROOT\tk2d\Shaders\LitCutoutVertexColor.shader" />
-    <None Include="Assets\TK2DROOT\tk2d\Shaders\LitPremulVertexColor.shader" />
-    <None Include="Assets\TK2DROOT\tk2d\Shaders\LitSolidVertexColor.shader" />
-    <None Include="Assets\TK2DROOT\tk2d\Shaders\PremulVertexColor.shader" />
-    <None Include="Assets\TK2DROOT\tk2d\Shaders\SolidVertexColor.shader" />
-    <None Include="Assets\TK2DROOT\tk2d\Shaders\goodies\PackedTextMesh.shader" />
-    <None Include="Assets\TK2DROOT\tk2d\Shaders\resources\BlendVertexColor.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
