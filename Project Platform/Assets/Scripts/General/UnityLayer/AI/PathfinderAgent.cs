@@ -43,12 +43,8 @@ namespace Assets.Scripts.General.UnityLayer.AI
         {
             if (currentPath == null) return;
 
-            //if(currentPathIndex >= currentPath.GetPathLength())
-            //{
-            //    currentPath.ClearPath();
-            //    currentPath = null;
-            //    return;
-            //}
+            // TODO: Improve the way the AI moves from point to point in the calculated path so its not so rough.
+            // This current implementation is a placeholder.
 
             var node = currentPath.NodePath[currentPathIndex];
             var nodePos = new Vector2(node.X, node.Y);
@@ -57,7 +53,12 @@ namespace Assets.Scripts.General.UnityLayer.AI
             var direction = nodePos - (Vector2)transform.position;
 
             var moveDirX = nodePos.x < transform.position.x ? Vector2.left : Vector2.right;
-            var moveDirY = nodePos.y < transform.position.y ? Vector2.down : Vector2.up;
+
+            if(isCollidingLeftWall && moveDirX == Vector2.left)
+                moveDirX = Vector2.zero;
+
+            if (isCollidingRightWall && moveDirX == Vector2.right)
+                moveDirX = Vector2.zero;
 
             if (distTo <= 0.15f)
             {
@@ -68,15 +69,15 @@ namespace Assets.Scripts.General.UnityLayer.AI
             }
             else
             {
-                if(Mathf.Abs(transform.position.x - nodePos.x) >= 0.1f)
+                if(Mathf.Abs(transform.position.x - nodePos.x) >= 0.1f && direction.y <= 0.5f)
                 {
                     // move left/right
                     rigidBodyComponent.RigidBody.AddImpulse(moveDirX * movementForce);
                 }
 
-                if(direction.y >= 0.5f && isGrounded)
+                if(direction.y >= 0.9f && isGrounded)
                 {
-                    rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * jumpHeight * rigidBodyComponent.RigidBody.Mass * 2.0f);
+                    rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * (jumpHeight * Mathf.Clamp01(distTo)) * rigidBodyComponent.RigidBody.Mass * 2.0f);
                 }
             }
 
