@@ -64,6 +64,7 @@ namespace Assets.Scripts.General.UnityLayer
             World.Create(worldWidth, worldHeight);
             World.Current.InitPhysicsWorld(worldGravity, solverIterations, maxBodyVelocity);
             World.Current.RegisterWorldModifyFinishCallback(OnWorldChangeFinish);
+            World.Current.NavGraph.RegisterScanCompleteCallback(OnNavGraphScanComplete);
 
             tileGameObjects = new GameObject[worldWidth, worldHeight];
             coinObjects = new GameObject[worldWidth, worldHeight];
@@ -189,6 +190,14 @@ namespace Assets.Scripts.General.UnityLayer
             World.Current.NavGraph.ScanGraph();
         }
 
+        public void OnNavGraphScanComplete()
+        {
+            var pathfindingDebug = FindObjectOfType<PathfindingDebugDrawController>();
+
+            if(pathfindingDebug != null)
+                pathfindingDebug.RebuildDebugObjects();
+        }
+
         /// <summary>
         /// Adds a collider component to a given tile gameobject.
         /// </summary>
@@ -279,7 +288,7 @@ namespace Assets.Scripts.General.UnityLayer
 
             if(coinObjects[gridX, gridY] != null)
             {
-                Destroy(coinObjects[gridX, gridY]);
+                DestroyImmediate(coinObjects[gridX, gridY]);
             }
         }
 
@@ -326,7 +335,7 @@ namespace Assets.Scripts.General.UnityLayer
 
             if(bouncePadObjects[gridX, gridY] != null)
             {
-                Destroy(bouncePadObjects[gridX, gridY]);
+                DestroyImmediate(bouncePadObjects[gridX, gridY]);
             }
         }
 

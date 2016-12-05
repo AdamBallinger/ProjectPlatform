@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.General;
+﻿using System;
+using Assets.Scripts.General;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Pathfinding
@@ -13,6 +14,8 @@ namespace Assets.Scripts.AI.Pathfinding
         public int Width { get; private set; }
 
         public int Height { get; private set; }
+
+        private Action onScanCompleteCallback;
 
         /// <summary>
         /// Creates a new nav graph instance for the given width and height.
@@ -42,6 +45,14 @@ namespace Assets.Scripts.AI.Pathfinding
             Clear();
             PlaceNodes();
             ComputeNodeLinks();
+
+            if (onScanCompleteCallback != null)
+                onScanCompleteCallback();
+        }
+
+        public void RegisterScanCompleteCallback(Action _callback)
+        {
+            onScanCompleteCallback += _callback;
         }
 
         /// <summary>

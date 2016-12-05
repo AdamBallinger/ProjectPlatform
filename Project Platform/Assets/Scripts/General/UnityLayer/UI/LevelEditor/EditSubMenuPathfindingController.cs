@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Threading;
 using Assets.Scripts.AI.Pathfinding;
 using Assets.Scripts.General.UnityLayer.AI;
 using UnityEngine;
@@ -75,7 +74,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         public void OnClearTestPathButtonPress()
         {
-            if(testPath != null)
+            if (testPath != null)
             {
                 testPath.ClearPath();
             }
@@ -90,100 +89,6 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             watch.Stop();
             Debug.Log("Path created in " + watch.ElapsedMilliseconds + " ms");
             GameObject.FindGameObjectWithTag("AI").GetComponent<PathfinderAgent>().SetPath(testPath);
-        }
-
-        public void OnDrawGizmos()
-        {
-            if (World.Current == null || !displayGizmos)
-                return;
-
-            var nodes = World.Current.NavGraph.Nodes;
-
-            // Draw node markers.
-            for (var x = 0; x < World.Current.NavGraph.Width; x++)
-            {
-                for (var y = 0; y < World.Current.NavGraph.Height; y++)
-                {
-                    if (nodes[x, y].NodeType != PathNodeType.None)
-                    {
-                        var nodeType = nodes[x, y].NodeType;
-
-                        switch (nodeType)
-                        {
-                            case PathNodeType.LeftEdge:
-                            case PathNodeType.RightEdge:
-                                Gizmos.color = Color.magenta;
-                                break;
-
-                            case PathNodeType.Platform:
-                                Gizmos.color = Color.black;
-                                break;
-
-                            case PathNodeType.DropTo:
-                                Gizmos.color = Color.blue;
-                                break;
-
-                            case PathNodeType.JumpFrom:
-                                Gizmos.color = Color.green;
-                                break;
-
-                            case PathNodeType.Single:
-                                Gizmos.color = Color.yellow;
-                                break;
-                        }
-
-                        if(!displayNodeGizmos)
-                        {
-                            Gizmos.color = Color.clear;
-                        }
-
-                        Gizmos.DrawCube(new Vector2(x, y - 0.5f), Vector2.one * 0.4f);
-                    }
-                }
-            }
-
-            // Draw node links.
-            for (var x = 0; x < World.Current.NavGraph.Width; x++)
-            {
-                for (var y = 0; y < World.Current.NavGraph.Height; y++)
-                {
-                    if (nodes[x, y].NodeType != PathNodeType.None)
-                    {
-                        foreach (var link in nodes[x, y].NodeLinks)
-                        {
-                            switch (link.LinkType)
-                            {
-                                case NodeLinkType.Walk:
-                                    Gizmos.color = displayWalkLinkGizmos ? Color.cyan : Color.clear;
-                                    break;
-
-                                case NodeLinkType.Fall:
-                                    Gizmos.color = displayFallLinkGizmos ? Color.blue : Color.clear;
-                                    break;
-
-                                case NodeLinkType.Jump:
-                                    Gizmos.color = displayJumpLinkGizmos ? Color.green : Color.clear;
-                                    break;
-                            }
-
-                            Gizmos.DrawLine(new Vector2(x, y - 0.5f), new Vector2(link.DestinationNode.X, link.DestinationNode.Y - 0.5f));
-                        }
-                    }
-                }
-            }
-
-            // Draw a test path if 1 is created.
-            if(testPath != null && testPath.VectorPath.Count > 0)
-            {
-                var last = testPath.VectorPath[0];
-
-                foreach(var vector in testPath.VectorPath)
-                {
-                    Gizmos.color = Color.red;
-                    Gizmos.DrawLine(last, vector);
-                    last = vector;
-                }
-            }
         }
     }
 }

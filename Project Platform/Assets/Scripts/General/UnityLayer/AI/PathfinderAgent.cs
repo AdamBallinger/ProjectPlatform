@@ -13,6 +13,8 @@ namespace Assets.Scripts.General.UnityLayer.AI
         public BoxColliderComponent leftWallCheck;
         public BoxColliderComponent rightWallCheck;
 
+        public LineRenderer pathRenderer;
+
         public float maxSpeed = 4.0f;
         public float movementForce = 40.0f;
 
@@ -91,6 +93,18 @@ namespace Assets.Scripts.General.UnityLayer.AI
             currentPath = _path;
             currentPathIndex = 0;
             transform.position = new Vector2(currentPath.StartNode.X, currentPath.StartNode.Y);
+
+            if(pathRenderer != null)
+            {
+                pathRenderer.numPositions = currentPath.GetPathLength();
+                foreach(var vec in currentPath.VectorPath)
+                {
+                    pathRenderer.SetPosition(currentPathIndex, vec);
+                    currentPathIndex++;
+                }
+
+                currentPathIndex = 0;
+            }
         }
 
         public void OnGroundTriggerStay(ABCollider _collider)
