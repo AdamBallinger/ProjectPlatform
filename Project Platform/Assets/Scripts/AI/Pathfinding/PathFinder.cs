@@ -30,15 +30,10 @@ namespace Assets.Scripts.AI.Pathfinding
         /// <summary>
         /// Create a pathfinder instance for the given start and end position. Positions can be either world or grid space coordinates.
         /// </summary>
-        /// <param name="_start"></param>
-        /// <param name="_end"></param>
         /// <param name="_pathCompleteCallback"></param>
         /// <param name="_heuristicFunction"></param>
-        public PathFinder(Vector2 _start, Vector2 _end, Action<Path> _pathCompleteCallback, Heuristic _heuristicFunction = Heuristic.Manhattan)
+        public PathFinder(Action<Path> _pathCompleteCallback, Heuristic _heuristicFunction = Heuristic.Manhattan)
         {
-            // Make sure the start and end points are in grid coordinates.
-            Start = World.Current.WorldPointToGridPoint(_start);
-            End = World.Current.WorldPointToGridPoint(_end);
             heuristicFunction = _heuristicFunction;
             closedList = new List<PathNode>();
             openList = new List<PathNode>();
@@ -48,9 +43,14 @@ namespace Assets.Scripts.AI.Pathfinding
         /// <summary>
         /// Finds and returns a path from start to end for this PathFinder instance using A* algorithm.
         /// </summary>
-        /// <returns></returns>
-        public void FindPath()
+        /// <param name="_start"></param>
+        /// <param name="_end"></param>
+        public void FindPath(Vector2 _start, Vector2 _end)
         {
+            // Make sure the start and end points are in grid coordinates.
+            Start = World.Current.WorldPointToGridPoint(_start);
+            End = World.Current.WorldPointToGridPoint(_end);
+
             var path = new Path(World.Current.NavGraph.Nodes[(int)Start.x, (int)Start.y], World.Current.NavGraph.Nodes[(int)End.x, (int)End.y]);
             
             ResetNodes();
@@ -80,10 +80,8 @@ namespace Assets.Scripts.AI.Pathfinding
                     Debug.Log("Path has reached its target node.");
                     closedList.Add(currentNode);
                     RetracePath(path, currentNode);
-                    if(OnPatchCompleteCallback != null)
-                    {
-                        OnPatchCompleteCallback(path);
-                    }
+                    path.SetValid();
+                    OnPatchCompleteCallback(path);
                     break;
                 }
 

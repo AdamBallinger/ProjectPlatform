@@ -73,23 +73,18 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         public void OnClearTestPathButtonPress()
         {
-            //if (testPath != null)
-            //{
-            //    testPath.ClearPath();
-            //}
+            GameObject.FindGameObjectWithTag("AI").GetComponent<PathfinderAgent>().ClearPath();
         }
 
         public void CreatePath(Vector2 _start, Vector2 _end)
         {
-            //var pathFinder = new PathFinder(_start, _end);
-            //var watch = new Stopwatch();
-            //watch.Start();
-            //testPath = pathFinder.FindPath();
-            //watch.Stop();
-            //Debug.Log("Path created in " + watch.ElapsedMilliseconds + " ms");
-            //GameObject.FindGameObjectWithTag("AI").GetComponent<PathfinderAgent>().SetPath(testPath);
-
             var ai = GameObject.FindGameObjectWithTag("AI").GetComponent<PathfinderAgent>();
+            ai.transform.position = _start;
+            var watch = new Stopwatch();
+            watch.Start();
+            ai.pathFinder.FindPath(_start, _end);
+            watch.Stop();
+            Debug.Log("Path created in " + watch.ElapsedMilliseconds + " ms");
         }
     }
 }

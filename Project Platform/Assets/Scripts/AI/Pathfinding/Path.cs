@@ -41,6 +41,11 @@ namespace Assets.Scripts.AI.Pathfinding
             EndNode = _end;
         }
 
+        public void SetValid()
+        {
+            Valid = true;
+        }
+
         /// <summary>
         /// Returns the amount of nodes the path travels through.
         /// </summary>
@@ -48,22 +53,6 @@ namespace Assets.Scripts.AI.Pathfinding
         public int GetPathLength()
         {
             return NodePath != null ? NodePath.Count : 0;
-        }
-
-        /// <summary>
-        /// Clears this path.
-        /// </summary>
-        public void ClearPath()
-        {
-            if(VectorPath != null)
-            {
-                VectorPath.Clear();
-            }
-
-            if(NodePath != null)
-            {
-                NodePath.Clear();
-            }
         }
     }
 }

@@ -20,7 +20,9 @@ namespace Assets.Scripts.General.UnityLayer.AI
 
         public float jumpHeight = 4.0f;
 
-        private Path currentPath;
+        public PathFinder pathFinder;
+        public Path currentPath;
+
         private int currentPathIndex = 0;
         private bool isGrounded = true;
         private bool isCollidingLeftWall = false;
@@ -28,6 +30,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
 
         public void Start()
         {
+            pathFinder = new PathFinder(OnPathComplete);
             currentPath = null;
 
             groundCheck.Collider.CollisionListener.RegisterTriggerStayCallback(OnGroundTriggerStay);
@@ -38,6 +41,44 @@ namespace Assets.Scripts.General.UnityLayer.AI
 
             rightWallCheck.Collider.CollisionListener.RegisterTriggerStayCallback(OnRightWallTriggerStay);
             rightWallCheck.Collider.CollisionListener.RegisterTriggerLeaveCallback(OnRightWallTriggerLeave);
+        }
+
+        public void OnPathComplete(Path _path)
+        {
+            if(_path.Valid)
+            {
+                ClearPath();
+                currentPath = _path;
+
+                if (pathRenderer != null)
+                {
+                    pathRenderer.numPositions = currentPath.GetPathLength();
+                    foreach (var vec in currentPath.VectorPath)
+                    {
+                        pathRenderer.SetPosition(currentPathIndex, vec);
+                        currentPathIndex++;
+                    }
+
+                    currentPathIndex = 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Clear the agents current path.
+        /// </summary>
+        public void ClearPath()
+        {
+            if(currentPath != null)
+            {
+                currentPath = null;
+                currentPathIndex = 0;
+
+                if (pathRenderer != null)
+                {
+                    pathRenderer.numPositions = 0;
+                }
+            }
         }
 
         public void FixedUpdate()
@@ -85,25 +126,6 @@ namespace Assets.Scripts.General.UnityLayer.AI
             var vel = rigidBodyComponent.RigidBody.LinearVelocity;
             vel.x = Mathf.Clamp(vel.x, -maxSpeed, maxSpeed);
             rigidBodyComponent.RigidBody.LinearVelocity = vel;
-        }
-
-        public void SetPath(Path _path)
-        {
-            currentPath = _path;
-            currentPathIndex = 0;
-            transform.position = new Vector2(currentPath.StartNode.X, currentPath.StartNode.Y);
-
-            if(pathRenderer != null)
-            {
-                pathRenderer.numPositions = currentPath.GetPathLength();
-                foreach(var vec in currentPath.VectorPath)
-                {
-                    pathRenderer.SetPosition(currentPathIndex, vec);
-                    currentPathIndex++;
-                }
-
-                currentPathIndex = 0;
-            }
         }
 
         public void OnGroundTriggerStay(ABCollider _collider)
