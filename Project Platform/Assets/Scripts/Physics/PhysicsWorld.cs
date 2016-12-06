@@ -273,7 +273,7 @@ namespace Assets.Scripts.Physics
                             colliderPair.ColliderA.CollisionListener.HandleExit(colliderPair.ColliderB);
                             colliderPair.ColliderB.CollisionListener.HandleExit(colliderPair.ColliderA);
                         }
-                    }           
+                    }
                 }
             }
         }

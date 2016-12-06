@@ -30,7 +30,7 @@ namespace Assets.Scripts.AI.Pathfinding
         /// <param name="_start"></param>
         /// <param name="_end"></param>
         /// <param name="_heuristicFunction"></param>
-        public PathFinder(Vector2 _start, Vector2 _end, Heuristic _heuristicFunction = Heuristic.Euclidean)
+        public PathFinder(Vector2 _start, Vector2 _end, Heuristic _heuristicFunction = Heuristic.Manhattan)
         {
             // Make sure the start and end points are in grid coordinates.
             Start = World.Current.WorldPointToGridPoint(_start);
