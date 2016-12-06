@@ -270,7 +270,10 @@ namespace Assets.Scripts.General.UnityLayer
                 return;
             }
 
-            var coinObject = Instantiate(coinPrefab, worldCoord, Quaternion.identity) as GameObject;
+            var coinObject = Instantiate(coinPrefab, worldCoord, Quaternion.identity);
+
+            // Parent the coin to the world controller object.
+            coinObject.transform.SetParent(transform);
 
             coinObjects[gridX, gridY] = coinObject;
         }
@@ -316,7 +319,10 @@ namespace Assets.Scripts.General.UnityLayer
                 return null;
             }
 
-            var padObject = Instantiate(bouncePadPrefab, worldCoord, Quaternion.identity) as GameObject;
+            var padObject = Instantiate(bouncePadPrefab, worldCoord, Quaternion.identity);
+
+            // Parent pad to world controller object.
+            padObject.transform.SetParent(transform);
 
             bouncePadObjects[gridX, gridY] = padObject;
 
