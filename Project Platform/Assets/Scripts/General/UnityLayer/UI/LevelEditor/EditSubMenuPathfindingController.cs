@@ -10,15 +10,15 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
     public class EditSubMenuPathfindingController : MonoBehaviour
     {
         public LevelEditorUIController editorUIController;
+        public PathfindingDebugDrawController pathDebugController;
         public Button pathfindingButton;
 
         public GameObject pathfindingMenu;
-
-        private bool displayGizmos = true;
+        
         private bool displayNodeGizmos = true;
-        private bool displayWalkLinkGizmos = false;
-        private bool displayFallLinkGizmos = false;
-        private bool displayJumpLinkGizmos = false;
+        private bool displayWalkLinkGizmos = true;
+        private bool displayFallLinkGizmos = true;
+        private bool displayJumpLinkGizmos = true;
 
         private Path testPath = null;
 
@@ -42,29 +42,28 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             Debug.Log("Node graph scan took: " + watch.ElapsedMilliseconds + " ms");
         }
 
-        public void OnToggleGizmosButtonPress()
-        {
-            displayGizmos = !displayGizmos;
-        }
-
         public void OnToggleNodeGizmosButtonPress()
         {
             displayNodeGizmos = !displayNodeGizmos;
+            pathDebugController.ToggleDebugView(DebugViewType.Nodes, displayNodeGizmos);
         }
 
         public void OnToggleWalkLinkGizmosButtonPress()
         {
             displayWalkLinkGizmos = !displayWalkLinkGizmos;
+            pathDebugController.ToggleDebugView(DebugViewType.WalkLinks, displayWalkLinkGizmos);
         }
 
         public void OnToggleFallLinkGizmosButtonPress()
         {
             displayFallLinkGizmos = !displayFallLinkGizmos;
+            pathDebugController.ToggleDebugView(DebugViewType.FallLinks, displayFallLinkGizmos);
         }
 
         public void OnToggleJumpLinkGizmosButtonPress()
         {
             displayJumpLinkGizmos = !displayJumpLinkGizmos;
+            pathDebugController.ToggleDebugView(DebugViewType.JumpLinks, displayJumpLinkGizmos);
         }
 
         public void OnCreateTestPathButtonPress()

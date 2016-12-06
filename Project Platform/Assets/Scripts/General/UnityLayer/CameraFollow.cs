@@ -11,6 +11,15 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void Update()
         {
+            var pos = transform.position;
+
+            if (pos.x < 0.0f) pos.x = 0.0f;
+            if (pos.x > World.Current.Width) pos.x = World.Current.Width;
+            if (pos.y < 0.0f) pos.y = 0.0f;
+            if (pos.y > World.Current.Height) pos.y = World.Current.Height;
+
+            transform.position = pos;
+
             if(followTarget == null)
             {
                 followTarget = GameObject.FindGameObjectWithTag("Player");

@@ -56,7 +56,7 @@ namespace Assets.Scripts.Physics
         /// </summary>
         public Vector2 Position
         {
-            get { return GameObject.transform.position; }
+            get { return GameObject != null ? (Vector2)GameObject.transform.position : Vector2.zero; }
             set { GameObject.transform.position = value; }
         }
 

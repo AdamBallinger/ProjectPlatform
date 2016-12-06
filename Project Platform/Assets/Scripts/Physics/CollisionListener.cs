@@ -48,6 +48,17 @@ namespace Assets.Scripts.Physics
         /// <param name="_colliding"></param>
         public void Handle(ABCollider _colliding)
         {
+            if (_colliding.RigidBody.GameObject == null)
+            {
+                LastStepCollisions.Remove(_colliding);
+                return;
+            }
+
+            if (Collider.RigidBody.GameObject == null)
+            {
+                return;
+            }
+
             // Don't allow colliders of the same object root to trigger each other.
             if (Collider.RigidBody.GameObject.transform.root == _colliding.RigidBody.GameObject.transform.root)
                 return;
@@ -101,6 +112,17 @@ namespace Assets.Scripts.Physics
         /// <param name="_collider"></param>
         public void HandleExit(ABCollider _collider)
         {
+            if (_collider.RigidBody.GameObject == null)
+            {
+                LastStepCollisions.Remove(_collider);
+                return;
+            }
+
+            if (Collider.RigidBody.GameObject == null)
+            {
+                return;
+            }
+
             if (Collider.RigidBody.GameObject.transform.root == _collider.RigidBody.GameObject.transform.root)
                 return;
 

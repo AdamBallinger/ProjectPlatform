@@ -122,31 +122,62 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             }
         }
 
-        public void ToggleDebugView(DebugViewType _type)
+        public void ToggleDebugView(DebugViewType _type, bool _toggle)
         {
+            List<GameObject> collectionForToggle = null;
 
+            switch (_type)
+            {
+                case DebugViewType.Nodes:
+                    collectionForToggle = debugNodeObjects;
+                    break;
+
+                case DebugViewType.WalkLinks:
+                    collectionForToggle = debugNodeWalkLinkObjects;
+                    break;
+
+                case DebugViewType.FallLinks:
+                    collectionForToggle = debugNodeFallLinkObjects;
+                    break;
+
+                case DebugViewType.JumpLinks:
+                    collectionForToggle = debugNodeJumpLinkObjects;
+                    break;
+            }
+
+            if(collectionForToggle != null)
+            {
+                foreach(var obj in collectionForToggle)
+                {
+                    obj.SetActive(_toggle);
+                }
+            }
         }
 
         private void ClearAll()
         {
-            foreach (var obj in debugNodeObjects)
+            for(var i = debugNodeObjects.Count - 1; i > 0; i--)
             {
-                DestroyImmediate(obj);
+                DestroyImmediate(debugNodeObjects[i]);
+                debugNodeObjects.RemoveAt(i);
             }
 
-            foreach (var obj in debugNodeWalkLinkObjects)
+            for (var i = debugNodeWalkLinkObjects.Count - 1; i > 0; i--)
             {
-                DestroyImmediate(obj);
+                DestroyImmediate(debugNodeWalkLinkObjects[i]);
+                debugNodeWalkLinkObjects.RemoveAt(i);
             }
 
-            foreach (var obj in debugNodeFallLinkObjects)
+            for (var i = debugNodeFallLinkObjects.Count - 1; i > 0; i--)
             {
-                DestroyImmediate(obj);
+                DestroyImmediate(debugNodeFallLinkObjects[i]);
+                debugNodeFallLinkObjects.RemoveAt(i);
             }
 
-            foreach (var obj in debugNodeJumpLinkObjects)
+            for (var i = debugNodeJumpLinkObjects.Count - 1; i > 0; i--)
             {
-                DestroyImmediate(obj);
+                DestroyImmediate(debugNodeJumpLinkObjects[i]);
+                debugNodeJumpLinkObjects.RemoveAt(i);
             }
         }
     }
