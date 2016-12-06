@@ -266,14 +266,14 @@ namespace Assets.Scripts.Physics
                         if (colliderPair.ContactDetected)
                         {
                             Contacts.Add(colliderPair);
-                        }
-                        else
-                        {
-                            // if no contact detected for this pair, check if the pair should trigger any collision exit callbacks.
-                            colliderPair.ColliderA.CollisionListener.HandleExit(colliderPair.ColliderB);
-                            colliderPair.ColliderB.CollisionListener.HandleExit(colliderPair.ColliderA);
+                            continue;
                         }
                     }
+
+                    // if the two colliders are further than 5 units away OR no contacts were detected this step
+                    // check if any exit callbacks need to be called.
+                    Colliders[i].CollisionListener.HandleExit(Colliders[j]);
+                    Colliders[j].CollisionListener.HandleExit(Colliders[i]);
                 }
             }
         }
