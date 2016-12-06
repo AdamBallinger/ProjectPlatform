@@ -129,8 +129,7 @@ namespace Assets.Scripts.AI.Pathfinding
         private void ComputeNodeLinks()
         {
             ComputeWalkLinks();
-            ComputeFallLinks();
-            //ComputeJumpLinks();
+            ComputeFallAndJumpLinks();
         }
 
         /// <summary>
@@ -156,10 +155,9 @@ namespace Assets.Scripts.AI.Pathfinding
         }
 
         /// <summary>
-        /// Compute the fall links for each node in the graph.
-        /// Fall links are also used for creating jumps by scanning further across for nodes.
+        /// Compute the fall and jump links for each node in the graph.
         /// </summary>
-        private void ComputeFallLinks()
+        private void ComputeFallAndJumpLinks()
         {
             for (var y = 0; y < Height; y++)
             {
@@ -238,14 +236,14 @@ namespace Assets.Scripts.AI.Pathfinding
                                                     nodeToCheck.NodeType = PathNodeType.DropTo;
                                                 }
                                             }
-                                            
+
                                             break;
                                         }
 
                                         // If the node at scanned X and Y was null or was a none type then
                                         // Check if this is not the first X scan from the current node. If there is a platform tile
                                         // at the current scan X and Y then break out of the Y scan and move over to the next X scan.
-                                        if(scanX > 0 && tileToCheck.Type == TileType.Platform)
+                                        if (scanX > 0 && tileToCheck.Type == TileType.Platform)
                                         {
                                             break;
                                         }
@@ -266,54 +264,6 @@ namespace Assets.Scripts.AI.Pathfinding
                 }
             }
         }
-
-        /// <summary>
-        /// Compute the jump links for the AI for each node in the graph.
-        /// Commented out as I couldn't get it to work properly. Instead using fall links for creating jump links. Potentially not as 
-        /// accurate but should work fine.
-        /// </summary>
-        //private void ComputeJumpLinks()
-        //{
-        //    for (var y = 0; y < Height; y++)
-        //    {
-        //        for (var x = 0; x < Width; x++)
-        //        {
-        //            var node = Nodes[x, y];
-
-        //            // Only check trajectories for Edge / single and platform nodes with fall links (DropTo).
-        //            if(node.NodeType == PathNodeType.LeftEdge || node.NodeType == PathNodeType.RightEdge || node.NodeType == PathNodeType.Single
-        //                || (node.NodeType == PathNodeType.DropTo))
-        //            {
-        //                // Computer trajectories here (left and right).
-        //                for(var i = 1; i <= 3; i++)
-        //                {
-        //                    var jumpHeight = /* TODO: Change this number */ 5f * (i / 3);
-        //                    for(var j = 1; j <= 3; j++)
-        //                    {
-        //                        var jumpSpeed = /* TODO: Change this number */ 5f * (j / 3);
-
-        //                        var leftTrajectory = new JumpTrajectory(new Vector2(node.X, node.Y), TrajectoryDirection.Left, jumpHeight, jumpSpeed);
-        //                        var rightTrajectory = new JumpTrajectory(new Vector2(node.X, node.Y), TrajectoryDirection.Right, jumpHeight, jumpSpeed);
-
-        //                        if(leftTrajectory.IsValidJump())
-        //                        {
-        //                            var link = new NodeLink(leftTrajectory.LandingNode, NodeLinkType.Jump);
-        //                            link.SetData(leftTrajectory);
-        //                            node.AddLink(link);
-        //                        }
-
-        //                        if(rightTrajectory.IsValidJump())
-        //                        {
-        //                            var link = new NodeLink(rightTrajectory.LandingNode, NodeLinkType.Jump);
-        //                            link.SetData(rightTrajectory);
-        //                            node.AddLink(link);
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
 
         /// <summary>
         /// Sets each node in the graph to type none, and clears any links the node previously had.

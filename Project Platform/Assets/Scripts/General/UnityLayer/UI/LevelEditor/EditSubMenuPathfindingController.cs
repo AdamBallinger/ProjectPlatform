@@ -20,8 +20,6 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         private bool displayFallLinkGizmos = true;
         private bool displayJumpLinkGizmos = true;
 
-        private Path testPath = null;
-
         public void OnPathfindingButtonPress()
         {
             editorUIController.OpenSubMenu(pathfindingMenu);

@@ -51,8 +51,8 @@ namespace Assets.Scripts.AI.Pathfinding
         {
             var watch = new Stopwatch();
             watch.Start();
-            ResetNodes();
 
+            ResetNodes();
             closedList.Clear();
             openList.Clear();
 
