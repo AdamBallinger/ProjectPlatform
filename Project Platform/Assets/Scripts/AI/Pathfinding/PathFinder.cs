@@ -39,7 +39,7 @@ namespace Assets.Scripts.AI.Pathfinding
         /// </summary>
         /// <param name="_pathCompleteCallback"></param>
         /// <param name="_heuristicFunction"></param>
-        public PathFinder(Action<Path> _pathCompleteCallback, Heuristic _heuristicFunction = Heuristic.Euclidean)
+        public PathFinder(Action<Path> _pathCompleteCallback, Heuristic _heuristicFunction = Heuristic.Manhattan)
         {
             heuristicFunction = _heuristicFunction;
             closedList = new List<PathNode>();
@@ -47,23 +47,35 @@ namespace Assets.Scripts.AI.Pathfinding
             OnPatchCompleteCallback += _pathCompleteCallback;
         }
 
+        /// <summary>
+        /// Finds a path for this finder in a seperate thread.
+        /// </summary>
         private void ThreadedSearch()
         {
             var watch = new Stopwatch();
             watch.Start();
 
+            // Clear all node parents and costs from previous searches.
             ResetNodes();
+
+            // Clear the closed and open lists from previous searches.
             closedList.Clear();
             openList.Clear();
 
+            // This is a safety net for the while loop, incase something goes wrong and limits the search iterations the loop can perform.
             var maxSearchCount = 5000;
             var currentSearchCount = 0;
 
+            // To start, add the starting node to the open list.
             openList.Add(path.StartNode);
-            path.StartNode.H = GetHeuristicCost(path.StartNode, path.EndNode);
 
+            // Set the H cost for the start node.
+            path.StartNode.H = GetHeuristicCost(path.StartNode);
+
+            // While the open list has nodes to evaluate.
             while (openList.Count != 0)
             {
+                // Failsafe check
                 if (currentSearchCount >= maxSearchCount)
                 {
                     Debug.LogWarning("FindPath terminated because it exceeded the maximum allowed search count. Something went wrong.");
@@ -71,10 +83,13 @@ namespace Assets.Scripts.AI.Pathfinding
                 }
                 currentSearchCount++;
 
+                // Get the node with the lowest F cost from the open list.
                 var currentNode = GetLowestCostNodeFromOpenList();
 
+                // If the node is the target node for the path, then the path has been found
                 if (currentNode == path.EndNode)
                 {
+                    // Create the path by going back through each parent node from the current node.
                     RetracePath(path, currentNode);
                     path.SetValid();
                     watch.Stop();
@@ -82,32 +97,51 @@ namespace Assets.Scripts.AI.Pathfinding
                     break;
                 }
 
+                // If the node isn't the target then go through any connecting nodes
                 foreach (var link in currentNode.NodeLinks)
                 {
+                    // If the node is in the closed list ignore it as its already been fully evaluated.
                     if (closedList.Contains(link.DestinationNode)) continue;
 
-                    if (link.DestinationNode.Parent == null)
+                    // If the node isn't in the open list already.
+                    if(!openList.Contains(link.DestinationNode))
                     {
-                        link.DestinationNode.G = link.LinkCost + DistanceBetween(currentNode, link.DestinationNode);
-                        link.DestinationNode.Parent = currentNode;
-                        link.DestinationNode.H = GetHeuristicCost(link.DestinationNode, path.EndNode);
+                        // Add it to the open list
                         openList.Add(link.DestinationNode);
+                        // Set its parent to the current node
+                        link.DestinationNode.Parent = currentNode;
+
+                        // Calculate G and H costs for the node. 
+                        // G(n) = n.parent + movementCost + distance from n to n.parent
+                        // H(n) = distance from n to target node
+                        link.DestinationNode.G = currentNode.G + link.LinkCost + DistanceBetween(link.DestinationNode, currentNode);
+                        link.DestinationNode.H = GetHeuristicCost(link.DestinationNode);
                     }
                     else
                     {
-                        if (link.LinkCost + DistanceBetween(currentNode, link.DestinationNode) < link.DestinationNode.G)
+                        // if the node this link leads to is already on the open list, check to see if the nodes parent G cost 
+                        //is higher than the current nodes.
+                        if (link.DestinationNode.Parent.G > currentNode.G)
                         {
+                            // if the parent of the current links destination has a higher G cost than the current node, then a cheaper route
+                            // is present, so set the parent of the links destination node to the current node.
                             link.DestinationNode.Parent = currentNode;
-                            link.DestinationNode.G = link.LinkCost + DistanceBetween(currentNode, link.DestinationNode);
+                            // re-calculate costs for this node.
+                            link.DestinationNode.G = currentNode.G + link.LinkCost + DistanceBetween(link.DestinationNode, currentNode);
                         }
                     }
                 }
 
+                // Once all linked nodes are evaluated, remove the current node from the open list, and add it to the closed list as its been
+                // fully evaluated.
                 openList.Remove(currentNode);
                 closedList.Add(currentNode);
             }
 
+            // Return the path. Checking the Valid property determines a successfull path.
             OnPatchCompleteCallback(path);
+
+            // Terminate the search thread.
             finderThread.Abort();
         }
 
@@ -138,7 +172,7 @@ namespace Assets.Scripts.AI.Pathfinding
 
             foreach (var node in openList)
             {
-                if (node.F <= cheapestNode.F)
+                if (node.F < cheapestNode.F)
                 {
                     cheapestNode = node;
                 }
@@ -185,21 +219,21 @@ namespace Assets.Scripts.AI.Pathfinding
         }
 
         /// <summary>
-        /// Returns the heuritic (H) cost between 2 nodes.
+        /// Returns the heuritic (H) cost for the give node.
         /// </summary>
-        /// <param name="_a"></param>
-        /// <param name="_b"></param>
+        /// <param name="_node"></param>
         /// <returns></returns>
-        private float GetHeuristicCost(PathNode _a, PathNode _b)
+        private float GetHeuristicCost(PathNode _node)
         {
+            // Euclidean - Straight line cost from given node to paths target node. 
             if (heuristicFunction == Heuristic.Euclidean)
             {
-                return Vector2.Distance(new Vector2(_a.X, _a.Y), new Vector2(_b.X, _b.Y));
+                return Vector2.Distance(new Vector2(_node.X, _node.Y), new Vector2(path.EndNode.X, path.EndNode.Y));
             }
 
-            // Manhattan heuristic
-            var dx = Mathf.Abs(_a.X - _b.X);
-            var dy = Mathf.Abs(_a.Y - _b.Y);
+            // Manhattan heuristic - Combined X and Y difference from given node to paths target node.
+            var dx = Mathf.Abs(_node.X - path.EndNode.X);
+            var dy = Mathf.Abs(_node.Y - path.EndNode.Y);
             return dx + dy;
         }
 

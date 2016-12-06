@@ -14,7 +14,7 @@ namespace Assets.Scripts.AI.Pathfinding
         // G cost constants for different link types.
         public const float WALK_COST = 1.0f;
         public const float FALL_COST = 1.0f;
-        public const float JUMP_COST = 2.5f;
+        public const float JUMP_COST = 3.0f;
 
         public PathNode ParentNode { get; private set; }
 
