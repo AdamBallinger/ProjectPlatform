@@ -39,7 +39,7 @@ namespace Assets.Scripts.AI.Pathfinding
         /// </summary>
         /// <param name="_pathCompleteCallback"></param>
         /// <param name="_heuristicFunction"></param>
-        public PathFinder(Action<Path> _pathCompleteCallback, Heuristic _heuristicFunction = Heuristic.Manhattan)
+        public PathFinder(Action<Path> _pathCompleteCallback, Heuristic _heuristicFunction = Heuristic.Euclidean)
         {
             heuristicFunction = _heuristicFunction;
             closedList = new List<PathNode>();
@@ -75,13 +75,10 @@ namespace Assets.Scripts.AI.Pathfinding
 
                 if (currentNode == path.EndNode)
                 {
-                    Debug.Log("Path has reached its target node.");
-                    closedList.Add(currentNode);
                     RetracePath(path, currentNode);
                     path.SetValid();
                     watch.Stop();
                     path.CreationTime = watch.ElapsedMilliseconds;
-                    OnPatchCompleteCallback(path);
                     break;
                 }
 
@@ -110,6 +107,7 @@ namespace Assets.Scripts.AI.Pathfinding
                 closedList.Add(currentNode);
             }
 
+            OnPatchCompleteCallback(path);
             finderThread.Abort();
         }
 
