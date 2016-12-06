@@ -156,25 +156,25 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         private void ClearAll()
         {
-            for(var i = debugNodeObjects.Count - 1; i > 0; i--)
+            for(var i = debugNodeObjects.Count - 1; i >= 0; i--)
             {
                 DestroyImmediate(debugNodeObjects[i]);
                 debugNodeObjects.RemoveAt(i);
             }
 
-            for (var i = debugNodeWalkLinkObjects.Count - 1; i > 0; i--)
+            for (var i = debugNodeWalkLinkObjects.Count - 1; i >= 0; i--)
             {
                 DestroyImmediate(debugNodeWalkLinkObjects[i]);
                 debugNodeWalkLinkObjects.RemoveAt(i);
             }
 
-            for (var i = debugNodeFallLinkObjects.Count - 1; i > 0; i--)
+            for (var i = debugNodeFallLinkObjects.Count - 1; i >= 0; i--)
             {
                 DestroyImmediate(debugNodeFallLinkObjects[i]);
                 debugNodeFallLinkObjects.RemoveAt(i);
             }
 
-            for (var i = debugNodeJumpLinkObjects.Count - 1; i > 0; i--)
+            for (var i = debugNodeJumpLinkObjects.Count - 1; i >= 0; i--)
             {
                 DestroyImmediate(debugNodeJumpLinkObjects[i]);
                 debugNodeJumpLinkObjects.RemoveAt(i);

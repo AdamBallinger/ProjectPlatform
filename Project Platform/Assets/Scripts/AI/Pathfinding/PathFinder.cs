@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Assets.Scripts.General;
 using UnityEngine;
 
@@ -15,6 +16,8 @@ namespace Assets.Scripts.AI.Pathfinding
         public Vector2 Start { get; private set; }
         public Vector2 End { get; private set; }
 
+        private Action<Path> OnPatchCompleteCallback = null;
+
         /// <summary>
         /// Heuristic function to use for calculating cost between nodes.
         /// </summary>
@@ -29,8 +32,9 @@ namespace Assets.Scripts.AI.Pathfinding
         /// </summary>
         /// <param name="_start"></param>
         /// <param name="_end"></param>
+        /// <param name="_pathCompleteCallback"></param>
         /// <param name="_heuristicFunction"></param>
-        public PathFinder(Vector2 _start, Vector2 _end, Heuristic _heuristicFunction = Heuristic.Manhattan)
+        public PathFinder(Vector2 _start, Vector2 _end, Action<Path> _pathCompleteCallback, Heuristic _heuristicFunction = Heuristic.Manhattan)
         {
             // Make sure the start and end points are in grid coordinates.
             Start = World.Current.WorldPointToGridPoint(_start);
@@ -38,13 +42,14 @@ namespace Assets.Scripts.AI.Pathfinding
             heuristicFunction = _heuristicFunction;
             closedList = new List<PathNode>();
             openList = new List<PathNode>();
+            OnPatchCompleteCallback += _pathCompleteCallback;
         }
 
         /// <summary>
         /// Finds and returns a path from start to end for this PathFinder instance using A* algorithm.
         /// </summary>
         /// <returns></returns>
-        public Path FindPath()
+        public void FindPath()
         {
             var path = new Path(World.Current.NavGraph.Nodes[(int)Start.x, (int)Start.y], World.Current.NavGraph.Nodes[(int)End.x, (int)End.y]);
             
@@ -75,6 +80,10 @@ namespace Assets.Scripts.AI.Pathfinding
                     Debug.Log("Path has reached its target node.");
                     closedList.Add(currentNode);
                     RetracePath(path, currentNode);
+                    if(OnPatchCompleteCallback != null)
+                    {
+                        OnPatchCompleteCallback(path);
+                    }
                     break;
                 }
 
@@ -102,8 +111,6 @@ namespace Assets.Scripts.AI.Pathfinding
                 openList.Remove(currentNode);
                 closedList.Add(currentNode);
             }
-
-            return path;
         }
 
         /// <summary>
@@ -125,19 +132,20 @@ namespace Assets.Scripts.AI.Pathfinding
             return cheapestNode;
         }
 
+        /// <summary>
+        /// Retrace a path from the last node to create the path from start to end.
+        /// </summary>
+        /// <param name="_path"></param>
+        /// <param name="_lastNode"></param>
         private void RetracePath(Path _path, PathNode _lastNode)
         {
+            // Add end node to start of path.
             _path.NodePath.Insert(0, _path.EndNode);
             _path.VectorPath.Insert(0, new Vector2(_path.EndNode.X, _path.EndNode.Y));
-            //for (var i = closedList.Count - 1; i > 0; i--)
-            //{
-            //    _path.NodePath.Insert(0, closedList[i].Parent);
-            //    _path.VectorPath.Insert(0, new Vector2(closedList[i].Parent.X, closedList[i].Parent.Y));
-            //    if (closedList[i] == _path.StartNode) break;
-            //}
 
             while(_lastNode.Parent != null)
             {
+                // while the last node has a valid parent, add the nodes parent to the start of the path, then set last node to the parent.
                 _path.NodePath.Insert(0, _lastNode.Parent);
                 _path.VectorPath.Insert(0, new Vector2(_lastNode.Parent.X, _lastNode.Parent.Y));
                 _lastNode = _lastNode.Parent;

@@ -26,7 +26,6 @@ namespace Assets.Scripts.General.UnityLayer.AI
         private bool isCollidingLeftWall = false;
         private bool isCollidingRightWall = false;
 
-
         public void Start()
         {
             currentPath = null;
