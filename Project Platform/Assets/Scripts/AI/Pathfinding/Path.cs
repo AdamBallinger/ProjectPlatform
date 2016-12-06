@@ -31,6 +31,11 @@ namespace Assets.Scripts.AI.Pathfinding
         /// </summary>
         public PathNode EndNode { get; private set; }
 
+        /// <summary>
+        /// The time taken in milliseconds to create this path.
+        /// </summary>
+        public float CreationTime { get; set; }
+
 
         public Path(PathNode _start, PathNode _end)
         {

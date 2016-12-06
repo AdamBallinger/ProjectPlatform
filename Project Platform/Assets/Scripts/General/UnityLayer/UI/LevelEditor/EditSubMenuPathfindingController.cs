@@ -80,11 +80,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         {
             var ai = GameObject.FindGameObjectWithTag("AI").GetComponent<PathfinderAgent>();
             ai.transform.position = _start;
-            var watch = new Stopwatch();
-            watch.Start();
             ai.pathFinder.FindPath(_start, _end);
-            watch.Stop();
-            Debug.Log("Path created in " + watch.ElapsedMilliseconds + " ms");
         }
     }
 }

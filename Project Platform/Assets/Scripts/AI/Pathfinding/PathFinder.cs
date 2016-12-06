@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 using Assets.Scripts.General;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Assets.Scripts.AI.Pathfinding
 {
@@ -16,7 +19,9 @@ namespace Assets.Scripts.AI.Pathfinding
         public Vector2 Start { get; private set; }
         public Vector2 End { get; private set; }
 
-        private Action<Path> OnPatchCompleteCallback = null;
+        private Action<Path> OnPatchCompleteCallback;
+
+        private Path path;
 
         /// <summary>
         /// Heuristic function to use for calculating cost between nodes.
@@ -25,6 +30,8 @@ namespace Assets.Scripts.AI.Pathfinding
 
         private List<PathNode> closedList;
         private List<PathNode> openList;
+
+        private Thread finderThread;
 
 
         /// <summary>
@@ -40,6 +47,72 @@ namespace Assets.Scripts.AI.Pathfinding
             OnPatchCompleteCallback += _pathCompleteCallback;
         }
 
+        private void ThreadedSearch()
+        {
+            var watch = new Stopwatch();
+            watch.Start();
+            ResetNodes();
+
+            closedList.Clear();
+            openList.Clear();
+
+            var maxSearchCount = 5000;
+            var currentSearchCount = 0;
+
+            openList.Add(path.StartNode);
+            path.StartNode.H = GetHeuristicCost(path.StartNode, path.EndNode);
+
+            while (openList.Count != 0)
+            {
+                if (currentSearchCount >= maxSearchCount)
+                {
+                    Debug.LogWarning("FindPath terminated because it exceeded the maximum allowed search count. Something went wrong.");
+                    break;
+                }
+                currentSearchCount++;
+
+                var currentNode = GetLowestCostNodeFromOpenList();
+
+                if (currentNode == path.EndNode)
+                {
+                    Debug.Log("Path has reached its target node.");
+                    closedList.Add(currentNode);
+                    RetracePath(path, currentNode);
+                    path.SetValid();
+                    watch.Stop();
+                    path.CreationTime = watch.ElapsedMilliseconds;
+                    OnPatchCompleteCallback(path);
+                    break;
+                }
+
+                foreach (var link in currentNode.NodeLinks)
+                {
+                    if (closedList.Contains(link.DestinationNode)) continue;
+
+                    if (link.DestinationNode.Parent == null)
+                    {
+                        link.DestinationNode.G = link.LinkCost + DistanceBetween(currentNode, link.DestinationNode);
+                        link.DestinationNode.Parent = currentNode;
+                        link.DestinationNode.H = GetHeuristicCost(link.DestinationNode, path.EndNode);
+                        openList.Add(link.DestinationNode);
+                    }
+                    else
+                    {
+                        if (link.LinkCost + DistanceBetween(currentNode, link.DestinationNode) < link.DestinationNode.G)
+                        {
+                            link.DestinationNode.Parent = currentNode;
+                            link.DestinationNode.G = link.LinkCost + DistanceBetween(currentNode, link.DestinationNode);
+                        }
+                    }
+                }
+
+                openList.Remove(currentNode);
+                closedList.Add(currentNode);
+            }
+
+            finderThread.Abort();
+        }
+
         /// <summary>
         /// Finds and returns a path from start to end for this PathFinder instance using A* algorithm.
         /// </summary>
@@ -51,64 +124,10 @@ namespace Assets.Scripts.AI.Pathfinding
             Start = World.Current.WorldPointToGridPoint(_start);
             End = World.Current.WorldPointToGridPoint(_end);
 
-            var path = new Path(World.Current.NavGraph.Nodes[(int)Start.x, (int)Start.y], World.Current.NavGraph.Nodes[(int)End.x, (int)End.y]);
-            
-            ResetNodes();
+            path = new Path(World.Current.NavGraph.Nodes[(int)Start.x, (int)Start.y], World.Current.NavGraph.Nodes[(int)End.x, (int)End.y]);
 
-            closedList.Clear();
-            openList.Clear();
-
-            var maxSearchCount = 5000;
-            var currentSearchCount = 0;
-            
-            openList.Add(path.StartNode);
-            path.StartNode.H = GetHeuristicCost(path.StartNode, path.EndNode);
-
-            while(openList.Count != 0)
-            {
-                if (currentSearchCount >= maxSearchCount)
-                {
-                    Debug.LogWarning("FindPath terminated because it exceeded the maximum allowed search count. Something went wrong.");
-                    break;
-                }
-                currentSearchCount++;
-
-                var currentNode = GetLowestCostNodeFromOpenList();
-
-                if(currentNode == path.EndNode)
-                {
-                    Debug.Log("Path has reached its target node.");
-                    closedList.Add(currentNode);
-                    RetracePath(path, currentNode);
-                    path.SetValid();
-                    OnPatchCompleteCallback(path);
-                    break;
-                }
-
-                foreach(var link in currentNode.NodeLinks)
-                {
-                    if(closedList.Contains(link.DestinationNode)) continue;
-                    
-                    if(link.DestinationNode.Parent == null)
-                    {
-                        link.DestinationNode.G = link.LinkCost + DistanceBetween(currentNode, link.DestinationNode);
-                        link.DestinationNode.Parent = currentNode;
-                        link.DestinationNode.H = GetHeuristicCost(link.DestinationNode, path.EndNode);
-                        openList.Add(link.DestinationNode);
-                    }
-                    else
-                    {
-                        if(link.LinkCost + DistanceBetween(currentNode, link.DestinationNode) < link.DestinationNode.G)
-                        {
-                            link.DestinationNode.Parent = currentNode;
-                            link.DestinationNode.G = link.LinkCost + DistanceBetween(currentNode, link.DestinationNode);
-                        }
-                    }
-                }
-
-                openList.Remove(currentNode);
-                closedList.Add(currentNode);
-            }
+            finderThread = new Thread(ThreadedSearch);
+            finderThread.Start();
         }
 
         /// <summary>
@@ -119,9 +138,9 @@ namespace Assets.Scripts.AI.Pathfinding
         {
             var cheapestNode = openList[0];
 
-            foreach(var node in openList)
+            foreach (var node in openList)
             {
-                if(node.F <= cheapestNode.F)
+                if (node.F <= cheapestNode.F)
                 {
                     cheapestNode = node;
                 }
@@ -141,7 +160,7 @@ namespace Assets.Scripts.AI.Pathfinding
             _path.NodePath.Insert(0, _path.EndNode);
             _path.VectorPath.Insert(0, new Vector2(_path.EndNode.X, _path.EndNode.Y));
 
-            while(_lastNode.Parent != null)
+            while (_lastNode.Parent != null)
             {
                 // while the last node has a valid parent, add the nodes parent to the start of the path, then set last node to the parent.
                 _path.NodePath.Insert(0, _lastNode.Parent);
@@ -155,9 +174,9 @@ namespace Assets.Scripts.AI.Pathfinding
         /// </summary>
         private void ResetNodes()
         {
-            for(var x = 0; x < World.Current.NavGraph.Width; x++)
+            for (var x = 0; x < World.Current.NavGraph.Width; x++)
             {
-                for(var y = 0; y < World.Current.NavGraph.Height; y++)
+                for (var y = 0; y < World.Current.NavGraph.Height; y++)
                 {
                     var node = World.Current.NavGraph.Nodes[x, y];
                     node.G = 0.0f;

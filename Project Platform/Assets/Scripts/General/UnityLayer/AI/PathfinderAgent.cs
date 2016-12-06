@@ -43,24 +43,17 @@ namespace Assets.Scripts.General.UnityLayer.AI
             rightWallCheck.Collider.CollisionListener.RegisterTriggerLeaveCallback(OnRightWallTriggerLeave);
         }
 
+        /// <summary>
+        /// Callback for when the pathfinder has done finding a path.
+        /// </summary>
+        /// <param name="_path"></param>
         public void OnPathComplete(Path _path)
         {
             if(_path.Valid)
             {
-                ClearPath();
                 currentPath = _path;
-
-                if (pathRenderer != null)
-                {
-                    pathRenderer.numPositions = currentPath.GetPathLength();
-                    foreach (var vec in currentPath.VectorPath)
-                    {
-                        pathRenderer.SetPosition(currentPathIndex, vec);
-                        currentPathIndex++;
-                    }
-
-                    currentPathIndex = 0;
-                }
+                currentPathIndex = 0;
+                Debug.Log("Created path in " + currentPath.CreationTime + " ms");
             }
         }
 
@@ -84,6 +77,22 @@ namespace Assets.Scripts.General.UnityLayer.AI
         public void FixedUpdate()
         {
             if (currentPath == null) return;
+
+            // If the path index is 0, a new path must have been created so reset the path renderer to the new path.
+            if(currentPathIndex == 0)
+            {
+                if (pathRenderer != null)
+                {
+                    pathRenderer.numPositions = currentPath.GetPathLength();
+                    foreach (var vec in currentPath.VectorPath)
+                    {
+                        pathRenderer.SetPosition(currentPathIndex, vec);
+                        currentPathIndex++;
+                    }
+
+                    currentPathIndex = 0;
+                }
+            }
 
             // TODO: Improve the way the AI moves from point to point in the calculated path so its not so rough.
             // This current implementation is a placeholder.
