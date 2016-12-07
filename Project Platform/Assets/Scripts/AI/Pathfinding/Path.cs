@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Assets.Scripts.General;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Pathfinding
@@ -44,6 +45,31 @@ namespace Assets.Scripts.AI.Pathfinding
             NodePath = new List<PathNode>();
             StartNode = _start;
             EndNode = _end;
+
+            if(StartNode.NodeType == PathNodeType.None)
+            {
+                FindClosestNodeToStart();
+            }
+        }
+
+        /// <summary>
+        /// Find the first availabe node below the given start node if the given start was a none type.
+        /// </summary>
+        private void FindClosestNodeToStart()
+        {
+            var scanY = StartNode.Y;
+
+            while(scanY > 0)
+            {
+                if(World.Current.NavGraph.Nodes[StartNode.X, scanY].NodeType == PathNodeType.None)
+                {
+                    scanY--;
+                    continue;
+                }
+
+                StartNode = World.Current.NavGraph.Nodes[StartNode.X, scanY];
+                break;
+            }
         }
 
         public void SetValid()
