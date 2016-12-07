@@ -31,6 +31,7 @@ namespace Assets.Scripts.AI.Pathfinding
         private List<PathNode> closedList;
         private List<PathNode> openList;
 
+        // Thread instance used for threaded pathfinding.
         private Thread finderThread;
 
 
@@ -106,16 +107,17 @@ namespace Assets.Scripts.AI.Pathfinding
                     // If the node isn't in the open list already.
                     if(!openList.Contains(link.DestinationNode))
                     {
-                        // Add it to the open list
-                        openList.Add(link.DestinationNode);
                         // Set its parent to the current node
                         link.DestinationNode.Parent = currentNode;
 
                         // Calculate G and H costs for the node. 
-                        // G(n) = n.parent + movementCost + distance from n to n.parent
+                        // G(n) = n.parent + movement cost from n to n.parent + euclidean distance from n to n.parent
                         // H(n) = distance from n to target node
                         link.DestinationNode.G = currentNode.G + link.LinkCost + DistanceBetween(link.DestinationNode, currentNode);
                         link.DestinationNode.H = GetHeuristicCost(link.DestinationNode);
+
+                        // Add link destination to the open list
+                        openList.Add(link.DestinationNode);
                     }
                     else
                     {
@@ -228,7 +230,7 @@ namespace Assets.Scripts.AI.Pathfinding
             // Euclidean - Straight line cost from given node to paths target node. 
             if (heuristicFunction == Heuristic.Euclidean)
             {
-                return Vector2.Distance(new Vector2(_node.X, _node.Y), new Vector2(path.EndNode.X, path.EndNode.Y));
+                return DistanceBetween(_node, path.EndNode);
             }
 
             // Manhattan heuristic - Combined X and Y difference from given node to paths target node.
