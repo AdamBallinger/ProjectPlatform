@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -29,7 +27,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             totalTilesText.text = "Total Tiles: " + World.Current.GetTileCount();
 
             // if the last loaded level for the editor transition object isnt empty then load the last loaded level.
-            if(EditorPlayModeTransition.LastLoadedLevelName != null)
+            if (EditorPlayModeTransition.LastLoadedLevelName != null)
             {
                 levelName.text = worldController.Load(EditorPlayModeTransition.PlayModeLevel, EditorPlayModeTransition.PlayModeLevelData);
             }
@@ -40,6 +38,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             }
         }
 
+        #region ButtonEvents
         public void OnPlatformButtonPress()
         {
             mouseController.SelectMode = SelectionMode.Platform;
@@ -59,6 +58,11 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public void OnSetPlayerSpawnButtonPress()
         {
             mouseController.SelectMode = SelectionMode.PlayerSpawnSet;
+        }
+
+        public void OnSetAISpawnButtonPress()
+        {
+            mouseController.SelectMode = SelectionMode.AISpawnSet;
         }
 
         public void OnCoinPickupButtonPress()
@@ -87,6 +91,8 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             SceneManager.LoadScene("_menu");
         }
 
+        #endregion
+
         /// <summary>
         /// Switch the active sub menu to the given menu.
         /// Only 1 sub menu can be open at a time.
@@ -94,14 +100,14 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         /// <param name="_menu"></param>
         public void OpenSubMenu(GameObject _menu)
         {
-            if(activeSubMenu == null)
+            if (activeSubMenu == null)
             {
                 activeSubMenu = _menu;
                 activeSubMenu.SetActive(true);
             }
             else
             {
-                if(activeSubMenu == _menu)
+                if (activeSubMenu == _menu)
                 {
                     activeSubMenu.SetActive(false);
                     activeSubMenu = null;

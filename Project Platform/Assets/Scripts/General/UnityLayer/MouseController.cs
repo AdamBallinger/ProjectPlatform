@@ -13,6 +13,7 @@ namespace Assets.Scripts.General.UnityLayer
         BouncePad,
         ClearMode,
         PlayerSpawnSet,
+        AISpawnSet,
         CoinPickup,
         TestPathStart,
         TestPathEnd
@@ -31,6 +32,7 @@ namespace Assets.Scripts.General.UnityLayer
 
         public GameObject mouseSelectCursor;
         public GameObject playerSpawnObject;
+        public GameObject aiSpawnObject;
 
         // The behaviour of the mouse when selecting/dragging tiles.
         public SelectionMode SelectMode { get; set; }
@@ -110,11 +112,23 @@ namespace Assets.Scripts.General.UnityLayer
                 // If the mode is to change player spawn, then position the spawn at the start of the mouse drag (if dragged) and braek out the loop.
                 if (SelectMode == SelectionMode.PlayerSpawnSet)
                 {
-                    if(startX >= 0 || startX < World.Current.Width || startY >= 0 || startY < World.Current.Height)
+                    if (startX >= 0 || startX < World.Current.Width || startY >= 0 || startY < World.Current.Height)
                     {
-                        if(World.Current.GetTileAt(startX, startY) != null && World.Current.GetTileAt(startX, startY).Type != TileType.Platform)
+                        if (World.Current.GetTileAt(startX, startY) != null && World.Current.GetTileAt(startX, startY).Type != TileType.Platform)
                         {
                             playerSpawnObject.transform.position = new Vector2(startX, startY);
+                        }
+                    }
+                }
+
+                // Same for Ai spawn position
+                if (SelectMode == SelectionMode.AISpawnSet)
+                {
+                    if (startX >= 0 || startX < World.Current.Width || startY >= 0 || startY < World.Current.Height)
+                    {
+                        if (World.Current.GetTileAt(startX, startY) != null && World.Current.GetTileAt(startX, startY).Type != TileType.Platform)
+                        {
+                            aiSpawnObject.transform.position = new Vector2(startX, startY);
                         }
                     }
                 }
@@ -154,7 +168,6 @@ namespace Assets.Scripts.General.UnityLayer
                     mouseDragging = false;
                     // Reset size to 1 tile.
                     mouseSelectCursor.transform.localScale = Vector2.one;
-
 
                     for (var x = startX; x <= endX; x++)
                     {
@@ -223,9 +236,9 @@ namespace Assets.Scripts.General.UnityLayer
                         springComp.restLength = bouncePadSubMenu.RestLength;
                         springComp.dampen = bouncePadSubMenu.Dampen;
                     }
-                    
+
                     break;
-                
+
                 case SelectionMode.TestPathStart:
                     if (World.Current.NavGraph.Nodes[_tile.X, _tile.Y].NodeType == PathNodeType.None) break;
                     pathStart = new Vector2(_tile.X, _tile.Y);
