@@ -27,6 +27,11 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         private List<GameObject> debugNodeFallLinkObjects;
         private List<GameObject> debugNodeJumpLinkObjects;
 
+        private bool displayNodeGizmos = true;
+        private bool displayWalkLinkGizmos = true;
+        private bool displayFallLinkGizmos = true;
+        private bool displayJumpLinkGizmos = true;
+
         public void OnDestroy()
         {
             ClearAll();
@@ -88,6 +93,9 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
                     debugNodeObjects.Add(nodeObject);
 
+                    if(!displayNodeGizmos)
+                        nodeObject.SetActive(false);
+
                     foreach (var link in node.NodeLinks)
                     {
                         var linkObject = new GameObject("NodeLinkDebug: " + link.LinkType);
@@ -105,16 +113,28 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
                             case NodeLinkType.Walk:
                                 lineRenderer.material.color = Color.cyan;
                                 debugNodeWalkLinkObjects.Add(linkObject);
+
+                                if(!displayWalkLinkGizmos)
+                                    linkObject.SetActive(false);
+
                                 break;
 
                             case NodeLinkType.Fall:
                                 lineRenderer.material.color = Color.blue;
                                 debugNodeFallLinkObjects.Add(linkObject);
+
+                                if (!displayFallLinkGizmos)
+                                    linkObject.SetActive(false);
+
                                 break;
 
                             case NodeLinkType.Jump:
                                 lineRenderer.material.color = Color.green;
                                 debugNodeJumpLinkObjects.Add(linkObject);
+
+                                if (!displayJumpLinkGizmos)
+                                    linkObject.SetActive(false);
+
                                 break;
                         }
                     }
@@ -130,18 +150,22 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             {
                 case DebugViewType.Nodes:
                     collectionForToggle = debugNodeObjects;
+                    displayNodeGizmos = _toggle;
                     break;
 
                 case DebugViewType.WalkLinks:
                     collectionForToggle = debugNodeWalkLinkObjects;
+                    displayWalkLinkGizmos = _toggle;
                     break;
 
                 case DebugViewType.FallLinks:
                     collectionForToggle = debugNodeFallLinkObjects;
+                    displayFallLinkGizmos = _toggle;
                     break;
 
                 case DebugViewType.JumpLinks:
                     collectionForToggle = debugNodeJumpLinkObjects;
+                    displayJumpLinkGizmos = _toggle;
                     break;
             }
 
