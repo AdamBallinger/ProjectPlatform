@@ -53,22 +53,24 @@ namespace Assets.Scripts.AI.Pathfinding
         }
 
         /// <summary>
-        /// Find the first availabe node below the given start node if the given start was a none type.
+        /// Find the first closest node
         /// </summary>
         private void FindClosestNodeToStart()
         {
-            var scanY = StartNode.Y;
+            Debug.Log("Finding a node closes to start");
+            var nodes = World.Current.NavGraph.Nodes;
+            var lowestDist = float.MaxValue;
 
-            while(scanY > 0)
+            foreach(var node in nodes)
             {
-                if(World.Current.NavGraph.Nodes[StartNode.X, scanY].NodeType == PathNodeType.None)
+                var startPos = new Vector2(StartNode.X, StartNode.Y);
+                var nodePos = new Vector2(node.X, node.Y);
+                var distToNode = Vector2.Distance(startPos, nodePos);
+                if(distToNode < lowestDist)
                 {
-                    scanY--;
-                    continue;
+                    StartNode = node;
+                    lowestDist = distToNode;
                 }
-
-                StartNode = World.Current.NavGraph.Nodes[StartNode.X, scanY];
-                break;
             }
         }
 
