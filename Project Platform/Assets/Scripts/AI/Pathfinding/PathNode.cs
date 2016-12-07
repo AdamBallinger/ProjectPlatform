@@ -30,6 +30,8 @@ namespace Assets.Scripts.AI.Pathfinding
 
         public PathNode Parent { get; set; }
 
+        private object NodeData { get; set; }
+
         public float G { get; set; }
 
         public float H { get; set; }
@@ -46,6 +48,7 @@ namespace Assets.Scripts.AI.Pathfinding
             Y = _y;
             NodeType = _type;
             NodeLinks = new List<NodeLink>();
+            NodeData = 0.0f; // default data to 0
             H = 0.0f;
         }
 
@@ -58,6 +61,25 @@ namespace Assets.Scripts.AI.Pathfinding
         {
             _link.SetParentNode(this);
             NodeLinks.Add(_link);
+        }
+
+        /// <summary>
+        /// Sets the data for this node.
+        /// </summary>
+        /// <param name="_data"></param>
+        public void SetData(object _data)
+        {
+            NodeData = _data;
+        }
+
+        /// <summary>
+        /// Gets the data for this node.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T GetData<T>()
+        {
+            return (T)NodeData;
         }
 
         /// <summary>

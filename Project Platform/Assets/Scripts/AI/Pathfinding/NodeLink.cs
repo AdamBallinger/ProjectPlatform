@@ -22,8 +22,6 @@ namespace Assets.Scripts.AI.Pathfinding
 
         public NodeLinkType LinkType { get; private set; }
 
-        private object LinkData { get; set; }
-
         public float LinkCost { get; private set; }
 
 
@@ -32,12 +30,12 @@ namespace Assets.Scripts.AI.Pathfinding
             DestinationNode = _destination;
             LinkType = _type;
 
-            switch(_type)
+            switch (_type)
             {
                 case NodeLinkType.Walk:
                     LinkCost = WALK_COST;
                     break;
-                
+
                 case NodeLinkType.Fall:
                     LinkCost = FALL_COST;
                     break;
@@ -51,25 +49,6 @@ namespace Assets.Scripts.AI.Pathfinding
         public void SetParentNode(PathNode _parent)
         {
             ParentNode = _parent;
-        }
-
-        /// <summary>
-        /// Sets the data for this link.
-        /// </summary>
-        /// <param name="_data"></param>
-        public void SetData(object _data)
-        {
-            LinkData = _data;
-        }
-
-        /// <summary>
-        /// Gets the data for this link as given type.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T GetData<T>()
-        {
-            return (T)LinkData;
         }
     }
 }
