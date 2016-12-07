@@ -219,6 +219,8 @@ namespace Assets.Scripts.AI.Pathfinding
                                             if (dist <= 4.0f)
                                             {
                                                 nodeToCheck.AddLink(new NodeLink(Nodes[x, y], NodeLinkType.Jump));
+                                                // set the jump power data for this node
+                                                nodeToCheck.SetData((4.0f - dist) / 4.0f); 
 
                                                 if (nodeToCheck.NodeType == PathNodeType.Platform)
                                                 {
@@ -226,8 +228,9 @@ namespace Assets.Scripts.AI.Pathfinding
                                                 }
                                             }
 
-                                            // Only add fall links to the first X scan.
-                                            if (scanX == 0)
+                                            // Only add fall links for the first 2 tiles on the X axis scan and tiles that are not on the same Y axis
+                                            // as they need to be jump links only
+                                            if (scanX < 2 && scanY != y)
                                             {
                                                 Nodes[x, y].AddLink(new NodeLink(nodeToCheck, NodeLinkType.Fall));
 
