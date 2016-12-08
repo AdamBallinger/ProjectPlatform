@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.AI.Pathfinding;
+﻿using System.Collections;
+using Assets.Scripts.AI.Pathfinding;
 using Assets.Scripts.General.UnityLayer.Physics_Components;
 using Assets.Scripts.Physics.Colliders;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace Assets.Scripts.General.UnityLayer.AI
 
         public LineRenderer pathRenderer;
 
+        public GameObject waypointObject;
+
         public float maxSpeed = 4.0f;
         public float movementForce = 40.0f;
 
@@ -24,14 +27,17 @@ namespace Assets.Scripts.General.UnityLayer.AI
         public Path currentPath;
 
         private int currentPathIndex = 0;
-        private bool isGrounded = true;
-        private bool isCollidingLeftWall = false;
-        private bool isCollidingRightWall = false;
+        public bool isGrounded = true;
+        public bool isCollidingLeftWall = false;
+        public bool isCollidingRightWall = false;
+
+        // Update path n timers per second.
+        private float pathUpdateRate = 10.0f;
 
         public void Start()
         {
             pathFinder = new PathFinder(OnPathComplete);
-            currentPath = null;
+            ClearPath();
 
             groundCheck.Collider.CollisionListener.RegisterTriggerStayCallback(OnGroundTriggerStay);
             groundCheck.Collider.CollisionListener.RegisterTriggerLeaveCallback(OnGroundTriggerLeave);
@@ -41,6 +47,8 @@ namespace Assets.Scripts.General.UnityLayer.AI
 
             rightWallCheck.Collider.CollisionListener.RegisterTriggerStayCallback(OnRightWallTriggerStay);
             rightWallCheck.Collider.CollisionListener.RegisterTriggerLeaveCallback(OnRightWallTriggerLeave);
+
+            //StartCoroutine(UpdatePath());
         }
 
         /// <summary>
@@ -49,12 +57,28 @@ namespace Assets.Scripts.General.UnityLayer.AI
         /// <param name="_path"></param>
         public void OnPathComplete(Path _path)
         {
-            if(_path.Valid)
+            if (_path.Valid)
             {
                 currentPath = _path;
                 currentPathIndex = 0;
-                Debug.Log("Created path in " + currentPath.CreationTime + " ms");
+                //Debug.Log("Created path in " + currentPath.CreationTime + " ms");
             }
+        }
+
+        /// <summary>
+        /// Coroutine for updating the AI path at set intervals.
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator UpdatePath()
+        {
+            if (currentPath != null)
+            {
+                pathFinder.FindPath(transform.position, new Vector2(currentPath.EndNode.X, currentPath.EndNode.Y));
+            }
+
+            yield return new WaitForSeconds(1.0f / pathUpdateRate);
+
+            StartCoroutine(UpdatePath());
         }
 
         /// <summary>
@@ -62,7 +86,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
         /// </summary>
         public void ClearPath()
         {
-            if(currentPath != null)
+            if (currentPath != null)
             {
                 currentPath = null;
                 currentPathIndex = 0;
@@ -70,6 +94,12 @@ namespace Assets.Scripts.General.UnityLayer.AI
                 if (pathRenderer != null)
                 {
                     pathRenderer.numPositions = 0;
+
+                    if (waypointObject != null)
+                    {
+                        var waypointPos = new Vector2(-100.0f, 0.0f);
+                        waypointObject.transform.position = waypointPos;
+                    }
                 }
             }
         }
@@ -79,7 +109,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
             if (currentPath == null) return;
 
             // If the path index is 0, a new path must have been created so reset the path renderer to the new path.
-            if(currentPathIndex == 0)
+            if (currentPathIndex == 0)
             {
                 if (pathRenderer != null)
                 {
@@ -94,44 +124,55 @@ namespace Assets.Scripts.General.UnityLayer.AI
                 }
             }
 
-            // TODO: Improve the way the AI moves from point to point in the calculated path so its not so rough.
-            // This current implementation is a placeholder.
+            //// TODO: Improve the way the AI moves from point to point in the calculated path so its not so rough.
+            //// This current implementation is a placeholder.
 
             var node = currentPath.NodePath[currentPathIndex];
-            var nodePos = new Vector2(node.X, node.Y);
+            var nodePos = currentPath.VectorPath[currentPathIndex];
+
+            if (waypointObject != null)
+                waypointObject.transform.position = nodePos;
 
             var distTo = Vector2.Distance(transform.position, nodePos);
             var direction = nodePos - (Vector2)transform.position;
 
             var moveDirX = nodePos.x < transform.position.x ? Vector2.left : Vector2.right;
 
-            if(isCollidingLeftWall && moveDirX == Vector2.left)
+            if (isCollidingLeftWall && moveDirX == Vector2.left)
                 moveDirX = Vector2.zero;
 
             if (isCollidingRightWall && moveDirX == Vector2.right)
                 moveDirX = Vector2.zero;
 
-            if (distTo <= 0.15f)
+            if ((moveDirX == Vector2.right && direction.x <= 0.05f) || (moveDirX == Vector2.left && direction.x >= 0.05f))
             {
-                if(currentPathIndex + 1 < currentPath.GetPathLength())
+                nodePos.y = transform.position.y;
+                transform.position = nodePos;
+                if (currentPathIndex + 1 < currentPath.GetPathLength())
                 {
+                    Debug.Log("direction y: " + direction.y);
                     currentPathIndex++;
+                }
+                else
+                {
+                    rigidBodyComponent.RigidBody.LinearVelocity = Vector2.zero;
+                    ClearPath();
                 }
             }
             else
             {
-                if(Mathf.Abs(transform.position.x - nodePos.x) >= 0.1f && direction.y <= 0.5f)
+                if (direction.y < 0.2f)
                 {
-                    // move left/right
                     rigidBodyComponent.RigidBody.AddImpulse(moveDirX * movementForce);
                 }
 
-                if(direction.y >= 0.9f && isGrounded)
+                if (direction.y >= 0.2f && isGrounded)
                 {
                     rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * (jumpHeight * Mathf.Clamp01(distTo)) * rigidBodyComponent.RigidBody.Mass * 2.0f);
                 }
             }
 
+            // clamp X speed for the AI to its max speed.
             var vel = rigidBodyComponent.RigidBody.LinearVelocity;
             vel.x = Mathf.Clamp(vel.x, -maxSpeed, maxSpeed);
             rigidBodyComponent.RigidBody.LinearVelocity = vel;
