@@ -78,7 +78,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         {
             var ai = GameObject.FindGameObjectWithTag("AI").GetComponent<PathfinderAgent>();
             ai.transform.position = _start;
-            ai.pathFinder.FindPath(_start, _end);
+            ai.StartPathing(_start, _end);
         }
     }
 }

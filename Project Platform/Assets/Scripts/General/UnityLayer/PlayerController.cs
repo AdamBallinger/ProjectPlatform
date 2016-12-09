@@ -78,14 +78,15 @@ namespace Assets.Scripts.General.UnityLayer
                 jumpPower = Mathf.Clamp01(jumpPower);
             }
 
-            if ((Input.GetKeyUp(KeyCode.Space) || jumpPower == 1.0f) && isGrounded)
+            //if ((Input.GetKeyUp(KeyCode.Space) || jumpPower == 1.0f) && isGrounded)
+            if((enableJumpSensitivity && (Input.GetKeyUp(KeyCode.Space) || jumpPower >= 1.0f) && isGrounded) 
+                || (!enableJumpSensitivity && Input.GetKeyDown(KeyCode.Space) && isGrounded))
             {
                 if(!enableJumpSensitivity)
                 {
                     jumpPower = 1.0f;
                 }
 
-                // add 0.1 to jump height as a slight offset since the player isn't the size of a full tile.
                 rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * (jumpHeight * jumpPower) * rigidBodyComponent.RigidBody.Mass * 2);
                 jumpPower = 0.0f;
             }

@@ -32,7 +32,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
         public bool isCollidingRightWall = false;
 
         // Update path n timers per second.
-        private float pathUpdateRate = 10.0f;
+        private float pathUpdateRate = 5.0f;
 
         public void Start()
         {
@@ -47,8 +47,16 @@ namespace Assets.Scripts.General.UnityLayer.AI
 
             rightWallCheck.Collider.CollisionListener.RegisterTriggerStayCallback(OnRightWallTriggerStay);
             rightWallCheck.Collider.CollisionListener.RegisterTriggerLeaveCallback(OnRightWallTriggerLeave);
+        }
 
-            //StartCoroutine(UpdatePath());
+        public void StartPathing(Vector2 _start, Vector2 _end)
+        {
+            ClearPath();
+            StopAllCoroutines();
+
+            pathFinder.FindPath(_start, _end);
+
+            StartCoroutine(UpdatePath());
         }
 
         /// <summary>
@@ -66,7 +74,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
         }
 
         /// <summary>
-        /// Coroutine for updating the AI path at set intervals.
+        /// Coroutine for updating the agents path n(the value of pathUpdateRate) times per second.
         /// </summary>
         /// <returns></returns>
         private IEnumerator UpdatePath()
@@ -88,6 +96,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
         {
             if (currentPath != null)
             {
+                StopAllCoroutines();
                 currentPath = null;
                 currentPathIndex = 0;
 
@@ -97,6 +106,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
 
                     if (waypointObject != null)
                     {
+                        // Move waypoint off the screen when path is done.
                         var waypointPos = new Vector2(-100.0f, 0.0f);
                         waypointObject.transform.position = waypointPos;
                     }
@@ -120,14 +130,17 @@ namespace Assets.Scripts.General.UnityLayer.AI
                         currentPathIndex++;
                     }
 
-                    currentPathIndex = 0;
+                    currentPathIndex = 1;
                 }
             }
 
-            //// TODO: Improve the way the AI moves from point to point in the calculated path so its not so rough.
-            //// This current implementation is a placeholder.
+            if(currentPathIndex >= currentPath.GetPathLength())
+            {
+                ClearPath();
+                rigidBodyComponent.RigidBody.LinearVelocity = Vector2.zero;
+                return;
+            }
 
-            var node = currentPath.NodePath[currentPathIndex];
             var nodePos = currentPath.VectorPath[currentPathIndex];
 
             if (waypointObject != null)
@@ -148,16 +161,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
             {
                 nodePos.y = transform.position.y;
                 transform.position = nodePos;
-                if (currentPathIndex + 1 < currentPath.GetPathLength())
-                {
-                    Debug.Log("direction y: " + direction.y);
-                    currentPathIndex++;
-                }
-                else
-                {
-                    rigidBodyComponent.RigidBody.LinearVelocity = Vector2.zero;
-                    ClearPath();
-                }
+                currentPathIndex++;
             }
             else
             {
@@ -180,11 +184,13 @@ namespace Assets.Scripts.General.UnityLayer.AI
 
         public void OnGroundTriggerStay(ABCollider _collider)
         {
+            if (_collider.RigidBody.GameObject.tag == "Coin") return;
             isGrounded = true;
         }
 
         public void OnGroundTriggerLeave(ABCollider _collider)
         {
+            if (_collider.RigidBody.GameObject.tag == "Coin") return;
             isGrounded = false;
         }
 

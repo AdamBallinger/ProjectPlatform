@@ -57,7 +57,6 @@ namespace Assets.Scripts.AI.Pathfinding
         /// </summary>
         private void FindClosestNodeToStart()
         {
-            Debug.Log("Finding a node closes to start");
             var nodes = World.Current.NavGraph.Nodes;
             var lowestDist = float.MaxValue;
 

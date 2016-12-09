@@ -56,6 +56,7 @@ namespace Assets.Scripts.Physics
 
             if (Collider.RigidBody.GameObject == null)
             {
+                _colliding.CollisionListener.LastStepCollisions.Remove(Collider);
                 return;
             }
 
@@ -63,7 +64,7 @@ namespace Assets.Scripts.Physics
             if (Collider.RigidBody.GameObject.transform.root == _colliding.RigidBody.GameObject.transform.root)
                 return;
 
-            if(Collider.IsTrigger)
+            if (Collider.IsTrigger)
             {
                 HandleTrigger(_colliding);
             }
@@ -76,17 +77,17 @@ namespace Assets.Scripts.Physics
         private void HandleTrigger(ABCollider _trigger)
         {
             // if the colliding object didn't collide with this collider last physics step
-            if(!LastStepCollisions.Contains(_trigger))
+            if (!LastStepCollisions.Contains(_trigger))
             {
                 // then execute the trigger enter callback
-                if(OnTriggerEnter != null)
+                if (OnTriggerEnter != null)
                     OnTriggerEnter(_trigger);
 
                 LastStepCollisions.Add(_trigger);
             }
             else
             {
-                if(OnTriggerStay != null)
+                if (OnTriggerStay != null)
                     OnTriggerStay(_trigger);
             }
         }
@@ -95,9 +96,9 @@ namespace Assets.Scripts.Physics
         {
             // Call OnCollision callback only if the collider hasnt previously been 
             // colliding with this object before leaving / seperating from it.
-            if(!LastStepCollisions.Contains(_collider))
+            if (!LastStepCollisions.Contains(_collider))
             {
-                if(OnCollision != null)
+                if (OnCollision != null)
                 {
                     OnCollision(_collider);
                 }
@@ -114,12 +115,29 @@ namespace Assets.Scripts.Physics
         {
             if (_collider.RigidBody.GameObject == null)
             {
-                LastStepCollisions.Remove(_collider);
+                //if (LastStepCollisions.Contains(_collider) && _collider.IsTrigger)
+                //{
+                //    if (OnTriggerLeave != null)
+                //    {
+                //        OnTriggerLeave(_collider);
+                //    }
+                //}
+
+                //LastStepCollisions.Remove(_collider);
                 return;
             }
 
             if (Collider.RigidBody.GameObject == null)
             {
+                //if (_collider.CollisionListener.LastStepCollisions.Contains(Collider) && Collider.IsTrigger)
+                //{
+                //    if (_collider.CollisionListener.OnTriggerLeave != null)
+                //    {
+                //        _collider.CollisionListener.OnTriggerLeave(_collider);
+                //    }
+                //}
+
+                //_collider.CollisionListener.LastStepCollisions.Remove(Collider);
                 return;
             }
 
@@ -133,7 +151,7 @@ namespace Assets.Scripts.Physics
             }
 
             // Otherwise handle exit callback based on collider type.
-            if(Collider.IsTrigger)
+            if (Collider.IsTrigger)
             {
                 if (OnTriggerLeave != null)
                 {
