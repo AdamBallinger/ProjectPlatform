@@ -204,7 +204,8 @@ namespace Assets.Scripts.General.UnityLayer.AI
             }
 
             // If the difference between the agent and the targer node is greater than 0.3f on the Y axis, then a jump is needed.
-            if (direction.y >= 0.3f && isGrounded)
+            // of if the difference on the Y is less than or equal to 0.3 and the X difference is greater than 1.5 jump over a gap.
+            if ((direction.y >= 0.3f && isGrounded) || (Mathf.Abs(direction.x) >= 1.5f && Mathf.Abs(direction.y) <= 0.3f && isGrounded))
             {
                 // Reset x and y velocity or everything will break, especially jumping.
                 var velTmp = rigidBodyComponent.RigidBody.LinearVelocity;
@@ -212,8 +213,16 @@ namespace Assets.Scripts.General.UnityLayer.AI
                 velTmp.x = 0.0f;
                 rigidBodyComponent.RigidBody.LinearVelocity = velTmp;
 
+                // Move slightly in the opposite direction if the distance on the x axis to the tile we want to jump to is greater than 1
+                // (Prevents agent jumping and hitting its head on an above tile over and over)
+                if(Mathf.Abs(direction.x) < 1.0f && moveDirX != Vector2.zero)
+                {
+                    rigidBodyComponent.RigidBody.AddImpulse(-moveDirX * movementForce * 2.0f);
+                    return;
+                }
+
                 // Add the jump impulse to the agent.
-                rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * (jumpHeight * Mathf.Clamp01(distTo)) * rigidBodyComponent.RigidBody.Mass * 2.0f);
+                rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * jumpHeight * rigidBodyComponent.RigidBody.Mass * 2.0f);
             }
 
             // clamp X speed for the AI to its max speed.
