@@ -191,9 +191,6 @@ namespace Assets.Scripts.General.UnityLayer.AI
                 velTmp.x = 0.0f;
                 rigidBodyComponent.RigidBody.LinearVelocity = velTmp;
 
-                // Add a movement impulse in the direction towards the node before jumping.
-                rigidBodyComponent.RigidBody.AddImpulse(moveDirX * movementForce);
-
                 // Add the jump impulse to the agent.
                 rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * (jumpHeight * Mathf.Clamp01(distTo)) * rigidBodyComponent.RigidBody.Mass * 2.0f);
             }

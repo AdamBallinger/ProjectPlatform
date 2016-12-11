@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LevelDataFile>
+    <LevelPlatformPhysicalProperties>
+        <PlatformProperties X="0" Y="1" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="0" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="0" Y="4" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="0" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="0" Y="6" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="0" Y="7" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="0" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="0" Y="10" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="0" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="0" Y="12" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="0" Y="13" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="0" Y="14" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="1" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="1" Y="3" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="1" Y="9" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="1" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="2" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="2" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="3" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="3" Y="6" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="3" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="4" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="4" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="4" Y="6" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="4" Y="7" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="4" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="4" Y="9" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="4" Y="10" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="4" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="4" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="5" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="5" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="5" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="5" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="6" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="6" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="6" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="6" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="7" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="7" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="7" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="7" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="7" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="7" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="8" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="8" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="8" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="8" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="8" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="8" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="9" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="9" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="9" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="9" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="9" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="9" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="10" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="10" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="10" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="10" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="10" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="10" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="11" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="11" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="11" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="11" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="11" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="11" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="12" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="12" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="12" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="12" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="12" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="12" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="13" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="13" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="13" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="13" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="13" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="13" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="14" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="14" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="14" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="14" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="14" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="14" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="15" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="15" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="15" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="15" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="15" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="16" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="16" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="16" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="16" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="16" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="17" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="17" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="17" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="17" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="17" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="17" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="18" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="18" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="18" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="18" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="18" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="18" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="19" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="19" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="19" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="19" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="19" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="19" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="20" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="20" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="20" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="20" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="20" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="20" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="21" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="21" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="21" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="21" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="21" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="21" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="22" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="22" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="22" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="22" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="22" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="22" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="23" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="23" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="23" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="23" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="23" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="23" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="24" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="24" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="24" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="24" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="24" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="24" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="25" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="25" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="25" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="25" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="26" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="26" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="26" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="26" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="27" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="27" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="27" Y="6" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="27" Y="7" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="27" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="27" Y="9" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="27" Y="10" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="27" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="27" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="28" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="28" Y="6" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="28" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="29" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="29" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="30" Y="0" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="30" Y="3" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="30" Y="9" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="30" Y="15" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="31" Y="1" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="31" Y="2" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="31" Y="4" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="31" Y="5" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="31" Y="6" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="31" Y="7" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="31" Y="8" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="31" Y="10" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="31" Y="11" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="31" Y="12" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="31" Y="13" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+        <PlatformProperties X="31" Y="14" Restitution="0" StaticFriction="1" DynamicFriction="0.8" />
+    </LevelPlatformPhysicalProperties>
+    <LevelCoinPickupsData>
+        <CoinPickup X="1" Y="4" />
+        <CoinPickup X="1" Y="10" />
+        <CoinPickup X="3" Y="7" />
+        <CoinPickup X="7" Y="12" />
+        <CoinPickup X="8" Y="12" />
+        <CoinPickup X="9" Y="6" />
+        <CoinPickup X="9" Y="12" />
+        <CoinPickup X="10" Y="6" />
+        <CoinPickup X="10" Y="12" />
+        <CoinPickup X="11" Y="6" />
+        <CoinPickup X="11" Y="12" />
+        <CoinPickup X="12" Y="1" />
+        <CoinPickup X="13" Y="1" />
+        <CoinPickup X="13" Y="9" />
+        <CoinPickup X="14" Y="1" />
+        <CoinPickup X="14" Y="9" />
+        <CoinPickup X="15" Y="1" />
+        <CoinPickup X="15" Y="9" />
+        <CoinPickup X="16" Y="1" />
+        <CoinPickup X="16" Y="9" />
+        <CoinPickup X="17" Y="1" />
+        <CoinPickup X="17" Y="9" />
+        <CoinPickup X="18" Y="1" />
+        <CoinPickup X="18" Y="9" />
+        <CoinPickup X="19" Y="1" />
+        <CoinPickup X="20" Y="6" />
+        <CoinPickup X="20" Y="12" />
+        <CoinPickup X="21" Y="6" />
+        <CoinPickup X="21" Y="12" />
+        <CoinPickup X="22" Y="6" />
+        <CoinPickup X="22" Y="12" />
+        <CoinPickup X="23" Y="12" />
+        <CoinPickup X="24" Y="12" />
+        <CoinPickup X="28" Y="7" />
+        <CoinPickup X="30" Y="4" />
+        <CoinPickup X="30" Y="10" />
+    </LevelCoinPickupsData>
+    <LevelBouncePadData />
+</LevelDataFile>
