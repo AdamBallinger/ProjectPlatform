@@ -110,11 +110,13 @@ namespace Assets.Scripts.General.UnityLayer
         {
             // Set grounded to true during stay as if the trigger enters a new tile, and leaves the previous after, grounded will be false 
             // even though it is actually grounded.
+            if (_collider.RigidBody.GameObject.tag == "Coin") return;
             isGrounded = true;
         }
 
         public void OnGroundTriggerLeave(ABCollider _collider)
         {
+            if (_collider.RigidBody.GameObject.tag == "Coin") return;
             isGrounded = false;
         }
 
