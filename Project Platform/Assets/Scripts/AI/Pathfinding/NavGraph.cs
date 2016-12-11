@@ -228,9 +228,8 @@ namespace Assets.Scripts.AI.Pathfinding
                                                 }
                                             }
 
-                                            // Only add fall links for the first 2 tiles on the X axis scan and tiles that are not on the same Y axis
-                                            // as they need to be jump links only
-                                            if (scanX < 2 && scanY != y)
+                                            // Only add fall links to tiles that are not on the same Y axis.
+                                            if (scanY != y)
                                             {
                                                 Nodes[x, y].AddLink(new NodeLink(nodeToCheck, NodeLinkType.Fall));
 
