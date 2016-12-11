@@ -33,8 +33,8 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
             }
             else
             {
-                levelName.text = worldController.Load(Directories.Stock_Levels_Directory + "\\Demo Level 1.xml",
-                    Directories.Stock_Levels_Data_Directory + "\\Demo Level 1.xml");
+                levelName.text = worldController.Load(Directories.Stock_Levels_Directory + "\\Level 1.xml",
+                    Directories.Stock_Levels_Data_Directory + "\\Level 1.xml");
             }
         }
 

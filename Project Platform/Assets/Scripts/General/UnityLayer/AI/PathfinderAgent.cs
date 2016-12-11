@@ -16,7 +16,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
 
         public LineRenderer pathRenderer;
 
-        public GameObject waypointObject;
+        private GameObject waypointObject;
 
         public float maxSpeed = 4.0f;
         public float movementForce = 40.0f;
@@ -47,6 +47,8 @@ namespace Assets.Scripts.General.UnityLayer.AI
 
             rightWallCheck.Collider.CollisionListener.RegisterTriggerStayCallback(OnRightWallTriggerStay);
             rightWallCheck.Collider.CollisionListener.RegisterTriggerLeaveCallback(OnRightWallTriggerLeave);
+
+            waypointObject = GameObject.FindGameObjectWithTag("AIWaypoint");
         }
 
         public void StartPathing(Vector2 _start, Vector2 _end)
@@ -235,6 +237,8 @@ namespace Assets.Scripts.General.UnityLayer.AI
                     velTmp.y = 0.0f;
                     velTmp.x = 0.0f;
                     rigidBodyComponent.RigidBody.LinearVelocity = velTmp;
+
+                    rigidBodyComponent.RigidBody.AddImpulse(moveDirX * movementForce);
                     rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * (jumpHeight * Mathf.Clamp01(distTo)) * rigidBodyComponent.RigidBody.Mass * 2.0f);
                 }
             }

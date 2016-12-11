@@ -87,8 +87,7 @@ namespace Assets.Scripts.General.UnityLayer
                     jumpPower = 1.0f;
                 }
 
-                //rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * (jumpHeight * jumpPower) * rigidBodyComponent.RigidBody.Mass * 2);
-                rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * (rigidBodyComponent.RigidBody.Mass * (jumpHeight * jumpPower)) / 32.0f);
+                rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * (jumpHeight * jumpPower) * rigidBodyComponent.RigidBody.Mass * 2);
                 jumpPower = 0.0f;
             }
 

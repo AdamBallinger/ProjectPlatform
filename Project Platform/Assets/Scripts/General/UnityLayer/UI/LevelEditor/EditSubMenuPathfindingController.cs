@@ -14,6 +14,8 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         public Button pathfindingButton;
 
         public GameObject pathfindingMenu;
+
+        public GameObject aiPrefab;
         
         private bool displayNodeGizmos = true;
         private bool displayWalkLinkGizmos = true;
@@ -66,12 +68,23 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         public void OnCreateTestPathButtonPress()
         {
+            if(GameObject.FindGameObjectWithTag("AI") == null)
+            {
+                Instantiate(aiPrefab, Vector2.one, Quaternion.identity);
+            }
+
             editorUIController.mouseController.SelectMode = SelectionMode.TestPathStart;
         }
 
         public void OnClearTestPathButtonPress()
         {
-            GameObject.FindGameObjectWithTag("AI").GetComponent<PathfinderAgent>().ClearPath();
+            var ai = GameObject.FindGameObjectWithTag("AI");
+
+            if(ai != null)
+            {
+                ai.GetComponent<PathfinderAgent>().ClearPath();
+                Destroy(ai);
+            }
         }
 
         public void CreatePath(Vector2 _start, Vector2 _end)
