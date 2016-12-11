@@ -115,9 +115,7 @@
     <Compile Include="Assets\Scripts\Physics\PhysicsWorld.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\StreamingAssets\Stock_Levels\Demo Level 1.xml" />
     <None Include="Assets\StreamingAssets\Stock_Levels\Level 1.xml" />
-    <None Include="Assets\StreamingAssets\Stock_Levels\Level_Data\Demo Level 1.xml" />
     <None Include="Assets\StreamingAssets\Stock_Levels\Level_Data\Level 1.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

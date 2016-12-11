@@ -137,61 +137,6 @@ namespace Assets.Scripts.General.UnityLayer.AI
                 }
             }
 
-            //var direction = currentPath.VectorPath[currentPathIndex] - (Vector2)transform.position;
-
-            //if (Mathf.Abs(direction.x) <= 0.05f)
-            //{
-            //    var pos = rigidBodyComponent.RigidBody.Position;
-            //    pos.x = currentPath.VectorPath[currentPathIndex].x;
-            //    rigidBodyComponent.RigidBody.Position = pos;
-            //    currentPathIndex++;
-            //}
-
-            //if (currentPathIndex >= currentPath.GetPathLength())
-            //{
-            //    ClearPath();
-            //    rigidBodyComponent.RigidBody.LinearVelocity = Vector2.zero;
-            //    return;
-            //}
-
-            //var nodePos = currentPath.VectorPath[currentPathIndex];
-            //var distance = Vector2.Distance(rigidBodyComponent.RigidBody.Position, nodePos);
-            //direction = currentPath.VectorPath[currentPathIndex] - (Vector2)transform.position;
-            //var moveDirX = currentPath.VectorPath[currentPathIndex].x < rigidBodyComponent.RigidBody.Position.x ? Vector2.left : Vector2.right;
-
-            //if (waypointObject != null)
-            //    waypointObject.transform.position = nodePos;
-
-            //if (isCollidingLeftWall && moveDirX == Vector2.left)
-            //    moveDirX = Vector2.zero;
-
-            //if (isCollidingRightWall && moveDirX == Vector2.right)
-            //    moveDirX = Vector2.zero;
-
-            //if ((moveDirX == Vector2.right && direction.x <= 0.05f) || (moveDirX == Vector2.left && direction.x >= 0.05f))
-            //{
-            //    nodePos.y = rigidBodyComponent.RigidBody.Position.y;
-            //    rigidBodyComponent.RigidBody.Position = nodePos;
-            //}
-            //else
-            //{
-            //    if (Mathf.Abs(direction.y) <= 0.2f)
-            //    {
-            //        rigidBodyComponent.RigidBody.AddImpulse(moveDirX * movementForce);
-            //    }
-
-            //    if (direction.y >= 0.2f && isGrounded)
-            //    {
-            //        var velTmp = rigidBodyComponent.RigidBody.LinearVelocity;
-            //        velTmp.y = 0.0f;
-            //        rigidBodyComponent.RigidBody.LinearVelocity = velTmp;
-
-            //        var jumpForce = jumpHeight * ((4.0f - distance) / 4.0f);
-
-            //        rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * jumpForce * rigidBodyComponent.RigidBody.Mass * 2.0f);
-            //    }
-            //}
-
             if (currentPathIndex >= currentPath.GetPathLength())
             {
                 ClearPath();
@@ -263,7 +208,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
 
         public void OnLeftWallTriggerStay(ABCollider _collider)
         {
-            if (_collider.RigidBody.GameObject.tag == "Tile")
+            if (_collider.RigidBody.GameObject.tag == "Tile" || _collider.RigidBody.GameObject.tag == "BouncePad")
             {
                 isCollidingLeftWall = true;
             }
@@ -276,7 +221,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
 
         public void OnRightWallTriggerStay(ABCollider _collider)
         {
-            if (_collider.RigidBody.GameObject.tag == "Tile")
+            if (_collider.RigidBody.GameObject.tag == "Tile" || _collider.RigidBody.GameObject.tag == "BouncePad")
             {
                 isCollidingRightWall = true;
             }

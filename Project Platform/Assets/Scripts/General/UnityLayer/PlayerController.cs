@@ -120,7 +120,7 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void OnLeftWallTriggerStay(ABCollider _collider)
         {
-            if (_collider.RigidBody.GameObject.tag == "Tile")
+            if (_collider.RigidBody.GameObject.tag == "Tile" || _collider.RigidBody.GameObject.tag == "BouncePad")
             {
                 isCollidingLeftWall = true;
             }
@@ -133,7 +133,7 @@ namespace Assets.Scripts.General.UnityLayer
 
         public void OnRightWallTriggerStay(ABCollider _collider)
         {
-            if (_collider.RigidBody.GameObject.tag == "Tile")
+            if (_collider.RigidBody.GameObject.tag == "Tile" || _collider.RigidBody.GameObject.tag == "BouncePad")
             {
                 isCollidingRightWall = true;
             }
