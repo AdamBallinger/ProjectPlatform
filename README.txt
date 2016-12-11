@@ -1,6 +1,10 @@
 README
 ---------
 
+REQUIREMENTS:
+	- Unity v5.5.0f3 - Minimum as game uses new LineRenderer system in 5.5 update.
+		- This is also the version the project is developed in.
+
 Running the game
 ------------------
 - Open the provided executable, and press the level editor button to enter the level editor.
