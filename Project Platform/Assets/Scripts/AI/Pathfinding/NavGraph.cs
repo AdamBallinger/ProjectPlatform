@@ -220,7 +220,7 @@ namespace Assets.Scripts.AI.Pathfinding
                                             {
                                                 nodeToCheck.AddLink(new NodeLink(Nodes[x, y], NodeLinkType.Jump));
                                                 // set the jump power data for this node
-                                                nodeToCheck.SetData((4.0f - dist) / 4.0f); 
+                                                //nodeToCheck.SetData((4.0f - dist) / 4.0f); 
 
                                                 if (nodeToCheck.NodeType == PathNodeType.Platform)
                                                 {

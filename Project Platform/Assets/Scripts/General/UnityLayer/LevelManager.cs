@@ -7,6 +7,7 @@ namespace Assets.Scripts.General.UnityLayer
     {
 
         public GameObject playerPrefab;
+        public GameObject aiPrefab;
 
         public void Start()
         {
@@ -18,6 +19,11 @@ namespace Assets.Scripts.General.UnityLayer
             if(GameObject.FindGameObjectWithTag("Player") == null)
             {
                 SpawnPlayer();
+            }
+
+            if(GameObject.FindGameObjectWithTag("AI") == null)
+            {
+                SpawnAI();
             }
         }
 
@@ -31,6 +37,19 @@ namespace Assets.Scripts.General.UnityLayer
             else
             {
                 playerObject.transform.position = World.Current.PlayerSpawnPosition;
+            }
+        }
+
+        public void SpawnAI()
+        {
+            var aiObject = GameObject.FindGameObjectWithTag("AI");
+            if(aiObject == null)
+            {
+                Instantiate(aiPrefab, World.Current.AISpawnPosition, Quaternion.identity);
+            }
+            else
+            {
+                aiObject.transform.position = World.Current.AISpawnPosition;
             }
         }
 

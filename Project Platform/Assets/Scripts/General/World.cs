@@ -27,6 +27,11 @@ namespace Assets.Scripts.General
             get { return GameObject.FindGameObjectWithTag("PlayerSpawn").transform.position; }
         }
 
+        public Vector2 AISpawnPosition
+        {
+            get { return GameObject.FindGameObjectWithTag("AISpawn").transform.position; }
+        }
+
         public Action OnWorldModifyFinishCallback;
 
         /// <summary>
@@ -225,6 +230,11 @@ namespace Assets.Scripts.General
                 xmlWriter.WriteAttributeString("Y", PlayerSpawnPosition.y.ToString());
                 xmlWriter.WriteEndElement();
 
+                xmlWriter.WriteStartElement("LevelAISpawn");
+                xmlWriter.WriteAttributeString("X", AISpawnPosition.x.ToString());
+                xmlWriter.WriteAttributeString("Y", AISpawnPosition.y.ToString());
+                xmlWriter.WriteEndElement();
+
                 xmlWriter.WriteEndElement();
 
                 xmlWriter.WriteStartElement("LevelTileData");
@@ -284,6 +294,12 @@ namespace Assets.Scripts.General
                                 var px = int.Parse(xmlReader["X"]);
                                 var py = int.Parse(xmlReader["Y"]);
                                 GameObject.FindGameObjectWithTag("PlayerSpawn").transform.position = new Vector2(px, py);
+                                break;
+
+                            case "LevelAISpawn":
+                                var aiX = int.Parse(xmlReader["X"]);
+                                var aiY = int.Parse(xmlReader["Y"]);
+                                GameObject.FindGameObjectWithTag("AISpawn").transform.position = new Vector2(aiX, aiY);
                                 break;
 
                             case "Tile":

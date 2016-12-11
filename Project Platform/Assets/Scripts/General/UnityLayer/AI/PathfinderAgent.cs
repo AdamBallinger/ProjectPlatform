@@ -32,7 +32,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
         public bool isCollidingRightWall = false;
 
         // Update path n timers per second.
-        private float pathUpdateRate = 5.0f;
+        public float pathUpdateRate = 5.0f;
 
         public void Start()
         {
@@ -81,7 +81,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
         {
             if (currentPath != null)
             {
-                pathFinder.FindPath(transform.position, new Vector2(currentPath.EndNode.X, currentPath.EndNode.Y));
+                pathFinder.FindPath(rigidBodyComponent.RigidBody.Position, new Vector2(currentPath.EndNode.X, currentPath.EndNode.Y));
             }
 
             yield return new WaitForSeconds(1.0f / pathUpdateRate);
@@ -119,6 +119,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
             if (currentPath == null) return;
 
             // If the path index is 0, a new path must have been created so reset the path renderer to the new path.
+            // This can't be placed in OnPathComplete as pathing is threaded and Unity API isn't thread-safe.
             if (currentPathIndex == 0)
             {
                 if (pathRenderer != null)
@@ -134,22 +135,78 @@ namespace Assets.Scripts.General.UnityLayer.AI
                 }
             }
 
-            if(currentPathIndex >= currentPath.GetPathLength())
+            //var direction = currentPath.VectorPath[currentPathIndex] - (Vector2)transform.position;
+
+            //if (Mathf.Abs(direction.x) <= 0.05f)
+            //{
+            //    var pos = rigidBodyComponent.RigidBody.Position;
+            //    pos.x = currentPath.VectorPath[currentPathIndex].x;
+            //    rigidBodyComponent.RigidBody.Position = pos;
+            //    currentPathIndex++;
+            //}
+
+            //if (currentPathIndex >= currentPath.GetPathLength())
+            //{
+            //    ClearPath();
+            //    rigidBodyComponent.RigidBody.LinearVelocity = Vector2.zero;
+            //    return;
+            //}
+
+            //var nodePos = currentPath.VectorPath[currentPathIndex];
+            //var distance = Vector2.Distance(rigidBodyComponent.RigidBody.Position, nodePos);
+            //direction = currentPath.VectorPath[currentPathIndex] - (Vector2)transform.position;
+            //var moveDirX = currentPath.VectorPath[currentPathIndex].x < rigidBodyComponent.RigidBody.Position.x ? Vector2.left : Vector2.right;
+
+            //if (waypointObject != null)
+            //    waypointObject.transform.position = nodePos;
+
+            //if (isCollidingLeftWall && moveDirX == Vector2.left)
+            //    moveDirX = Vector2.zero;
+
+            //if (isCollidingRightWall && moveDirX == Vector2.right)
+            //    moveDirX = Vector2.zero;
+
+            //if ((moveDirX == Vector2.right && direction.x <= 0.05f) || (moveDirX == Vector2.left && direction.x >= 0.05f))
+            //{
+            //    nodePos.y = rigidBodyComponent.RigidBody.Position.y;
+            //    rigidBodyComponent.RigidBody.Position = nodePos;
+            //}
+            //else
+            //{
+            //    if (Mathf.Abs(direction.y) <= 0.2f)
+            //    {
+            //        rigidBodyComponent.RigidBody.AddImpulse(moveDirX * movementForce);
+            //    }
+
+            //    if (direction.y >= 0.2f && isGrounded)
+            //    {
+            //        var velTmp = rigidBodyComponent.RigidBody.LinearVelocity;
+            //        velTmp.y = 0.0f;
+            //        rigidBodyComponent.RigidBody.LinearVelocity = velTmp;
+
+            //        var jumpForce = jumpHeight * ((4.0f - distance) / 4.0f);
+
+            //        rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * jumpForce * rigidBodyComponent.RigidBody.Mass * 2.0f);
+            //    }
+            //}
+
+            if (currentPathIndex >= currentPath.GetPathLength())
             {
                 ClearPath();
                 rigidBodyComponent.RigidBody.LinearVelocity = Vector2.zero;
                 return;
             }
 
-            var nodePos = currentPath.VectorPath[currentPathIndex];
-
-            if (waypointObject != null)
-                waypointObject.transform.position = nodePos;
+            var node = currentPath.NodePath[currentPathIndex];
+            var nodePos = new Vector2(node.X, node.Y);
 
             var distTo = Vector2.Distance(transform.position, nodePos);
             var direction = nodePos - (Vector2)transform.position;
 
             var moveDirX = nodePos.x < transform.position.x ? Vector2.left : Vector2.right;
+
+            if (waypointObject != null)
+                waypointObject.transform.position = nodePos;
 
             if (isCollidingLeftWall && moveDirX == Vector2.left)
                 moveDirX = Vector2.zero;
@@ -157,21 +214,27 @@ namespace Assets.Scripts.General.UnityLayer.AI
             if (isCollidingRightWall && moveDirX == Vector2.right)
                 moveDirX = Vector2.zero;
 
-            if ((moveDirX == Vector2.right && direction.x <= 0.05f) || (moveDirX == Vector2.left && direction.x >= 0.05f))
+            if (distTo <= 0.15f)
             {
-                nodePos.y = transform.position.y;
-                transform.position = nodePos;
-                currentPathIndex++;
+                if (currentPathIndex + 1 < currentPath.GetPathLength())
+                {
+                    currentPathIndex++;
+                }
             }
             else
             {
-                if (direction.y < 0.2f)
+                if (Mathf.Abs(transform.position.x - nodePos.x) >= 0.1f && direction.y <= 0.3f)
                 {
+                    // move left/right
                     rigidBodyComponent.RigidBody.AddImpulse(moveDirX * movementForce);
                 }
 
-                if (direction.y >= 0.2f && isGrounded)
+                if (direction.y >= 0.3f && isGrounded)
                 {
+                    var velTmp = rigidBodyComponent.RigidBody.LinearVelocity;
+                    velTmp.y = 0.0f;
+                    velTmp.x = 0.0f;
+                    rigidBodyComponent.RigidBody.LinearVelocity = velTmp;
                     rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * (jumpHeight * Mathf.Clamp01(distTo)) * rigidBodyComponent.RigidBody.Mass * 2.0f);
                 }
             }
