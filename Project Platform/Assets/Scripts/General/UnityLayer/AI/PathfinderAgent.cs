@@ -137,6 +137,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
                 }
             }
 
+            // Check if the current path has finished.
             if (currentPathIndex >= currentPath.GetPathLength())
             {
                 ClearPath();
@@ -144,48 +145,57 @@ namespace Assets.Scripts.General.UnityLayer.AI
                 return;
             }
 
+            // Get node position
             var node = currentPath.NodePath[currentPathIndex];
             var nodePos = new Vector2(node.X, node.Y);
 
+            // Get distance and direction from agent to node.
             var distTo = Vector2.Distance(transform.position, nodePos);
             var direction = nodePos - (Vector2)transform.position;
 
+            // Get X movement direction
             var moveDirX = nodePos.x < transform.position.x ? Vector2.left : Vector2.right;
 
+            // Set waypoint object to show current node being pathed towards if it isn't null (Only visible in level editor)
             if (waypointObject != null)
+            {
                 waypointObject.transform.position = nodePos;
-
-            if (isCollidingLeftWall && moveDirX == Vector2.left)
-                moveDirX = Vector2.zero;
-
-            if (isCollidingRightWall && moveDirX == Vector2.right)
-                moveDirX = Vector2.zero;
-
-            if (distTo <= 0.15f)
-            {
-                if (currentPathIndex + 1 < currentPath.GetPathLength())
-                {
-                    currentPathIndex++;
-                }
             }
-            else
+
+            // Dont allow movement to the left if ai is colliding with a wall to the left of it.
+            if (isCollidingLeftWall && moveDirX == Vector2.left)
             {
-                if (Mathf.Abs(transform.position.x - nodePos.x) >= 0.1f && direction.y <= 0.3f)
-                {
-                    // move left/right
-                    rigidBodyComponent.RigidBody.AddImpulse(moveDirX * movementForce);
-                }
+                moveDirX = Vector2.zero;
+            }
 
-                if (direction.y >= 0.3f && isGrounded)
-                {
-                    var velTmp = rigidBodyComponent.RigidBody.LinearVelocity;
-                    velTmp.y = 0.0f;
-                    velTmp.x = 0.0f;
-                    rigidBodyComponent.RigidBody.LinearVelocity = velTmp;
+            // Same for the right.
+            if (isCollidingRightWall && moveDirX == Vector2.right)
+            {
+                moveDirX = Vector2.zero;
+            }
 
-                    rigidBodyComponent.RigidBody.AddImpulse(moveDirX * movementForce);
-                    rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * (jumpHeight * Mathf.Clamp01(distTo)) * rigidBodyComponent.RigidBody.Mass * 2.0f);
-                }
+            // If the agent is more than 0.1 units away on the X axis and less than 0.4 units away on the Y axis then move left / right
+            // Y check is to prevent moving on the X axis too soon when jumping.
+            if (Mathf.Abs(direction.x) >= 0.1f && direction.y <= 0.4f)
+            {
+                // move left/right
+                rigidBodyComponent.RigidBody.AddImpulse(moveDirX * movementForce);
+            }
+
+            // If the difference between the agent and the targer node is greater than 0.3f on the Y axis, then a jump is needed.
+            if (direction.y >= 0.3f && isGrounded)
+            {
+                // Reset x and y velocity or everything will break, especially jumping.
+                var velTmp = rigidBodyComponent.RigidBody.LinearVelocity;
+                velTmp.y = 0.0f;
+                velTmp.x = 0.0f;
+                rigidBodyComponent.RigidBody.LinearVelocity = velTmp;
+
+                // Add a movement impulse in the direction towards the node before jumping.
+                rigidBodyComponent.RigidBody.AddImpulse(moveDirX * movementForce);
+
+                // Add the jump impulse to the agent.
+                rigidBodyComponent.RigidBody.AddImpulse(Vector2.up * (jumpHeight * Mathf.Clamp01(distTo)) * rigidBodyComponent.RigidBody.Mass * 2.0f);
             }
 
             // clamp X speed for the AI to its max speed.
