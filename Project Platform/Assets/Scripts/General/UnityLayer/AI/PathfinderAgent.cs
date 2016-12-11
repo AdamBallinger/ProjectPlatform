@@ -34,11 +34,11 @@ namespace Assets.Scripts.General.UnityLayer.AI
         // Update path n timers per second.
         public float pathUpdateRate = 5.0f;
 
+        private Transform target;
+        private Vector2 targetVec;
+
         public void Start()
         {
-            pathFinder = new PathFinder(OnPathComplete);
-            ClearPath();
-
             groundCheck.Collider.CollisionListener.RegisterTriggerStayCallback(OnGroundTriggerStay);
             groundCheck.Collider.CollisionListener.RegisterTriggerLeaveCallback(OnGroundTriggerLeave);
 
@@ -51,12 +51,30 @@ namespace Assets.Scripts.General.UnityLayer.AI
             waypointObject = GameObject.FindGameObjectWithTag("AIWaypoint");
         }
 
-        public void StartPathing(Vector2 _start, Vector2 _end)
+        public void StartPathing(Vector2 _start, Transform _target)
         {
+            pathFinder = new PathFinder(OnPathComplete);
             ClearPath();
+
             StopAllCoroutines();
 
-            pathFinder.FindPath(_start, _end);
+            target = _target;
+
+            pathFinder.FindPath(_start, target.position);
+
+            StartCoroutine(UpdatePath());
+        }
+
+        public void StartPathing(Vector2 _start, Vector2 _end)
+        {
+            pathFinder = new PathFinder(OnPathComplete);
+            ClearPath();
+
+            StopAllCoroutines();
+
+            targetVec = _end;
+
+            pathFinder.FindPath(_start, targetVec);
 
             StartCoroutine(UpdatePath());
         }
@@ -83,7 +101,10 @@ namespace Assets.Scripts.General.UnityLayer.AI
         {
             if (currentPath != null)
             {
-                pathFinder.FindPath(rigidBodyComponent.RigidBody.Position, new Vector2(currentPath.EndNode.X, currentPath.EndNode.Y));
+                if(target != null)
+                    pathFinder.FindPath(rigidBodyComponent.RigidBody.Position, target.position);
+                else
+                    pathFinder.FindPath(rigidBodyComponent.RigidBody.Position, targetVec);
             }
 
             yield return new WaitForSeconds(1.0f / pathUpdateRate);

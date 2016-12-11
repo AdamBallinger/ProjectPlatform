@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.General.UnityLayer.UI.LevelEditor;
+﻿using Assets.Scripts.General.UnityLayer.AI;
+using Assets.Scripts.General.UnityLayer.UI.LevelEditor;
 using UnityEngine;
 
 namespace Assets.Scripts.General.UnityLayer
@@ -45,11 +46,18 @@ namespace Assets.Scripts.General.UnityLayer
             var aiObject = GameObject.FindGameObjectWithTag("AI");
             if(aiObject == null)
             {
-                Instantiate(aiPrefab, World.Current.AISpawnPosition, Quaternion.identity);
+                aiObject = Instantiate(aiPrefab, World.Current.AISpawnPosition, Quaternion.identity);
             }
             else
             {
                 aiObject.transform.position = World.Current.AISpawnPosition;
+            }
+
+            var player = GameObject.FindGameObjectWithTag("Player");
+
+            if(player != null)
+            {
+                aiObject.GetComponent<PathfinderAgent>().StartPathing(aiObject.transform.position, player.transform);
             }
         }
 
