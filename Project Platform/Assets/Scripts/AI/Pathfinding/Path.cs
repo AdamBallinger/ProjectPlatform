@@ -46,31 +46,35 @@ namespace Assets.Scripts.AI.Pathfinding
             StartNode = _start;
             EndNode = _end;
 
-            if(StartNode.NodeType == PathNodeType.None)
+            if(EndNode.NodeType == PathNodeType.None)
             {
-                FindClosestNodeToStart();
+                EndNode = FindClosestPathableNode(_end);
             }
         }
 
         /// <summary>
-        /// Find the first closest node
+        /// Find the first closest pathable node to given node.
         /// </summary>
-        private void FindClosestNodeToStart()
+        private PathNode FindClosestPathableNode(PathNode _node)
         {
             var nodes = World.Current.NavGraph.Nodes;
             var lowestDist = float.MaxValue;
+            var closestNode = nodes[0, 0];
 
             foreach(var node in nodes)
             {
-                var startPos = new Vector2(StartNode.X, StartNode.Y);
+                if (node.NodeType == PathNodeType.None) continue;
+                var startPos = new Vector2(_node.X, _node.Y);
                 var nodePos = new Vector2(node.X, node.Y);
                 var distToNode = Vector2.Distance(startPos, nodePos);
                 if(distToNode < lowestDist)
                 {
-                    StartNode = node;
+                    closestNode = node;
                     lowestDist = distToNode;
                 }
             }
+
+            return closestNode;
         }
 
         public void SetValid()
