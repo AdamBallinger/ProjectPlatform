@@ -11,6 +11,7 @@ namespace Assets.Scripts.General.UnityLayer
         public GameObject aiPrefab;
 
         public GameObject gameOverUI;
+        public GameObject playerWinUI;
 
         private WorldController worldController;
 
@@ -85,8 +86,12 @@ namespace Assets.Scripts.General.UnityLayer
         /// </summary>
         public void OnPlayerCollectsAllCoins()
         {
-            // TODO: Display payer won UI of some kind and after a few seconds load the next level if there is another to load.
-            // For loading next level, keep track of the current level (e.g. level 1 will set this val to 1 level 2 set to 2 etc).
+            gameOver = true;
+            playerWinUI.SetActive(true);
+            Destroy(GameObject.FindGameObjectWithTag("Player"));
+            Destroy(GameObject.FindGameObjectWithTag("AI"));
+
+            Invoke("OnReturnToEditorButtonPress", 2.0f);
         }
 
         private void RestartLevel()
