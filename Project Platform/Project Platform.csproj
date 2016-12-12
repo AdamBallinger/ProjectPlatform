@@ -82,6 +82,7 @@
     <Compile Include="Assets\Scripts\AI\Pathfinding\PathNode.cs" />
     <Compile Include="Assets\Scripts\General\Directories.cs" />
     <Compile Include="Assets\Scripts\General\Tile.cs" />
+    <Compile Include="Assets\Scripts\General\UnityLayer\AI\AIController.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\AI\PathfinderAgent.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\CameraFollow.cs" />
     <Compile Include="Assets\Scripts\General\UnityLayer\LevelManager.cs" />

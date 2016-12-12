@@ -439,7 +439,7 @@ namespace Assets.Scripts.General.UnityLayer
         public void Save(string _saveFile)
         {
             World.Current.Save(_saveFile);
-            Debug.Log("Saving level data for level: " + _saveFile);
+            //Debug.Log("Saving level data for level: " + _saveFile);
 
             var settings = new XmlWriterSettings();
             settings.Indent = true;
@@ -527,7 +527,7 @@ namespace Assets.Scripts.General.UnityLayer
                 xmlWriter.WriteEndDocument();
             }
 
-            Debug.Log("Finished saving level data for level: " + _saveFile);
+            //Debug.Log("Finished saving level data for level: " + _saveFile);
         }
 
         /// <summary>
@@ -539,7 +539,7 @@ namespace Assets.Scripts.General.UnityLayer
         {
             Clear();
             var levelName = World.Current.Load(_loadFile);
-            Debug.Log("Loading level data for level: " + levelName + " from: " + _loadDataFile);
+            //Debug.Log("Loading level data for level: " + levelName + " from: " + _loadDataFile);
 
             using (var xmlReader = XmlReader.Create(_loadDataFile))
             {
@@ -582,7 +582,7 @@ namespace Assets.Scripts.General.UnityLayer
                 }
             }
 
-            Debug.Log("Finished loading level data for level: " + levelName);
+            //Debug.Log("Finished loading level data for level: " + levelName);
             return levelName;
         }
     }

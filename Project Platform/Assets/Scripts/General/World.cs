@@ -214,7 +214,7 @@ namespace Assets.Scripts.General
 
             var saveFileLocation = Path.Combine(Directories.Save_Levels_Directory, _saveFile + ".xml");
 
-            Debug.Log("Saving level to: " + saveFileLocation);
+            //Debug.Log("Saving level to: " + saveFileLocation);
 
             using (var xmlWriter = XmlWriter.Create(saveFileLocation, settings))
             {
@@ -264,7 +264,7 @@ namespace Assets.Scripts.General
                 xmlWriter.WriteEndDocument();
             }
 
-            Debug.Log("Finished saving.");
+            //Debug.Log("Finished saving.");
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace Assets.Scripts.General
         /// <param name="_loadFile">Full file path to level xml save file.</param>
         public string Load(string _loadFile)
         {
-            Debug.Log("Loading level from file: " + _loadFile);
+            //Debug.Log("Loading level from file: " + _loadFile);
             var levelName = "unknown";
             Current.Clear();
 
@@ -315,7 +315,7 @@ namespace Assets.Scripts.General
 
             PlatformCount = GetTileCountOfType(TileType.Platform);
             OnWorldModifyFinishCallback();
-            Debug.Log("Finished loading level: " + levelName);
+            //Debug.Log("Finished loading level: " + levelName);
             return levelName;
         }
     }
