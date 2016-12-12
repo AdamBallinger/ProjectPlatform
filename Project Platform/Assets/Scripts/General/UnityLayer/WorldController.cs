@@ -57,6 +57,8 @@ namespace Assets.Scripts.General.UnityLayer
         /// </summary>
         private GameObject[,] bouncePadObjects;
 
+        private int coinCount;
+
         public void Start()
         {
             // Set the unity fixed update timestep. (Used to control the frequency of PhysicsWorld.Step).
@@ -69,6 +71,8 @@ namespace Assets.Scripts.General.UnityLayer
             tileGameObjects = new GameObject[worldWidth, worldHeight];
             coinObjects = new GameObject[worldWidth, worldHeight];
             bouncePadObjects = new GameObject[worldWidth, worldHeight];
+
+            coinCount = 0;
 
             // Setup the Unity Gameobjects for the Tiles.
             for(var x = 0; x < World.Current.Width; x++)
@@ -276,6 +280,8 @@ namespace Assets.Scripts.General.UnityLayer
             coinObject.transform.SetParent(transform);
 
             coinObjects[gridX, gridY] = coinObject;
+
+            coinCount++;
         }
 
         /// <summary>
@@ -346,6 +352,37 @@ namespace Assets.Scripts.General.UnityLayer
         }
 
         /// <summary>
+        /// Returns current number of coins in the world.
+        /// </summary>
+        /// <returns></returns>
+        public int GetCoinCount()
+        {
+            var count = 0;
+
+            for(var x = 0; x < worldWidth; x++)
+            {
+                for(var y = 0; y < worldHeight; y++)
+                {
+                    if(coinObjects[x, y] != null)
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        /// Gets the total amount of coins this level has.
+        /// </summary>
+        /// <returns></returns>
+        public int GetTotalCoins()
+        {
+            return coinCount;
+        }
+
+        /// <summary>
         /// Use Unity fixed update for stepping physics world. Timestep is determined by Time.fixedDeltaTime. (0.02 by default)
         /// </summary>
         public void FixedUpdate()
@@ -379,6 +416,7 @@ namespace Assets.Scripts.General.UnityLayer
                 }
             }
 
+            coinCount = 0;
             World.Current.SetBorderAsPlatform();
         }
 

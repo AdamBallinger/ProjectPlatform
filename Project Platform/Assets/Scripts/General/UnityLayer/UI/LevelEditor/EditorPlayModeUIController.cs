@@ -14,7 +14,7 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
         {
             if(playerController != null)
             {
-                playerScore.text = "Score: " + playerController.score;
+                playerScore.text = "Score: " + playerController.score + " / " + FindObjectOfType<WorldController>().GetTotalCoins();
             }
             else
             {

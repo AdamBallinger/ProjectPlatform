@@ -10,9 +10,12 @@ namespace Assets.Scripts.General.UnityLayer
         public GameObject playerPrefab;
         public GameObject aiPrefab;
 
+        private WorldController worldController;
+
         public void Start()
         {
-            FindObjectOfType<WorldController>().Load(EditorPlayModeTransition.PlayModeLevel, EditorPlayModeTransition.PlayModeLevelData);
+            worldController = FindObjectOfType<WorldController>();
+            worldController.Load(EditorPlayModeTransition.PlayModeLevel, EditorPlayModeTransition.PlayModeLevelData);
         }
 
         public void Update()
@@ -25,6 +28,11 @@ namespace Assets.Scripts.General.UnityLayer
             if(GameObject.FindGameObjectWithTag("AI") == null)
             {
                 SpawnAI();
+            }
+
+            if(worldController.GetCoinCount() == 0)
+            {
+                OnPlayerCollectsAllCoins();
             }
         }
 
@@ -53,12 +61,29 @@ namespace Assets.Scripts.General.UnityLayer
                 aiObject.transform.position = World.Current.AISpawnPosition;
             }
 
-            var player = GameObject.FindGameObjectWithTag("Player");
+            //var player = GameObject.FindGameObjectWithTag("Player");
 
-            if(player != null)
-            {
-                aiObject.GetComponent<PathfinderAgent>().StartPathing(aiObject.transform.position, player.transform);
-            }
+            //if(player != null)
+            //{
+            //    aiObject.GetComponent<PathfinderAgent>().StartPathing(aiObject.transform.position, player.transform);
+            //}
+        }
+
+        /// <summary>
+        /// Called when the player is caught by the AI.
+        /// </summary>
+        public void OnPlayerCaught()
+        {
+            // TODO: Display some kind of gameover UI as the player was caught by the AI. After a few seconds restart the level.
+        }
+
+        /// <summary>
+        /// Called when the player has collected every coin in the level.
+        /// </summary>
+        public void OnPlayerCollectsAllCoins()
+        {
+            // TODO: Display payer won UI of some kind and after a few seconds load the next level if there is another to load.
+            // For loading next level, keep track of the current level (e.g. level 1 will set this val to 1 level 2 set to 2 etc).
         }
 
         public void OnReturnToEditorButtonPress()
