@@ -10,27 +10,32 @@ namespace Assets.Scripts.General.UnityLayer
         public GameObject playerPrefab;
         public GameObject aiPrefab;
 
+        public GameObject gameOverUI;
+
         private WorldController worldController;
+
+        private bool gameOver;
 
         public void Start()
         {
+            gameOver = false;
             worldController = FindObjectOfType<WorldController>();
             worldController.Load(EditorPlayModeTransition.PlayModeLevel, EditorPlayModeTransition.PlayModeLevelData);
         }
 
         public void Update()
         {
-            if(GameObject.FindGameObjectWithTag("Player") == null)
+            if(GameObject.FindGameObjectWithTag("Player") == null && !gameOver)
             {
                 SpawnPlayer();
             }
 
-            if(GameObject.FindGameObjectWithTag("AI") == null)
+            if(GameObject.FindGameObjectWithTag("AI") == null && !gameOver)
             {
                 SpawnAI();
             }
 
-            if(worldController.GetCoinCount() == 0)
+            if(worldController.GetCoinCount() == 0 && !gameOver)
             {
                 OnPlayerCollectsAllCoins();
             }
@@ -54,19 +59,12 @@ namespace Assets.Scripts.General.UnityLayer
             var aiObject = GameObject.FindGameObjectWithTag("AI");
             if(aiObject == null)
             {
-                aiObject = Instantiate(aiPrefab, World.Current.AISpawnPosition, Quaternion.identity);
+                Instantiate(aiPrefab, World.Current.AISpawnPosition, Quaternion.identity);
             }
             else
             {
                 aiObject.transform.position = World.Current.AISpawnPosition;
             }
-
-            //var player = GameObject.FindGameObjectWithTag("Player");
-
-            //if(player != null)
-            //{
-            //    aiObject.GetComponent<PathfinderAgent>().StartPathing(aiObject.transform.position, player.transform);
-            //}
         }
 
         /// <summary>
@@ -74,7 +72,12 @@ namespace Assets.Scripts.General.UnityLayer
         /// </summary>
         public void OnPlayerCaught()
         {
-            // TODO: Display some kind of gameover UI as the player was caught by the AI. After a few seconds restart the level.
+            gameOver = true;
+            gameOverUI.SetActive(true);
+            Destroy(GameObject.FindGameObjectWithTag("Player"));
+            Destroy(GameObject.FindGameObjectWithTag("AI"));
+
+            Invoke("RestartLevel", 2.0f);
         }
 
         /// <summary>
@@ -84,6 +87,13 @@ namespace Assets.Scripts.General.UnityLayer
         {
             // TODO: Display payer won UI of some kind and after a few seconds load the next level if there is another to load.
             // For loading next level, keep track of the current level (e.g. level 1 will set this val to 1 level 2 set to 2 etc).
+        }
+
+        private void RestartLevel()
+        {
+            gameOver = false;
+            gameOverUI.SetActive(false);
+            worldController.Load(EditorPlayModeTransition.PlayModeLevel, EditorPlayModeTransition.PlayModeLevelData);
         }
 
         public void OnReturnToEditorButtonPress()
