@@ -205,7 +205,7 @@ namespace Assets.Scripts.General.UnityLayer.AI
 
             // If the difference between the agent and the targer node is greater than 0.3f on the Y axis, then a jump is needed.
             // of if the difference on the Y is less than or equal to 0.3 and the X difference is greater than 1.75 jump over a gap.
-            if ((direction.y >= 0.3f && isGrounded) || (Mathf.Abs(direction.x) > 1.75f && Mathf.Abs(direction.y) <= 0.3f && isGrounded))
+            if ((direction.y >= 0.3f && isGrounded) || (Mathf.Abs(direction.x) >= 1.75f && Mathf.Abs(direction.y) <= 0.3f && isGrounded))
             {
                 // Reset x and y velocity or everything will break, especially jumping.
                 var velTmp = rigidBodyComponent.RigidBody.LinearVelocity;
