@@ -10,8 +10,8 @@ namespace Assets.Scripts.AI.Pathfinding
 {
     public enum Heuristic
     {
-        Manhattan,
-        Euclidean
+        Manhattan = 0,
+        Euclidean = 1
     }
 
     public class PathFinder
@@ -39,10 +39,9 @@ namespace Assets.Scripts.AI.Pathfinding
         /// Create a pathfinder instance for the given start and end position. Positions can be either world or grid space coordinates.
         /// </summary>
         /// <param name="_pathCompleteCallback"></param>
-        /// <param name="_heuristicFunction"></param>
-        public PathFinder(Action<Path> _pathCompleteCallback, Heuristic _heuristicFunction = Heuristic.Manhattan)
+        public PathFinder(Action<Path> _pathCompleteCallback)
         {
-            heuristicFunction = _heuristicFunction;
+            heuristicFunction = PathfindingSettings.HeuristicFunction;
             closedList = new List<PathNode>();
             openList = new List<PathNode>();
             OnPatchCompleteCallback += _pathCompleteCallback;

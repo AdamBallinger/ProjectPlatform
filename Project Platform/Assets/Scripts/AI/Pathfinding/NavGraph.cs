@@ -35,6 +35,8 @@ namespace Assets.Scripts.AI.Pathfinding
                     Nodes[x, y] = new PathNode(x, y, PathNodeType.None);
                 }
             }
+
+            PathfindingSettings.Init();
         }
 
         /// <summary>
@@ -188,7 +190,7 @@ namespace Assets.Scripts.AI.Pathfinding
                         for (var i = j; i <= k; i++)
                         {
                             // Use fall links for jumping too so check along the X axis for additional links. scanWidth controls how many tiles across to scan
-                            var scanWidth = 4;
+                            var scanWidth = PathfindingSettings.FallJumpLinkMaxDist;
                             for (var scanX = 0; scanX < scanWidth; scanX++)
                             {
                                 // If i is 0 then get the left tile else get the right tile. (from current tile at x and y)

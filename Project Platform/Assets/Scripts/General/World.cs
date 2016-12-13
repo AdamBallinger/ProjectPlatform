@@ -235,6 +235,11 @@ namespace Assets.Scripts.General
                 xmlWriter.WriteAttributeString("Y", AISpawnPosition.y.ToString());
                 xmlWriter.WriteEndElement();
 
+                xmlWriter.WriteStartElement("PathfindingSettings");
+                xmlWriter.WriteAttributeString("Heuristic", ((int)PathfindingSettings.HeuristicFunction).ToString());
+                xmlWriter.WriteAttributeString("FallJumpLinkDistance", PathfindingSettings.FallJumpLinkMaxDist.ToString());
+                xmlWriter.WriteEndElement();
+
                 xmlWriter.WriteEndElement();
 
                 xmlWriter.WriteStartElement("LevelTileData");
@@ -300,6 +305,11 @@ namespace Assets.Scripts.General
                                 var aiX = int.Parse(xmlReader["X"]);
                                 var aiY = int.Parse(xmlReader["Y"]);
                                 GameObject.FindGameObjectWithTag("AISpawn").transform.position = new Vector2(aiX, aiY);
+                                break;
+
+                            case "PathfindingSettings":
+                                PathfindingSettings.SetHeuristicFromID(int.Parse(xmlReader["Heuristic"]));
+                                PathfindingSettings.FallJumpLinkMaxDist = int.Parse(xmlReader["FallJumpLinkDistance"]);
                                 break;
 
                             case "Tile":
