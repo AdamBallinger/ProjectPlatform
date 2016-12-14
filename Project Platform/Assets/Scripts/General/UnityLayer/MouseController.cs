@@ -98,7 +98,6 @@ namespace Assets.Scripts.General.UnityLayer
             {
                 mouseDragging = true;
                 mouseDragStartPosition = currentMousePosition;
-
             }
 
             if (mouseDragging)
@@ -174,7 +173,6 @@ namespace Assets.Scripts.General.UnityLayer
                         for (var y = startY; y <= endY; y++)
                         {
                             var tile = World.Current.GetTileAt(x, y);
-
 
                             if (tile != null)
                             {

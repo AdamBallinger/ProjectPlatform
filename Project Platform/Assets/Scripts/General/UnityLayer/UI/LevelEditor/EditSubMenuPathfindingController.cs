@@ -94,6 +94,8 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
                 ai.GetComponent<PathfinderAgent>().ClearPath();
                 Destroy(ai);
             }
+
+            editorUIController.mouseController.SelectMode = SelectionMode.None;
         }
 
         public void CreatePath(Vector2 _start, Vector2 _end)
@@ -119,7 +121,6 @@ namespace Assets.Scripts.General.UnityLayer.UI.LevelEditor
 
         public void OnFallJumpLinkSliderValueChange()
         {
-            Debug.Log("Fall and jump");
             PathfindingSettings.FallJumpLinkMaxDist = (int)fallJumpLinkSlider.value;
             fallJumpLinkText.text = "Fall & jump link distance: " + PathfindingSettings.FallJumpLinkMaxDist;
             World.Current.NavGraph.ScanGraph();

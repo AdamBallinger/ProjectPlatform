@@ -31,9 +31,6 @@ namespace Assets.Scripts.AI.Pathfinding
         private List<PathNode> closedList;
         private List<PathNode> openList;
 
-        // Thread instance used for threaded pathfinding.
-        private Thread finderThread;
-
 
         /// <summary>
         /// Create a pathfinder instance for the given start and end position. Positions can be either world or grid space coordinates.
@@ -48,9 +45,9 @@ namespace Assets.Scripts.AI.Pathfinding
         }
 
         /// <summary>
-        /// Finds a path for this finder in a seperate thread.
+        /// Finds a path for this finder.
         /// </summary>
-        private void ThreadedSearch()
+        private void Search()
         {
             var watch = new Stopwatch();
             watch.Start();
@@ -62,10 +59,6 @@ namespace Assets.Scripts.AI.Pathfinding
             closedList.Clear();
             openList.Clear();
 
-            // This is a safety net for the while loop, incase something goes wrong and limits the search iterations the loop can perform.
-            var maxSearchCount = 5000;
-            var currentSearchCount = 0;
-
             // To start, add the starting node to the open list.
             openList.Add(path.StartNode);
 
@@ -75,14 +68,6 @@ namespace Assets.Scripts.AI.Pathfinding
             // While the open list has nodes to evaluate.
             while (openList.Count != 0)
             {
-                // Failsafe check
-                if (currentSearchCount >= maxSearchCount)
-                {
-                    Debug.LogWarning("FindPath terminated because it exceeded the maximum allowed search count. Something went wrong.");
-                    break;
-                }
-                currentSearchCount++;
-
                 // Get the node with the lowest F cost from the open list.
                 var currentNode = GetLowestCostNodeFromOpenList();
 
@@ -141,9 +126,6 @@ namespace Assets.Scripts.AI.Pathfinding
 
             // Return the path. Checking the Valid property determines a successfull path.
             OnPatchCompleteCallback(path);
-
-            // Terminate the search thread.
-            finderThread.Abort();
         }
 
         /// <summary>
@@ -158,9 +140,8 @@ namespace Assets.Scripts.AI.Pathfinding
             End = World.Current.WorldPointToGridPoint(_end);
 
             path = new Path(World.Current.NavGraph.Nodes[(int)Start.x, (int)Start.y], World.Current.NavGraph.Nodes[(int)End.x, (int)End.y]);
-
-            finderThread = new Thread(ThreadedSearch);
-            finderThread.Start();
+            
+            Search();
         }
 
         /// <summary>

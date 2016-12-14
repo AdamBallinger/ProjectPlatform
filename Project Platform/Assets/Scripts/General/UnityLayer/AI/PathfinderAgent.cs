@@ -56,8 +56,6 @@ namespace Assets.Scripts.General.UnityLayer.AI
             pathFinder = new PathFinder(OnPathComplete);
             ClearPath();
 
-            StopAllCoroutines();
-
             target = _target;
 
             pathFinder.FindPath(_start, target.position);
