@@ -303,4 +303,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-Project Platform/notes.txt
+
+"Project Platform/notes.txt"
+"Project Platform/Library/*"
+"Project Platform/Temp/"
